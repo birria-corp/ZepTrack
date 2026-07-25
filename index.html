@@ -656,11 +656,11 @@
             <div class="field-group">
               <label>Meal Type</label>
               <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
+                <button class="meal-type-btn" data-val="drink" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Drink</button>
                 <button class="meal-type-btn active" data-val="breakfast" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.15);color:var(--accent);font-size:0.72rem;cursor:pointer">Breakfast</button>
                 <button class="meal-type-btn" data-val="lunch" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Lunch</button>
                 <button class="meal-type-btn" data-val="dinner" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Dinner</button>
                 <button class="meal-type-btn" data-val="snack" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Snack</button>
-                <button class="meal-type-btn" data-val="drink" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Drink</button>
               </div>
               <input type="hidden" id="meal-type" value="breakfast" />
             </div>
@@ -2108,13 +2108,10 @@ function getMacrosForRange(startDate, endDate) {
   const fat     = filtered.reduce((a,m) => a + (m.fat||0), 0);
   const fiber   = filtered.reduce((a,m) => a + (m.fiber||0), 0);
 
-  // water: prefer daily check-in record, fall back to water meal entries
-  const waterRecs = daily.filter(d => d.date >= startDate && d.date <= endDate);
-  const dailyWater = waterRecs.reduce((a,d) => a + (d.water||0), 0);
-  const mealWater = filtered
-    .filter(m => (m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||0), 0);
-  const water = dailyWater > 0 ? dailyWater : mealWater;
+  // water from meal entries only
+  const water = filtered
+    .filter(m => (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
+    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
 
   return { cal, protein, carbs, fat, fiber, water };
 }
@@ -2677,7 +2674,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v4.1</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v4.3</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -2688,12 +2685,10 @@ function renderToday() {
   let totalCal = 0, totalPro = 0, totalFib = 0;
   meals.forEach(m => { totalCal += m.cal||0; totalPro += m.protein||0; totalFib += m.fiber||0; });
 
-  // water = daily check-in record OR water meal entries
-  const dailyWater = daily ? daily.water || 0 : 0;
-  const mealWater  = meals
-    .filter(m => (m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||0), 0);
-  const water = dailyWater > 0 ? dailyWater : mealWater;
+  // water = sum of all water drink entries for today
+  const water = meals
+    .filter(m => (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
+    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
   const steps = exercise.filter(e=>e.type==='walking').reduce((a,e)=>a+(e.steps||0),0);
 
   // update summary table
@@ -3089,7 +3084,6 @@ function initReminders() {
 // ═══════════════════════════════════════════════════════
 // PROGRESS CHARTS
 // ═══════════════════════════════════════════════════════
-function renderProgress() { showProgressTab('weight'); }
 
 // Mini chart helpers — pure canvas, no lib needed
 function drawLineChart(canvasId, labels, datasets, opts={}) {
@@ -3296,14 +3290,9 @@ function renderNutritionProgress() {
 
   const dayTotal = (days, key) =>
     avg(days.map(d => meals.filter(m=>m.date===d).reduce((a,m)=>a+(m[key]||0),0)));
-  const waterForDay = d => {
-    const rec = dailys.find(x=>x.date===d);
-    const dailyW = rec ? (rec.water||0) : 0;
-    if (dailyW > 0) return dailyW;
-    return meals
-      .filter(m => m.date===d && (m.items?.[0]?.name||'').toLowerCase().includes('water'))
-      .reduce((a,m) => a + (m.quantity||0), 0);
-  };
+  const waterForDay = d => meals
+    .filter(m => m.date===d && (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
+    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
 
   const MACROS = [
     { name:'Water',    key:'water',   goal:GOALS.water,    color:'#38bdf8', unit:getWaterUnit(), barId:'bar-water'   },
@@ -3661,31 +3650,31 @@ function showToast(msg='Saved!') {
 // WATER QUICK-ADD
 // ═══════════════════════════════════════════════════════
 function addWater(oz) {
-  let dailys = DB.get('daily') || [];
+  if (!oz || oz <= 0) return;
   const todayStr = today();
-  const idx = dailys.findIndex(d => d.date === todayStr);
-  if (idx >= 0) {
-    dailys[idx].water = (dailys[idx].water || 0) + oz;
-    dailys[idx].ts = Date.now();
-  } else {
-    dailys.push({ date: todayStr, water: oz, energy: 5, mood: 5, sideEffects: [], notes: '', ts: Date.now() });
-  }
-  DB.set('daily', dailys);
+  // Store as a meal/drink entry so it shows in Today's Intake but NOT as a Wellness check-in
+  DB.push('meals', {
+    date: todayStr,
+    mealType: 'drink',
+    type: 'drink',
+    items: [{ name: `Water (${oz} OZ)`, cal:0, protein:0, carbs:0, fat:0, fiber:0 }],
+    cal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0,
+    quantity: oz, unit: 'OZ',
+    drinkName: 'Water',
+    drinkVolume: oz,
+    ts: Date.now()
+  });
   updateWaterDisplay();
   renderToday();
   showToast(`+${oz}oz water!`);
 }
 
 function updateWaterDisplay() {
-  const dailys = DB.get('daily') || [];
-  const meals  = DB.get('meals') || [];
+  const meals    = DB.get('meals') || [];
   const todayStr = today();
-  const rec = dailys.find(d => d.date === todayStr);
-  const dailyOz = rec ? (rec.water||0) : 0;
-  const mealOz = meals
-    .filter(m => m.date===todayStr && (m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||0), 0);
-  const oz = dailyOz > 0 ? dailyOz : mealOz;
+  const oz = meals
+    .filter(m => m.date===todayStr && (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
+    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
   const el = document.getElementById('water-today-val');
   const ring = document.getElementById('water-ring');
   const lbl = document.getElementById('water-goal-label');
@@ -3743,54 +3732,51 @@ function initSettings() {
 function checkForUpdate() {
   const status = document.getElementById('update-status');
   status.textContent = 'Checking…';
+  status.style.color = '';
 
-  if (!('serviceWorker' in navigator)) {
-    status.textContent = 'Service worker not available — try refreshing manually.';
-    return;
-  }
+  // Fetch version.json directly from the server with cache busting
+  // This bypasses the service worker cache entirely
+  const versionUrl = './version.json?t=' + Date.now();
 
-  navigator.serviceWorker.getRegistration().then(reg => {
-    if (!reg) {
-      status.textContent = 'Not installed as PWA — refresh the page to update.';
-      return;
-    }
+  fetch(versionUrl, { cache: 'no-store' })
+    .then(r => r.json())
+    .then(data => {
+      const remoteVersion = data.version;
+      const localVersion  = '4.3';
 
-    // Tell SW to check for a new version
-    reg.update().then(() => {
-      // If a new SW is waiting, activate it and reload
-      if (reg.waiting) {
-        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-        status.textContent = 'Update found! Reloading…';
-        setTimeout(() => window.location.reload(true), 800);
+      if (remoteVersion === localVersion) {
+        status.textContent = '✓ Already up to date (v' + localVersion + ')';
+        status.style.color = 'var(--success)';
+        setTimeout(() => {
+          status.textContent = 'Checks GitHub for latest version';
+          status.style.color = '';
+        }, 4000);
         return;
       }
 
-      // Listen for a new SW installing
-      reg.addEventListener('updatefound', () => {
-        const newSW = reg.installing;
-        newSW.addEventListener('statechange', () => {
-          if (newSW.state === 'installed') {
-            newSW.postMessage({ type: 'SKIP_WAITING' });
-            status.textContent = 'Update found! Reloading…';
-            setTimeout(() => window.location.reload(true), 800);
-          }
-        });
-      });
+      // New version found — wipe all caches and reload
+      status.textContent = '🔄 Update found (v' + remoteVersion + ')! Clearing cache…';
+      status.style.color = 'var(--warn)';
 
-      // Give it 4 seconds — if nothing found, already up to date
+      Promise.all([
+        // Unregister service worker
+        navigator.serviceWorker?.getRegistration().then(reg => reg?.unregister()),
+        // Clear all caches
+        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      ]).then(() => {
+        status.textContent = 'Reloading…';
+        // Hard reload — fetches fresh index.html from GitHub
+        setTimeout(() => window.location.reload(true), 500);
+      });
+    })
+    .catch(() => {
+      status.textContent = '⚠️ Could not reach server — check connection';
+      status.style.color = 'var(--danger)';
       setTimeout(() => {
-        if (status.textContent === 'Checking…') {
-          status.textContent = 'Already up to date ✓';
-          setTimeout(() => { status.textContent = 'Checks GitHub for latest version'; }, 3000);
-        }
+        status.textContent = 'Checks GitHub for latest version';
+        status.style.color = '';
       }, 4000);
-    }).catch(() => {
-      // Fallback: clear caches and hard reload
-      status.textContent = 'Clearing cache and reloading…';
-      caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
-        .then(() => window.location.reload(true));
     });
-  });
 }
 
 function exportData() {
