@@ -2663,7 +2663,13 @@ function renderProgress() { showProgressTab('nutrition'); }
 // ═══════════════════════════════════════════════════════
 // TODAY
 // ═══════════════════════════════════════════════════════
-function today() { return new Date().toISOString().split('T')[0]; }
+function today() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
 
 function renderToday() {
   // header date
@@ -2671,7 +2677,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v4.0</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v4.1</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
