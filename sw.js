@@ -16,20 +16,17 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const filename = url.pathname.split('/').pop();
 
-  // sw.js and manifest.json: always network-first, never serve stale
-  if (filename === 'sw.js' || filename === 'manifest.json') {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
-    );
+  // version.json and sw.js: NEVER cache, always network
+  if (filename === 'version.json' || filename === 'sw.js') {
+    e.respondWith(fetch(e.request.url + '?nocache=' + Date.now()));
     return;
   }
 
-  // index.html: network-first so updates are picked up automatically
+  // index.html: network-first so updates are picked up
   if (filename === 'index.html' || url.pathname.endsWith('/')) {
     e.respondWith(
       fetch(e.request)
         .then(response => {
-          // cache the fresh copy
           const clone = response.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
           return response;
@@ -45,9 +42,6 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// Listen for SKIP_WAITING message from the app
 self.addEventListener('message', e => {
-  if (e.data && e.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
