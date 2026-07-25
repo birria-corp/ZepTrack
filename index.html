@@ -636,9 +636,9 @@
       <div id="tab-intake">
         <!-- sub-tabs -->
         <div style="display:flex;gap:4px;margin-bottom:12px">
+          <button class="tab" id="itab-drink-btn" onclick="showIntakeSubtab('drink')" style="flex:1;font-size:0.78rem">☕ Drinks</button>
           <button class="tab active" id="itab-food-btn" onclick="showIntakeSubtab('food')" style="flex:1;font-size:0.78rem">🍽 Food</button>
           <button class="tab" id="itab-water-btn" onclick="showIntakeSubtab('water')" style="flex:1;font-size:0.78rem">💧 Water</button>
-          <button class="tab" id="itab-drink-btn" onclick="showIntakeSubtab('drink')" style="flex:1;font-size:0.78rem">☕ Drinks</button>
           <button class="tab" id="itab-recipe-btn" onclick="showIntakeSubtab('recipe')" style="flex:1;font-size:0.78rem">📖 Recipes</button>
         </div>
 
@@ -648,17 +648,21 @@
             <div class="card-title">Quick Log</div>
             <div class="field-group">
               <label>Date</label>
-              <input type="date" id="meal-date" />
+              <div style="display:flex;gap:8px;align-items:center">
+                <button onclick="setMealDateToday()" style="padding:8px 14px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:none;color:var(--accent);font-size:0.8rem;font-family:var(--sans);cursor:pointer;white-space:nowrap">Today</button>
+                <input type="date" id="meal-date" style="flex:1" />
+              </div>
             </div>
             <div class="field-group">
               <label>Meal Type</label>
-              <select id="meal-type">
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-                <option value="snack">Snack</option>
-                <option value="drink">Drink</option>
-              </select>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
+                <button class="meal-type-btn active" data-val="breakfast" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.15);color:var(--accent);font-size:0.72rem;cursor:pointer">Breakfast</button>
+                <button class="meal-type-btn" data-val="lunch" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Lunch</button>
+                <button class="meal-type-btn" data-val="dinner" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Dinner</button>
+                <button class="meal-type-btn" data-val="snack" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Snack</button>
+                <button class="meal-type-btn" data-val="drink" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Drink</button>
+              </div>
+              <input type="hidden" id="meal-type" value="breakfast" />
             </div>
             <div class="field-group">
               <label>Item</label>
@@ -988,9 +992,37 @@
           <div id="nutrition-averages"></div>
         </div>
         <div class="card">
-          <div class="card-title">30-Day Macro Trend</div>
-          <div id="macro-chart-legend" style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-bottom:10px;font-size:0.7rem;font-family:var(--mono)"></div>
-          <div class="chart-wrap"><canvas id="cal-chart" height="200"></canvas></div>
+          <div class="card-title">30-Day Daily Breakdown</div>
+          <div id="macro-bars-container">
+            <div style="margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span style="width:12px;height:12px;border-radius:2px;background:#38bdf8;display:inline-block"></span>
+                <span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">WATER (oz)</span>
+              </div>
+              <div class="chart-wrap"><canvas id="bar-water" height="80"></canvas></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span style="width:12px;height:12px;border-radius:2px;background:#6c8aff;display:inline-block"></span>
+                <span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">CALORIES</span>
+              </div>
+              <div class="chart-wrap"><canvas id="bar-cal" height="80"></canvas></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span style="width:12px;height:12px;border-radius:2px;background:#a78bfa;display:inline-block"></span>
+                <span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">PROTEIN (g)</span>
+              </div>
+              <div class="chart-wrap"><canvas id="bar-protein" height="80"></canvas></div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span style="width:12px;height:12px;border-radius:2px;background:#34d399;display:inline-block"></span>
+                <span style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">FIBER (g)</span>
+              </div>
+              <div class="chart-wrap"><canvas id="bar-fiber" height="80"></canvas></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1150,7 +1182,7 @@
         <div class="settings-row">
           <div>
             <div class="settings-label">Export All Data</div>
-            <div class="settings-sub">Download as JSON backup</div>
+            <div class="settings-sub" id="export-status">Download as JSON backup</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="exportData()">Export</button>
         </div>
@@ -1298,24 +1330,56 @@
       <input type="text" id="recipe-name" placeholder="e.g. Chicken Stir Fry" />
     </div>
     <div class="field-group">
-      <label>Total Recipe Weight (<span class="recipe-wt-unit">g</span>) — weigh finished dish</label>
-      <input type="number" id="recipe-total-weight" placeholder="e.g. 800" min="1" oninput="updateRecipeNutritionPer100()" />
+      <label>Total Recipe Weight</label>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="recipe-total-weight" placeholder="e.g. 800" min="1" style="flex:1" oninput="updateRecipeNutritionPer100()" />
+        <select id="recipe-weight-unit" style="width:80px" onchange="updateRecipeNutritionPer100()">
+          <option value="g">g</option>
+          <option value="oz">oz</option>
+          <option value="ml">ml</option>
+        </select>
+      </div>
     </div>
-    <div class="divider"></div>
-    <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Ingredients</div>
-    <!-- ingredient col headers -->
-    <div style="display:grid;grid-template-columns:1fr 60px 60px 48px 48px 48px 48px 28px;gap:4px;margin-bottom:4px">
-      <div class="col-h">Ingredient</div>
-      <div class="col-h">Qty (g)</div>
-      <div class="col-h">Unit</div>
-      <div class="col-h">Cal</div>
-      <div class="col-h">Pro</div>
-      <div class="col-h">Crb</div>
-      <div class="col-h">Fat</div>
-      <div class="col-h"></div>
+
+    <!-- Bulk nutrition toggle -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.82rem;color:var(--muted)">
+        <input type="checkbox" id="recipe-bulk-mode" onchange="toggleRecipeBulkMode(this.checked)"
+          style="width:16px;height:16px;accent-color:var(--accent)" />
+        Enter total nutrition directly (skip per-ingredient)
+      </label>
     </div>
-    <div id="recipe-ingredient-rows"></div>
-    <button class="btn btn-ghost btn-sm" onclick="addRecipeIngredientRow()" style="margin-top:6px;margin-bottom:12px">+ Ingredient</button>
+
+    <!-- Bulk nutrition fields (hidden by default) -->
+    <div id="recipe-bulk-fields" style="display:none;background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px">
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Total Recipe Nutrition</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label>Calories</label><input type="number" id="bulk-cal"  placeholder="0" min="0" oninput="updateBulkTotals()" /></div>
+        <div><label>Protein (g)</label><input type="number" id="bulk-pro"  placeholder="0" min="0" step="0.1" oninput="updateBulkTotals()" /></div>
+        <div><label>Carbs (g)</label><input type="number" id="bulk-carb" placeholder="0" min="0" step="0.1" oninput="updateBulkTotals()" /></div>
+        <div><label>Fat (g)</label><input type="number" id="bulk-fat"  placeholder="0" min="0" step="0.1" oninput="updateBulkTotals()" /></div>
+        <div><label>Fiber (g)</label><input type="number" id="bulk-fib"  placeholder="0" min="0" step="0.1" oninput="updateBulkTotals()" /></div>
+      </div>
+    </div>
+
+    <!-- Per-ingredient entry -->
+    <div id="recipe-ingredient-section">
+      <div class="divider"></div>
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Ingredients</div>
+      <div style="display:grid;grid-template-columns:1fr 60px 60px 48px 48px 48px 48px 28px;gap:4px;margin-bottom:4px">
+        <div class="col-h">Ingredient</div>
+        <div class="col-h">Qty (g)</div>
+        <div class="col-h">Unit</div>
+        <div class="col-h">Cal</div>
+        <div class="col-h">Pro</div>
+        <div class="col-h">Crb</div>
+        <div class="col-h">Fat</div>
+        <div class="col-h"></div>
+      </div>
+      <div id="recipe-ingredient-rows"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addRecipeIngredientRow()" style="margin-top:6px;margin-bottom:12px">+ Ingredient</button>
+    </div>
+
     <div id="recipe-total-nutrition" style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px"></div>
     <div class="field-group">
       <label>Notes (optional)</label>
@@ -1823,6 +1887,44 @@ async function lookupUSDANutrition(name) {
   } catch { return null; }
 }
 
+function setMealDateToday() {
+  document.getElementById('meal-date').value = today();
+}
+
+function selectMealType(btn) {
+  document.querySelectorAll('.meal-type-btn').forEach(b => {
+    b.style.borderColor = 'var(--border)';
+    b.style.background  = 'var(--surface2)';
+    b.style.color       = 'var(--muted)';
+  });
+  btn.style.borderColor = 'var(--accent)';
+  btn.style.background  = 'rgba(108,138,255,0.15)';
+  btn.style.color       = 'var(--accent)';
+  document.getElementById('meal-type').value = btn.dataset.val;
+}
+
+function toggleRecipeBulkMode(on) {
+  document.getElementById('recipe-bulk-fields').style.display      = on ? 'block' : 'none';
+  document.getElementById('recipe-ingredient-section').style.display = on ? 'none'  : 'block';
+  updateRecipeNutritionPer100();
+}
+
+function updateBulkTotals() {
+  const cal  = parseFloat(document.getElementById('bulk-cal')?.value)  || 0;
+  const pro  = parseFloat(document.getElementById('bulk-pro')?.value)  || 0;
+  const carb = parseFloat(document.getElementById('bulk-carb')?.value) || 0;
+  const fat  = parseFloat(document.getElementById('bulk-fat')?.value)  || 0;
+  const fib  = parseFloat(document.getElementById('bulk-fib')?.value)  || 0;
+  const tw   = parseFloat(document.getElementById('recipe-total-weight')?.value) || 0;
+  const unit = document.getElementById('recipe-weight-unit')?.value || 'g';
+  const twG  = unit === 'oz' ? tw * 28.3495 : unit === 'ml' ? tw : tw;
+  const el   = document.getElementById('recipe-total-nutrition');
+  if (el) {
+    const per = twG > 0 ? ` | Per 100g: ${Math.round(cal/twG*100)} cal · ${Math.round(pro/twG*100*10)/10}g pro` : '';
+    el.textContent = `Total: ${cal} cal · ${pro}g pro · ${fib}g fib · ${carb}g carb · ${fat}g fat${per}`;
+  }
+}
+
 function saveQuickLog() {
   if (!selectedQuickItem) { alert('Select an item first'); return; }
   const qty = parseFloat(document.getElementById('item-quantity').value);
@@ -2214,6 +2316,22 @@ function openRecipeModal(id=null) {
   document.getElementById('recipe-name').value = recipe?.name || '';
   document.getElementById('recipe-total-weight').value = recipe?.totalWeight || '';
   document.getElementById('recipe-notes').value = recipe?.notes || '';
+  // reset bulk mode
+  const bulkCb = document.getElementById('recipe-bulk-mode');
+  if (bulkCb) {
+    bulkCb.checked = recipe?.isBulk || false;
+    toggleRecipeBulkMode(recipe?.isBulk || false);
+    if (recipe?.isBulk) {
+      document.getElementById('bulk-cal').value  = recipe.totalCal     || '';
+      document.getElementById('bulk-pro').value  = recipe.totalProtein || '';
+      document.getElementById('bulk-carb').value = recipe.totalCarbs   || '';
+      document.getElementById('bulk-fat').value  = recipe.totalFat     || '';
+      document.getElementById('bulk-fib').value  = recipe.totalFiber   || '';
+    }
+  }
+  // set weight unit
+  const wuEl = document.getElementById('recipe-weight-unit');
+  if (wuEl) wuEl.value = recipe?.weightUnit || 'g';
   document.getElementById('recipe-ingredient-rows').innerHTML = '';
   recipeIngRows = [];
   if (recipe?.ingredients?.length) {
@@ -2397,10 +2515,29 @@ function saveRecipe() {
     ingredients.push({ name:n, qty, unit, cal, protein, fiber, carbs, fat, useCustom:isCustom });
   });
   const tot = getRecipeTotals();
+  const isBulk = document.getElementById('recipe-bulk-mode')?.checked;
+  const weightUnit = document.getElementById('recipe-weight-unit')?.value || 'g';
+  // normalize weight to grams for storage
+  const twG = weightUnit === 'oz' ? tw * 28.3495 : weightUnit === 'ml' ? tw : tw;
+
+  let finalTot = tot;
+  if (isBulk) {
+    finalTot = {
+      cal:     parseFloat(document.getElementById('bulk-cal')?.value)  || 0,
+      protein: parseFloat(document.getElementById('bulk-pro')?.value)  || 0,
+      fiber:   parseFloat(document.getElementById('bulk-fib')?.value)  || 0,
+      carbs:   parseFloat(document.getElementById('bulk-carb')?.value) || 0,
+      fat:     parseFloat(document.getElementById('bulk-fat')?.value)  || 0,
+    };
+  }
+
   const recipe = {
     id: editId || (Date.now()+''),
-    name, totalWeight:tw, ingredients, notes:document.getElementById('recipe-notes').value,
-    totalCal:tot.cal, totalProtein:tot.protein, totalFiber:tot.fiber, totalCarbs:tot.carbs, totalFat:tot.fat,
+    name, totalWeight: Math.round(twG), weightUnit, ingredients,
+    notes: document.getElementById('recipe-notes').value,
+    totalCal:     finalTot.cal,     totalProtein: finalTot.protein,
+    totalFiber:   finalTot.fiber,   totalCarbs:   finalTot.carbs,
+    totalFat:     finalTot.fat,     isBulk,
     ts: Date.now()
   };
   let recipes = DB.get('recipes')||[];
@@ -2534,21 +2671,20 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v3.7</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v4.0</span>';
 
   const todayStr = today();
-  const meals = (DB.get('meals') || []).filter(m => m.date === todayStr);
+  const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
   const exercise = (DB.get('exercise') || []).filter(e => e.date === todayStr);
-  const daily = (DB.get('daily') || []).find(d => d.date === todayStr);
+  const daily    = (DB.get('daily') || []).find(d => d.date === todayStr);
 
-  // totals (food + drinks combined)
+  // totals
   let totalCal = 0, totalPro = 0, totalFib = 0;
-  const allIntakeForTotals = (DB.get('meals')||[]).filter(m=>m.date===todayStr);
-  allIntakeForTotals.forEach(m => { totalCal += m.cal||0; totalPro += m.protein||0; totalFib += m.fiber||0; });
+  meals.forEach(m => { totalCal += m.cal||0; totalPro += m.protein||0; totalFib += m.fiber||0; });
 
-  // water = daily check-in record + any water meal entries (quick-log stores as meals)
+  // water = daily check-in record OR water meal entries
   const dailyWater = daily ? daily.water || 0 : 0;
-  const mealWater = allIntakeForTotals
+  const mealWater  = meals
     .filter(m => (m.items?.[0]?.name||'').toLowerCase().includes('water'))
     .reduce((a,m) => a + (m.quantity||0), 0);
   const water = dailyWater > 0 ? dailyWater : mealWater;
@@ -3112,12 +3248,36 @@ function renderWeightStats() {
   const delta = last.weight - first.weight;
   const days  = Math.max(1, Math.floor((new Date(last.date) - new Date(first.date)) / 86400000));
   const perWeek = (delta / days * 7);
-  const dDisplay = UNITS === 'metric' ? (delta*0.453592).toFixed(1)+' kg' : delta.toFixed(1)+' lbs';
-  const pwDisplay = UNITS === 'metric' ? (perWeek*0.453592).toFixed(2)+' kg' : perWeek.toFixed(2)+' lbs';
+  const dDisplay  = UNITS === 'metric' ? (delta*0.453592).toFixed(1)+' kg'    : delta.toFixed(1)+' lbs';
+  const pwDisplay = UNITS === 'metric' ? (perWeek*0.453592).toFixed(2)+' kg'  : perWeek.toFixed(2)+' lbs';
+
+  // % total weight loss from start
+  const pctTotal = ((delta / first.weight) * 100).toFixed(2);
+
+  // 7-day % change
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const w7 = weights.filter(w => new Date(w.date) >= sevenDaysAgo);
+  const pct7 = w7.length >= 2
+    ? (((w7[w7.length-1].weight - w7[0].weight) / w7[0].weight) * 100).toFixed(2)
+    : null;
+
+  // 30-day % change
+  const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const w30 = weights.filter(w => new Date(w.date) >= thirtyDaysAgo);
+  const pct30 = w30.length >= 2
+    ? (((w30[w30.length-1].weight - w30[0].weight) / w30[0].weight) * 100).toFixed(2)
+    : null;
+
+  const pctClass = v => parseFloat(v) <= 0 ? 'delta-neg' : 'delta-pos';
+  const pctSign  = v => parseFloat(v) > 0 ? '+' : '';
+
   el.innerHTML = `
     <div class="stat-row"><span class="stat-label">Start Weight</span><span class="stat-val">${displayWeight(first.weight)}</span></div>
     <div class="stat-row"><span class="stat-label">Current Weight</span><span class="stat-val">${displayWeight(last.weight)}</span></div>
     <div class="stat-row"><span class="stat-label">Total Change</span><span class="stat-val ${delta<=0?'delta-neg':'delta-pos'}">${delta>0?'+':''}${dDisplay}</span></div>
+    <div class="stat-row"><span class="stat-label">% Total Loss</span><span class="stat-val ${pctClass(pctTotal)}">${pctSign(pctTotal)}${pctTotal}%</span></div>
+    <div class="stat-row"><span class="stat-label">% Change (7d)</span><span class="stat-val ${pct7!=null?pctClass(pct7):''}"> ${pct7!=null ? pctSign(pct7)+pct7+'%' : '—'}</span></div>
+    <div class="stat-row"><span class="stat-label">% Change (30d)</span><span class="stat-val ${pct30!=null?pctClass(pct30):''}"> ${pct30!=null ? pctSign(pct30)+pct30+'%' : '—'}</span></div>
     <div class="stat-row"><span class="stat-label">Per Week (avg)</span><span class="stat-val ${perWeek<=0?'delta-neg':'delta-pos'}">${perWeek>0?'+':''}${pwDisplay}</span></div>
     <div class="stat-row"><span class="stat-label">Days Tracked</span><span class="stat-val">${days}</span></div>`;
 }
@@ -3128,30 +3288,27 @@ function renderNutritionProgress() {
   const last7  = getLastNDays(7);
   const last30 = getLastNDays(30);
 
-  // 7-day averages
   const dayTotal = (days, key) =>
     avg(days.map(d => meals.filter(m=>m.date===d).reduce((a,m)=>a+(m[key]||0),0)));
   const waterForDay = d => {
     const rec = dailys.find(x=>x.date===d);
     const dailyW = rec ? (rec.water||0) : 0;
     if (dailyW > 0) return dailyW;
-    // fall back to water meal entries for that day
     return meals
       .filter(m => m.date===d && (m.items?.[0]?.name||'').toLowerCase().includes('water'))
       .reduce((a,m) => a + (m.quantity||0), 0);
   };
 
   const MACROS = [
-    { name:'Water',    key:'water',   goal:GOALS.water,    color:'#38bdf8', unit: getWaterUnit() },
-    { name:'Calories', key:'cal',     goal:GOALS.calories, color:'#6c8aff', unit:''  },
-    { name:'Protein',  key:'protein', goal:GOALS.protein,  color:'#a78bfa', unit:'g' },
-    { name:'Fiber',    key:'fiber',   goal:GOALS.fiber,    color:'#34d399', unit:'g' },
+    { name:'Water',    key:'water',   goal:GOALS.water,    color:'#38bdf8', unit:getWaterUnit(), barId:'bar-water'   },
+    { name:'Calories', key:'cal',     goal:GOALS.calories, color:'#6c8aff', unit:'',             barId:'bar-cal'     },
+    { name:'Protein',  key:'protein', goal:GOALS.protein,  color:'#a78bfa', unit:'g',            barId:'bar-protein' },
+    { name:'Fiber',    key:'fiber',   goal:GOALS.fiber,    color:'#34d399', unit:'g',            barId:'bar-fiber'   },
   ];
 
+  // 7-day averages
   document.getElementById('nutrition-averages').innerHTML = MACROS.map(m => {
-    const val = m.key === 'water'
-      ? avg(last7.map(d => waterForDay(d)))
-      : dayTotal(last7, m.key);
+    const val = m.key === 'water' ? avg(last7.map(d => waterForDay(d))) : dayTotal(last7, m.key);
     const pct = Math.min((val / m.goal) * 100, 100);
     return `<div class="bar-wrap">
       <div class="bar-header">
@@ -3162,24 +3319,72 @@ function renderNutritionProgress() {
     </div>`;
   }).join('');
 
-  // 30-day chart — % of daily goal so all macros share one Y axis
+  // 30-day individual bar charts
   const xLabels = last30.map(d => d.slice(5));
-
-  const datasets = MACROS.map(m => ({
-    label: m.name + ' %',
-    color: m.color,
-    data: last30.map(d => {
+  MACROS.forEach(m => {
+    const data = last30.map(d => {
       const val = m.key === 'water'
         ? waterForDay(d)
         : meals.filter(x=>x.date===d).reduce((a,x)=>a+(x[m.key]||0),0);
-      return val > 0 ? Math.round(val / m.goal * 100) : null;
-    })
-  }));
+      return val > 0 ? Math.round(val / m.goal * 100) : 0;
+    });
+    drawBarChart(m.barId, xLabels, data, m.color);
+  });
+}
 
-  drawLineChart('cal-chart', xLabels, datasets, {
-    legendId: 'macro-chart-legend',
-    yLabel:   '% of Goal',
-    pct:      true
+function drawBarChart(canvasId, labels, data, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.offsetWidth || 320;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  const pad = { t:8, r:8, b:22, l:36 };
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+  const maxY = 120;
+
+  const barW = Math.max(2, (cW / labels.length) - 1);
+  const xPos = i => pad.l + i * (cW / labels.length) + ((cW / labels.length) - barW) / 2;
+  const yPos = v => pad.t + cH - (Math.min(v, maxY) / maxY) * cH;
+
+  // grid lines
+  [0, 50, 100].forEach(v => {
+    const y = yPos(v);
+    ctx.strokeStyle = v === 100 ? 'rgba(56,189,248,0.4)' : '#2e3450';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash(v === 100 ? [4,3] : []);
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = v === 100 ? '#38bdf8' : '#7880a0';
+    ctx.font = '8px DM Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(v + '%', pad.l - 2, y + 3);
+  });
+
+  // bars
+  data.forEach((v, i) => {
+    if (!v) return;
+    const barH = (Math.min(v, maxY) / maxY) * cH;
+    const x = xPos(i);
+    const y = yPos(v);
+    ctx.fillStyle = v >= 100 ? color : color + 'aa';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, barW, barH, 1);
+    else ctx.rect(x, y, barW, barH);
+    ctx.fill();
+  });
+
+  // x labels
+  ctx.fillStyle = '#7880a0';
+  ctx.font = '8px DM Mono, monospace';
+  ctx.textAlign = 'center';
+  const step = Math.max(1, Math.floor(labels.length / 6));
+  labels.forEach((l, i) => {
+    if (i % step === 0 || i === labels.length - 1) {
+      ctx.fillText(l, xPos(i) + barW/2, H - 4);
+    }
   });
 }
 
@@ -3596,11 +3801,24 @@ function exportData() {
     goals: GOALS, units: UNITS,
     exported: new Date().toISOString()
   };
+  const filename = 'zeptrack-backup-' + today() + '.json';
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'zeptrack-backup-' + today() + '.json';
+  a.download = filename;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+
+  // Visual confirmation
+  const statusEl = document.getElementById('export-status');
+  if (statusEl) {
+    statusEl.textContent = `✓ Saved: ${filename}`;
+    statusEl.style.color = 'var(--success)';
+    setTimeout(() => { statusEl.textContent = 'Download as JSON backup'; statusEl.style.color = ''; }, 5000);
+  }
+  showToast('Export saved to Downloads!');
 }
 
 function importFromJSON(input) {
