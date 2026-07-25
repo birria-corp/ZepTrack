@@ -666,7 +666,24 @@
             </div>
             <div class="field-group">
               <label>Item</label>
+              <!-- Water 30 quick button -->
+              <div style="margin-bottom:10px">
+                <button onclick="logWater30()" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:var(--sans)">
+                  💧 Water 30 oz
+                </button>
+              </div>
+
+              <!-- Quick pick grid -->
               <div id="quick-pick-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px"></div>
+
+              <!-- Coffee milk option (shown when Coffee selected) -->
+              <div id="coffee-milk-option" style="display:none;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:8px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.82rem">
+                  <input type="checkbox" id="coffee-add-milk" style="width:16px;height:16px;accent-color:var(--accent)" onchange="updateCoffeeMilkPreview()" />
+                  Add shot of milk (1 oz whole milk — 19 cal, 1g fat, 1.5g carb, 1g protein)
+                </label>
+              </div>
+
               <div style="display:flex;gap:6px;margin-bottom:8px">
                 <input type="text" id="custom-item-input" placeholder="Custom item name"
                   style="flex:1;display:none"
@@ -681,16 +698,22 @@
               <div id="selected-item-display" style="font-size:0.78rem;color:var(--accent2);font-family:var(--mono);min-height:18px;margin-bottom:4px"></div>
             </div>
             <div class="field-group">
-              <label>Quantity</label>
-              <div style="display:flex;gap:8px">
-                <input type="number" id="item-quantity" placeholder="e.g. 2" step="0.25" min="0" style="flex:1" />
-                <select id="item-unit" style="width:90px">
-                  <option value="OZ">OZ</option>
-                  <option value="ML">ML</option>
-                  <option value="Grams">Grams</option>
-                  <option value="Count">Count</option>
-                </select>
+              <label>Portion Size</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div>
+                  <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
+                  <input type="number" id="item-qty-grams" placeholder="g" step="1" min="0"
+                    style="width:100%" oninput="syncQtyFromGrams()" />
+                </div>
+                <div>
+                  <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
+                  <input type="number" id="item-qty-oz" placeholder="oz" step="0.25" min="0"
+                    style="width:100%" oninput="syncQtyFromOz()" />
+                </div>
               </div>
+              <!-- hidden fields for saveQuickLog compatibility -->
+              <input type="hidden" id="item-quantity" value="" />
+              <input type="hidden" id="item-unit" value="Grams" />
             </div>
             <div id="quick-nutrition-preview" style="display:none;font-family:var(--mono);font-size:0.78rem;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:10px;color:var(--muted)"></div>
             <div class="field-group" id="custom-nutrition-fields" style="display:none">
@@ -1594,6 +1617,162 @@ const DEFAULT_QUICK_PICKS = [
   'Nuts','Trail Mix','SK Protein Shake','Banana','Apple','Yogurt','Other'
 ];
 
+// Hardcoded nutrition per serving — these bypass USDA lookup entirely
+// servingG = grams for that default serving; nutrition values are for that serving
+const HARDCODED_NUTRITION = {
+  'coffee': {
+    label: 'Coffee',
+    servingG: 236.6,   // 8 oz in grams
+    defaultQtyOz: 8, defaultQtyG: 237,
+    cal: 2, protein: 0.28, carbs: 0, fat: 0.05, fiber: 0,
+    type: 'drink'
+  },
+  'iced tea': {
+    label: 'Iced Tea',
+    servingG: 354.9,   // 12 oz
+    defaultQtyOz: 12, defaultQtyG: 355,
+    cal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0,
+    type: 'drink'
+  },
+  'sk protein shake': {
+    label: 'SK Protein Shake',
+    servingG: 360,
+    defaultQtyOz: 12, defaultQtyG: 360,
+    cal: 400, protein: 31, carbs: 46, fat: 13, fiber: 11.9,
+    type: 'food'
+  },
+  'hard boiled egg': {
+    label: 'Hard Boiled Egg',
+    servingG: 79,
+    defaultQtyOz: 2.8, defaultQtyG: 79,
+    cal: 122, protein: 9.95, carbs: 0.88, fat: 8.37, fiber: 0,
+    type: 'food'
+  },
+  'cheese stick': {
+    label: 'Cheese Stick',
+    servingG: 28,      // 1 oz
+    defaultQtyOz: 1, defaultQtyG: 28,
+    cal: 80, protein: 6, carbs: 0, fat: 6, fiber: 0,
+    type: 'food'
+  },
+  'nuts': {
+    label: 'Nuts',
+    servingG: 71,
+    defaultQtyOz: 2.5, defaultQtyG: 71,
+    cal: 422, protein: 12.3, carbs: 18, fat: 36.5, fiber: 5,
+    type: 'food'
+  },
+  'trail mix': {
+    label: 'Trail Mix',
+    servingG: 71,      // 2.5 oz
+    defaultQtyOz: 2.5, defaultQtyG: 71,
+    cal: 280, protein: 7, carbs: 28, fat: 4.5, fiber: 3,
+    type: 'food'
+  },
+  'sweet and salty mix': {
+    label: 'Sweet and Salty Mix',
+    servingG: 71,
+    defaultQtyOz: 2.5, defaultQtyG: 71,
+    cal: 280, protein: 7, carbs: 28, fat: 4.5, fiber: 3,
+    type: 'food'
+  },
+  'banana': {
+    label: 'Banana',
+    servingG: 118,
+    defaultQtyOz: 4.2, defaultQtyG: 118,
+    cal: 105, protein: 1.3, carbs: 27, fat: 0.4, fiber: 3.1,
+    type: 'food'
+  },
+  'apple': {
+    label: 'Apple',
+    servingG: 172,
+    defaultQtyOz: 6.1, defaultQtyG: 172,
+    cal: 98, protein: 0.43, carbs: 23.5, fat: 0, fiber: 4,
+    type: 'food'
+  },
+  'yogurt': {
+    label: 'Yogurt',
+    servingG: 170,     // 6 oz
+    defaultQtyOz: 6, defaultQtyG: 170,
+    cal: 100, protein: 17, carbs: 6, fat: 0, fiber: 0,
+    type: 'food'
+  },
+};
+
+// Whole milk per oz (for coffee add-in)
+const MILK_SHOT = { cal: 19, protein: 1, carbs: 1.5, fat: 1, fiber: 0, servingG: 29.5 };
+
+function logWater30() {
+  DB.push('meals', {
+    date: document.getElementById('meal-date')?.value || today(),
+    mealType: 'drink', type: 'drink',
+    items: [{ name: 'Water (30 OZ)', cal:0, protein:0, carbs:0, fat:0, fiber:0 }],
+    cal:0, protein:0, carbs:0, fat:0, fiber:0,
+    quantity:30, unit:'OZ', drinkName:'Water', drinkVolume:30,
+    ts: Date.now()
+  });
+  updateWaterDisplay();
+  renderToday();
+  showToast('+30oz water logged!');
+}
+
+function getHardcodedNutrition(name) {
+  const key = name.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
+  return HARDCODED_NUTRITION[key] || null;
+}
+
+function syncQtyFromGrams() {
+  const g = parseFloat(document.getElementById('item-qty-grams').value);
+  if (!isNaN(g) && g > 0) {
+    document.getElementById('item-qty-oz').value = Math.round(g / 28.3495 * 100) / 100;
+    document.getElementById('item-quantity').value = g;
+    document.getElementById('item-unit').value = 'Grams';
+    updateQuickNutritionPreview();
+  }
+}
+
+function syncQtyFromOz() {
+  const oz = parseFloat(document.getElementById('item-qty-oz').value);
+  if (!isNaN(oz) && oz > 0) {
+    document.getElementById('item-qty-grams').value = Math.round(oz * 28.3495);
+    document.getElementById('item-quantity').value = oz;
+    document.getElementById('item-unit').value = 'OZ';
+    updateQuickNutritionPreview();
+  }
+}
+
+function updateQuickNutritionPreview() {
+  if (!selectedQuickItem?.nutrition) return;
+  const grams = parseFloat(document.getElementById('item-qty-grams').value) || 0;
+  if (!grams) return;
+  const factor = grams / selectedQuickItem.servingG;
+  const n = selectedQuickItem.nutrition;
+  let cal     = Math.round(n.cal     * factor);
+  let protein = Math.round(n.protein * factor * 10) / 10;
+  let carbs   = Math.round(n.carbs   * factor * 10) / 10;
+  let fat     = Math.round(n.fat     * factor * 10) / 10;
+  let fiber   = Math.round(n.fiber   * factor * 10) / 10;
+
+  // add milk if checked
+  const milkCb = document.getElementById('coffee-add-milk');
+  if (milkCb?.checked) {
+    cal     += MILK_SHOT.cal;
+    protein += MILK_SHOT.protein;
+    carbs   += MILK_SHOT.carbs;
+    fat     += MILK_SHOT.fat;
+  }
+
+  const preview = document.getElementById('quick-nutrition-preview');
+  if (preview) {
+    preview.style.display = 'block';
+    preview.innerHTML = `<strong>${cal} cal</strong> · ${protein}g pro · ${carbs}g carb · ${fat}g fat · ${fiber}g fib`;
+  }
+}
+
+function updateCoffeeMilkPreview() {
+  updateQuickNutritionPreview();
+}
+
 function getQuickPicks() {
   return DB.get('quickPicks') || DEFAULT_QUICK_PICKS;
 }
@@ -1616,16 +1795,22 @@ function renderQuickPickGrid() {
 async function selectQuickItem(name, btn) {
   document.querySelectorAll('.qp-btn').forEach(b => {
     b.style.borderColor = 'var(--border)';
-    b.style.background = 'var(--surface2)';
-    b.style.color = 'var(--text)';
+    b.style.background  = 'var(--surface2)';
+    b.style.color       = 'var(--text)';
   });
 
-  const isOther = name === 'Other';
+  const isOther  = name === 'Other';
+  const isWater  = name.toLowerCase() === 'water';
   const customInput  = document.getElementById('custom-item-input');
   const lookupBtn    = document.getElementById('custom-lookup-btn');
   const customFields = document.getElementById('custom-nutrition-fields');
   const preview      = document.getElementById('quick-nutrition-preview');
   const badge        = document.getElementById('lookup-source-badge');
+  const milkOption   = document.getElementById('coffee-milk-option');
+
+  if (milkOption) milkOption.style.display = 'none';
+  const milkCb = document.getElementById('coffee-add-milk');
+  if (milkCb) milkCb.checked = false;
 
   btn.style.borderColor = isOther ? 'var(--accent2)' : 'var(--accent)';
   btn.style.background  = isOther ? 'rgba(167,139,250,0.15)' : 'rgba(108,138,255,0.15)';
@@ -1636,7 +1821,7 @@ async function selectQuickItem(name, btn) {
     lookupBtn.style.display    = 'block';
     customFields.style.display = 'none';
     preview.style.display      = 'none';
-    badge.style.display        = 'none';
+    if (badge) badge.style.display = 'none';
     selectedQuickItem = { name: 'custom', nutrition: null };
     document.getElementById('selected-item-display').textContent = 'Enter item name then tap Look up';
     customInput.focus();
@@ -1646,12 +1831,51 @@ async function selectQuickItem(name, btn) {
   customInput.style.display  = 'none';
   lookupBtn.style.display    = 'none';
   customFields.style.display = 'none';
-  badge.style.display        = 'none';
+  if (badge) badge.style.display = 'none';
+
+  // 1. Check hardcoded table
+  const hardcoded = getHardcodedNutrition(name);
+  if (hardcoded) {
+    selectedQuickItem = {
+      name, servingG: hardcoded.servingG, source: 'hardcoded',
+      nutrition: { cal: hardcoded.cal, protein: hardcoded.protein, carbs: hardcoded.carbs, fat: hardcoded.fat, fiber: hardcoded.fiber }
+    };
+    document.getElementById('selected-item-display').textContent = hardcoded.label;
+    document.getElementById('item-qty-grams').value = hardcoded.defaultQtyG;
+    document.getElementById('item-qty-oz').value    = hardcoded.defaultQtyOz;
+    document.getElementById('item-quantity').value  = hardcoded.defaultQtyG;
+    document.getElementById('item-unit').value      = 'Grams';
+    if (name.toLowerCase() === 'coffee' && milkOption) milkOption.style.display = 'block';
+    updateQuickNutritionPreview();
+    return;
+  }
+
+  // 2. Water
+  if (isWater) {
+    selectedQuickItem = { name, servingG: 29.5, nutrition: { cal:0, protein:0, carbs:0, fat:0, fiber:0 } };
+    document.getElementById('selected-item-display').textContent = 'Water';
+    document.getElementById('item-qty-grams').value = 887;
+    document.getElementById('item-qty-oz').value    = 30;
+    document.getElementById('item-quantity').value  = 30;
+    document.getElementById('item-unit').value      = 'OZ';
+    preview.style.display = 'block';
+    preview.innerHTML = '0 cal · pure hydration';
+    return;
+  }
+
+  // 3. Full lookup chain (Recipe Library → Custom Items → USDA)
   document.getElementById('selected-item-display').textContent = `Looking up ${name}…`;
   preview.style.display = 'none';
-
   const result = await resolveItemNutrition(name);
+  if (result) {
+    selectedQuickItem = { name, nutrition: result.per100, servingG: 100, source: result.source };
+    document.getElementById('item-qty-grams').value = 100;
+    document.getElementById('item-qty-oz').value    = 3.5;
+    document.getElementById('item-quantity').value  = 100;
+    document.getElementById('item-unit').value      = 'Grams';
+  }
   applyLookupResult(name, result);
+  updateQuickNutritionPreview();
 }
 
 async function lookupCustomItem() {
@@ -1874,13 +2098,26 @@ async function lookupUSDANutrition(name) {
     if (!data.foods || !data.foods.length) return null;
     const f = data.foods[0];
     const n = f.foodNutrients || [];
-    const get = (ids) => { for (const id of ids) { const x = n.find(x=>x.nutrientId===id||x.nutrientNumber===String(id)); if (x?.value!=null) return x.value; } return 0; };
+    const get = (ids) => {
+      for (const id of ids) {
+        const x = n.find(x => x.nutrientId===id || x.nutrientNumber===String(id) || x.nutrientName===id);
+        if (x?.value != null && x.value > 0) return x.value;
+      }
+      // try any match with value > 0 as fallback
+      for (const id of ids) {
+        const x = n.find(x => x.nutrientId===id || x.nutrientNumber===String(id) || x.nutrientName===id);
+        if (x?.value != null) return x.value;
+      }
+      return 0;
+    };
     const result = {
-      cal:     Math.round(get([1008,'208'])),
-      protein: Math.round(get([1003,'203'])*10)/10,
-      fiber:   Math.round(get([1079,'291'])*10)/10,
-      carbs:   Math.round(get([1005,'205'])*10)/10,
-      fat:     Math.round(get([1004,'204'])*10)/10,
+      // energy: try kcal first, then kJ/4.184
+      cal:     Math.round(get([1008,'208','Energy']) ||
+                          get([1062,'268','Energy (Atwater General Factors)'])/4.184 || 0),
+      protein: Math.round(get([1003,'203','Protein'])*10)/10,
+      fiber:   Math.round(get([1079,'291','Fiber, total dietary'])*10)/10,
+      carbs:   Math.round(get([1005,'205','Carbohydrate, by difference'])*10)/10,
+      fat:     Math.round(get([1004,'204','Total lipid (fat)'])*10)/10,
     };
     quickUSDACache[name] = result;
     return result;
@@ -1927,9 +2164,17 @@ function updateBulkTotals() {
 
 function saveQuickLog() {
   if (!selectedQuickItem) { alert('Select an item first'); return; }
-  const qty = parseFloat(document.getElementById('item-quantity').value);
-  if (!qty || qty <= 0) { alert('Enter a quantity'); return; }
-  const unit = document.getElementById('item-unit').value;
+
+  // read from gram/oz inputs
+  const grams = parseFloat(document.getElementById('item-qty-grams').value);
+  const oz    = parseFloat(document.getElementById('item-qty-oz').value);
+  if ((!grams || grams <= 0) && (!oz || oz <= 0)) { alert('Enter a portion size'); return; }
+
+  const portionG = grams > 0 ? grams : oz * 28.3495;
+  const portionOz = oz > 0 ? oz : grams / 28.3495;
+  const unit = grams > 0 ? 'Grams' : 'OZ';
+  const qty  = unit === 'Grams' ? grams : oz;
+
   const mealType = document.getElementById('meal-type').value;
   const mealDate = document.getElementById('meal-date').value || today();
 
@@ -1942,16 +2187,13 @@ function saveQuickLog() {
   const customFieldsVisible = document.getElementById('custom-nutrition-fields').style.display !== 'none';
 
   if (customFieldsVisible || selectedQuickItem.isManual) {
-    // Use custom fields directly — already stored as per-100g by updateCustomPreview
-    // But if user didn't trigger updateCustomPreview, read fields directly
-    const cal  = parseFloat(document.getElementById('ci-cal').value)  || 0;
-    const pro  = parseFloat(document.getElementById('ci-pro').value)  || 0;
-    const carb = parseFloat(document.getElementById('ci-carb').value) || 0;
-    const fat  = parseFloat(document.getElementById('ci-fat').value)  || 0;
-    const fib  = parseFloat(document.getElementById('ci-fib').value)  || 0;
+    const cal     = parseFloat(document.getElementById('ci-cal').value)  || 0;
+    const pro     = parseFloat(document.getElementById('ci-pro').value)  || 0;
+    const carb    = parseFloat(document.getElementById('ci-carb').value) || 0;
+    const fat     = parseFloat(document.getElementById('ci-fat').value)  || 0;
+    const fib     = parseFloat(document.getElementById('ci-fib').value)  || 0;
     const serving = parseFloat(document.getElementById('ci-serving').value) || 100;
-    const grams = convertToGrams(qty, unit);
-    const factor = grams / serving;
+    const factor  = portionG / serving;
     nutrition = {
       cal:     Math.round(cal  * factor),
       protein: Math.round(pro  * factor * 10) / 10,
@@ -1960,29 +2202,36 @@ function saveQuickLog() {
       fat:     Math.round(fat  * factor * 10) / 10,
     };
   } else if (selectedQuickItem.nutrition) {
-    // scale from per-100g based on unit conversion to grams
-    const grams = convertToGrams(qty, unit);
-    const factor = grams / 100;
-    const n = selectedQuickItem.nutrition;
+    const servingG = selectedQuickItem.servingG || 100;
+    const factor   = portionG / servingG;
+    const n        = selectedQuickItem.nutrition;
     nutrition = {
-      cal:     Math.round(n.cal * factor),
+      cal:     Math.round(n.cal     * factor),
       protein: Math.round(n.protein * factor * 10) / 10,
-      fiber:   Math.round(n.fiber * factor * 10) / 10,
-      carbs:   Math.round(n.carbs * factor * 10) / 10,
-      fat:     Math.round(n.fat * factor * 10) / 10,
+      fiber:   Math.round(n.fiber   * factor * 10) / 10,
+      carbs:   Math.round(n.carbs   * factor * 10) / 10,
+      fat:     Math.round(n.fat     * factor * 10) / 10,
     };
   } else {
     nutrition = { cal:0, protein:0, fiber:0, carbs:0, fat:0 };
   }
 
-  // Water always has zero nutrition regardless of USDA data
+  // Water always zero
   const isWater = name.toLowerCase() === 'water';
-  if (isWater) {
-    nutrition = { cal:0, protein:0, fiber:0, carbs:0, fat:0 };
+  if (isWater) nutrition = { cal:0, protein:0, fiber:0, carbs:0, fat:0 };
+
+  // Add milk shot if coffee + milk checked
+  const milkCb = document.getElementById('coffee-add-milk');
+  if (name.toLowerCase() === 'coffee' && milkCb?.checked) {
+    nutrition.cal     += MILK_SHOT.cal;
+    nutrition.protein += MILK_SHOT.protein;
+    nutrition.carbs   += MILK_SHOT.carbs;
+    nutrition.fat     += MILK_SHOT.fat;
+    name = 'Coffee w/ Milk';
   }
 
-  const label = `${name} (${qty} ${unit})`;
-  const isdrink = mealType === 'drink' || isWater;
+  const label  = `${name} (${qty} ${unit})`;
+  const isdrink = mealType === 'drink' || isWater || name.toLowerCase().includes('coffee') || name.toLowerCase().includes('tea');
   DB.push('meals', {
     date: mealDate, mealType: isWater ? 'drink' : mealType,
     type: isdrink ? 'drink' : 'food',
@@ -2000,7 +2249,9 @@ function saveQuickLog() {
     b.style.borderColor='var(--border)'; b.style.background='var(--surface2)'; b.style.color='var(--text)';
   });
   selectedQuickItem = null;
-  document.getElementById('item-quantity').value = '';
+  document.getElementById('item-qty-grams').value = '';
+  document.getElementById('item-qty-oz').value    = '';
+  document.getElementById('item-quantity').value  = '';
   document.getElementById('selected-item-display').textContent = '';
   document.getElementById('quick-nutrition-preview').style.display = 'none';
   document.getElementById('custom-nutrition-fields').style.display = 'none';
@@ -2009,6 +2260,9 @@ function saveQuickLog() {
   document.getElementById('custom-lookup-btn').style.display = 'none';
   const badge = document.getElementById('lookup-source-badge');
   if (badge) badge.style.display = 'none';
+  const milkOpt = document.getElementById('coffee-milk-option');
+  if (milkOpt) milkOpt.style.display = 'none';
+  if (milkCb) milkCb.checked = false;
   ['ci-cal','ci-pro','ci-fib','ci-carb','ci-fat','ci-serving'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
 
   showToast(`${name} logged!`);
@@ -2567,7 +2821,7 @@ function renderRecipesList() {
         <button class="btn btn-ghost btn-sm" onclick="openRecipeModal('${r.id}')">Edit</button>
         <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger)" onclick="deleteRecipe('${r.id}')">×</button>
       </div>
-      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono)">${r.totalWeight}${unit} total · ${r.totalCal} cal · ${r.totalProtein}g pro · ${r.ingredients.length} ingredients</div>
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono)">${r.totalWeight}g total · ${r.totalCal} cal · ${r.totalProtein}g pro · ${r.ingredients?.length||0} ingredients</div>
     </div>`).join('');
 }
 
@@ -2586,12 +2840,14 @@ function onRecipeSelect() {
   if (!id) { details.style.display='none'; return; }
   const recipe = (DB.get('recipes')||[]).find(r=>r.id===id);
   if (!recipe) return;
-  const unit = UNITS==='metric'?'g':'oz';
+  // totalWeight always stored in grams — show per-100g nutrition
   const per = v => Math.round(v/recipe.totalWeight*100*10)/10;
+  const displayUnit = UNITS==='metric'?'g':'oz';
   document.getElementById('recipe-nutrition-per100').textContent =
-    `Per 100${unit}: ${per(recipe.totalCal)} cal · ${per(recipe.totalProtein)}g pro · ${per(recipe.totalFiber)}g fib · ${per(recipe.totalCarbs)}g carb · ${per(recipe.totalFat)}g fat`;
-  document.querySelectorAll('.recipe-wt-unit').forEach(el=>el.textContent=unit);
-  document.getElementById('recipe-portion').value = 150;
+    `Per 100g: ${per(recipe.totalCal)} cal · ${per(recipe.totalProtein)}g pro · ${per(recipe.totalFiber)}g fib · ${per(recipe.totalCarbs)}g carb · ${per(recipe.totalFat)}g fat`;
+  document.querySelectorAll('.recipe-wt-unit').forEach(el=>el.textContent=displayUnit);
+  // default portion — 4 oz or 100g
+  document.getElementById('recipe-portion').value = UNITS==='metric' ? 100 : 4;
   updateRecipePortionCalc();
   details.style.display='block';
 }
@@ -2600,8 +2856,10 @@ function updateRecipePortionCalc() {
   const id = document.getElementById('recipe-select')?.value;
   const recipe = id ? (DB.get('recipes')||[]).find(r=>r.id===id) : null;
   if (!recipe) return;
-  const portion = parseFloat(document.getElementById('recipe-portion').value)||0;
-  const factor = portion / recipe.totalWeight;
+  const portionInput = parseFloat(document.getElementById('recipe-portion').value)||0;
+  // convert display unit to grams
+  const portionG = UNITS==='metric' ? portionInput : portionInput * 28.3495;
+  const factor = portionG / recipe.totalWeight;
   const calc = {
     cal:     Math.round(recipe.totalCal*factor),
     protein: Math.round(recipe.totalProtein*factor*10)/10,
@@ -2617,17 +2875,26 @@ function logRecipePortion() {
   const id = document.getElementById('recipe-select')?.value;
   const recipe = id ? (DB.get('recipes')||[]).find(r=>r.id===id) : null;
   if (!recipe) return;
-  const portion = parseFloat(document.getElementById('recipe-portion').value)||0;
-  if (!portion) { alert('Enter portion weight'); return; }
-  const factor = portion / recipe.totalWeight;
-  const unit = UNITS==='metric'?'g':'oz';
+  const portionInput = parseFloat(document.getElementById('recipe-portion').value)||0;
+  if (!portionInput) { alert('Enter portion weight'); return; }
+
+  // portion is entered in the display unit (oz for imperial, g for metric)
+  // totalWeight is ALWAYS stored in grams — convert portion to grams
+  const displayUnit = UNITS==='metric' ? 'g' : 'oz';
+  const portionG = UNITS==='metric' ? portionInput : portionInput * 28.3495;
+  const factor = portionG / recipe.totalWeight;
+
   DB.push('meals', {
-    date: today(),
+    date: document.getElementById('meal-date')?.value || today(),
     mealType: document.getElementById('recipe-meal-type').value,
     type: 'food',
-    items: [{ name: `${recipe.name} (${portion}${unit})`, cal: Math.round(recipe.totalCal*factor),
-              protein: Math.round(recipe.totalProtein*factor*10)/10, fiber: Math.round(recipe.totalFiber*factor*10)/10,
-              carbs: Math.round(recipe.totalCarbs*factor*10)/10, fat: Math.round(recipe.totalFat*factor*10)/10 }],
+    quantity: portionInput, unit: displayUnit,
+    items: [{ name: `${recipe.name} (${portionInput}${displayUnit})`,
+              cal: Math.round(recipe.totalCal*factor),
+              protein: Math.round(recipe.totalProtein*factor*10)/10,
+              fiber:   Math.round(recipe.totalFiber*factor*10)/10,
+              carbs:   Math.round(recipe.totalCarbs*factor*10)/10,
+              fat:     Math.round(recipe.totalFat*factor*10)/10 }],
     cal:     Math.round(recipe.totalCal*factor),
     protein: Math.round(recipe.totalProtein*factor*10)/10,
     fiber:   Math.round(recipe.totalFiber*factor*10)/10,
@@ -2674,7 +2941,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v4.3</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v4.5</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -3742,7 +4009,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '4.3';
+      const localVersion  = '4.5';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -4103,12 +4370,13 @@ function addFoodFromSearch() {
   const c = window._foodSearchCalc;
   const portionIdx = parseInt(document.getElementById('food-serving-select').value) || 0;
   const qty = parseFloat(document.getElementById('food-qty').value) || 1;
-  const portionLabel = foodSearchSelected.portions[portionIdx].label;
-  const label = qty === 1 ? `${foodSearchSelected.name} (${portionLabel})` : `${foodSearchSelected.name} ×${qty} (${portionLabel})`;
+  const portion = foodSearchSelected.portions[portionIdx];
+  const label = qty === 1 ? `${foodSearchSelected.name} (${portion.label})` : `${foodSearchSelected.name} ×${qty} (${portion.label})`;
   const mealType = document.getElementById('meal-type').value;
   const mealDate = document.getElementById('meal-date').value || today();
   DB.push('meals', {
     date: mealDate, mealType, type: 'food',
+    quantity: Math.round(portion.grams * qty), unit: 'Grams',
     items: [{ name: label, cal:c.cal, protein:c.protein, fiber:c.fiber, carbs:c.carbs, fat:c.fat }],
     cal: c.cal, protein: c.protein, fiber: c.fiber, carbs: c.carbs, fat: c.fat,
     ts: Date.now()
@@ -4298,9 +4566,27 @@ function migrateWaterEntries() {
   if (changed) { DB.set('meals', meals); console.log('Water entries migrated'); }
 }
 
+// Migrate recipes that were saved with weightUnit='oz' — totalWeight was already
+// converted to grams by saveRecipe, so weightUnit should now always be 'g'
+function migrateRecipeWeights() {
+  let recipes = DB.get('recipes') || [];
+  let changed = false;
+  recipes = recipes.map(r => {
+    if (r.weightUnit && r.weightUnit !== 'g') {
+      changed = true;
+      // totalWeight is already in grams (saveRecipe converted it)
+      // just correct the label
+      return { ...r, weightUnit: 'g' };
+    }
+    return r;
+  });
+  if (changed) { DB.set('recipes', recipes); console.log('Recipe weights migrated'); }
+}
+
 initSettings();
 initReminders();
 migrateWaterEntries();
+migrateRecipeWeights();
 renderQuickPickGrid();
 renderToday();
 
