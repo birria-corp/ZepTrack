@@ -456,27 +456,27 @@
 
     /* weight big display */
     .weight-hero {
-      text-align: center;
-      padding: 20px 0;
+      text-align: left;
+      padding: 8px 0;
     }
 
     .weight-hero .val {
       font-family: var(--mono);
-      font-size: 3.5rem;
+      font-size: 1.4rem;
       color: var(--accent);
-      line-height: 1;
+      line-height: 1.3;
     }
 
     .weight-hero .unit {
-      font-size: 1rem;
+      font-size: 0.78rem;
       color: var(--muted);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .weight-hero .delta {
       font-family: var(--mono);
-      font-size: 1rem;
-      margin-top: 8px;
+      font-size: 0.82rem;
+      margin-top: 4px;
     }
 
     .delta-neg { color: var(--success); }
@@ -1375,7 +1375,14 @@
 
     <!-- Bulk nutrition fields (hidden by default) -->
     <div id="recipe-bulk-fields" style="display:none;background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px">
-      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Total Recipe Nutrition</div>
+      <!-- Paste parser -->
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Paste Recipe Data</div>
+        <textarea id="recipe-paste-input" placeholder="Paste recipe text here — the app will auto-extract the name and macros" style="min-height:72px;font-size:0.78rem;margin-bottom:6px" oninput="parseRecipePaste()"></textarea>
+        <div id="recipe-paste-status" style="font-size:0.72rem;font-family:var(--mono);color:var(--muted);min-height:16px"></div>
+      </div>
+      <div class="divider" style="margin:8px 0"></div>
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Total Recipe Nutrition (per 100g)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div><label>Calories</label><input type="number" id="bulk-cal"  placeholder="0" min="0" oninput="updateBulkTotals()" /></div>
         <div><label>Protein (g)</label><input type="number" id="bulk-pro"  placeholder="0" min="0" step="0.1" oninput="updateBulkTotals()" /></div>
@@ -2140,6 +2147,97 @@ function selectMealType(btn) {
   document.getElementById('meal-type').value = btn.dataset.val;
 }
 
+function parseRecipePaste() {
+  const raw = document.getElementById('recipe-paste-input')?.value || '';
+  const status = document.getElementById('recipe-paste-status');
+  if (!raw.trim()) { if (status) status.textContent = ''; return; }
+
+  // Normalize: lowercase for matching, keep original for name
+  const text = raw;
+  const lower = raw.toLowerCase().replace(/\s+/g, ' ');
+
+  const found = {};
+
+  // ── Name ──
+  // Patterns: "Recipe Name: X", "Name: X", first non-number line, **bold** name
+  const namePatterns = [
+    /recipe\s*name\s*[:\-]\s*(.+)/i,
+    /^name\s*[:\-]\s*(.+)/im,
+    /\*\*([^*]+)\*\*/,
+  ];
+  for (const p of namePatterns) {
+    const m = text.match(p);
+    if (m) { found.name = m[1].trim(); break; }
+  }
+  // fallback: first non-empty line that doesn't look like a number
+  if (!found.name) {
+    const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+    const firstTextLine = lines.find(l => !/^\d/.test(l) && l.length > 2);
+    if (firstTextLine) found.name = firstTextLine.replace(/[*_#]/g,'').trim();
+  }
+
+  // ── Macros — flexible pattern matching ──
+  const extract = (patterns) => {
+    for (const p of patterns) {
+      const m = lower.match(p);
+      if (m) return parseFloat(m[1]);
+    }
+    return null;
+  };
+
+  found.cal = extract([
+    /calories?\s*[:\-]\s*([\d.]+)/,
+    /energy\s*[:\-]\s*([\d.]+)/,
+    /kcal\s*[:\-]\s*([\d.]+)/,
+    /([\d.]+)\s*(?:cal|kcal|calories)/,
+  ]);
+  found.protein = extract([
+    /protein\s*[:\-]\s*([\d.]+)/,
+    /([\d.]+)\s*g?\s*protein/,
+  ]);
+  found.carbs = extract([
+    /carbs?\s*[:\-]\s*([\d.]+)/,
+    /carbohydrates?\s*[:\-]\s*([\d.]+)/,
+    /([\d.]+)\s*g?\s*carbs?/,
+  ]);
+  found.fat = extract([
+    /fat\s*[:\-]\s*([\d.]+)/,
+    /total\s+fat\s*[:\-]\s*([\d.]+)/,
+    /([\d.]+)\s*g?\s*fat/,
+  ]);
+  found.fiber = extract([
+    /fiber\s*[:\-]\s*([\d.]+)/,
+    /fibre\s*[:\-]\s*([\d.]+)/,
+    /([\d.]+)\s*g?\s*fi(?:ber|bre)/,
+  ]);
+
+  // ── Apply to fields ──
+  let applied = [];
+
+  if (found.name) {
+    const nameEl = document.getElementById('recipe-name');
+    if (nameEl && !nameEl.value) { nameEl.value = found.name; applied.push('name'); }
+  }
+  if (found.cal   != null) { const el = document.getElementById('bulk-cal');  if(el){ el.value = Math.round(found.cal);        applied.push('cal');     } }
+  if (found.protein != null) { const el = document.getElementById('bulk-pro');  if(el){ el.value = Math.round(found.protein*10)/10; applied.push('protein'); } }
+  if (found.carbs != null) { const el = document.getElementById('bulk-carb'); if(el){ el.value = Math.round(found.carbs*10)/10;   applied.push('carbs');   } }
+  if (found.fat   != null) { const el = document.getElementById('bulk-fat');  if(el){ el.value = Math.round(found.fat*10)/10;     applied.push('fat');     } }
+  if (found.fiber != null) { const el = document.getElementById('bulk-fib');  if(el){ el.value = Math.round(found.fiber*10)/10;   applied.push('fiber');   } }
+
+  if (applied.length > 0) {
+    if (status) {
+      status.textContent = `✓ Parsed: ${applied.join(' · ')}`;
+      status.style.color = 'var(--success)';
+    }
+    updateBulkTotals();
+  } else {
+    if (status) {
+      status.textContent = '⚠ Could not parse — use the format instructions';
+      status.style.color = 'var(--warn)';
+    }
+  }
+}
+
 function toggleRecipeBulkMode(on) {
   document.getElementById('recipe-bulk-fields').style.display      = on ? 'block' : 'none';
   document.getElementById('recipe-ingredient-section').style.display = on ? 'none'  : 'block';
@@ -2567,6 +2665,10 @@ function openRecipeModal(id=null) {
   document.getElementById('recipe-name').value = recipe?.name || '';
   document.getElementById('recipe-total-weight').value = recipe?.totalWeight || '';
   document.getElementById('recipe-notes').value = recipe?.notes || '';
+  const pasteEl = document.getElementById('recipe-paste-input');
+  if (pasteEl) pasteEl.value = '';
+  const pasteStatus = document.getElementById('recipe-paste-status');
+  if (pasteStatus) pasteStatus.textContent = '';
   // reset bulk mode
   const bulkCb = document.getElementById('recipe-bulk-mode');
   if (bulkCb) {
@@ -2941,7 +3043,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v4.5</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v4.6</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -3759,12 +3861,29 @@ function openEntryEdit(type, idx) {
 
   if (type === 'meal') {
     const name = (entry.items?.[0]?.name || '').replace(/"/g,'&quot;');
+    const entryG  = entry.unit==='Grams' ? entry.quantity||'' : entry.quantity ? Math.round(entry.quantity*28.3495) : '';
+    const entryOz = entry.unit==='OZ'    ? entry.quantity||'' : entry.quantity ? Math.round(entry.quantity/28.3495*100)/100 : '';
     f.innerHTML = `
       <div class="field-group"><label>Date</label><input type="date" id="ee-date" value="${entry.date}" /></div>
       <div class="field-group"><label>Meal Type</label><select id="ee-mealtype">
         ${['breakfast','lunch','dinner','snack','drink'].map(t=>`<option value="${t}"${entry.mealType===t?' selected':''}>${cap(t)}</option>`).join('')}
       </select></div>
       <div class="field-group"><label>Item Name</label><input type="text" id="ee-name" value="${name}" /></div>
+      <div class="field-group">
+        <label>Volume / Portion</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
+            <input type="number" id="ee-qty-g" value="${entryG}" placeholder="g" min="0" step="1"
+              oninput="const oz=parseFloat(this.value);if(oz>0){document.getElementById('ee-qty-oz').value=Math.round(oz/28.3495*100)/100}" />
+          </div>
+          <div>
+            <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
+            <input type="number" id="ee-qty-oz" value="${entryOz}" placeholder="oz" min="0" step="0.25"
+              oninput="const g=parseFloat(this.value);if(g>0){document.getElementById('ee-qty-g').value=Math.round(g*28.3495)}" />
+          </div>
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div><label>Calories</label><input type="number" id="ee-cal"  value="${entry.cal||0}"     min="0" /></div>
         <div><label>Protein (g)</label><input type="number" id="ee-pro"  value="${entry.protein||0}" min="0" step="0.1" /></div>
@@ -3825,8 +3944,14 @@ function saveEntryEdit() {
     const fib  = parseFloat(document.getElementById('ee-fib').value)  || 0;
     const carb = parseFloat(document.getElementById('ee-carb').value) || 0;
     const fat  = parseFloat(document.getElementById('ee-fat').value)  || 0;
+    // volume — prefer grams input, fall back to oz
+    const qtyG  = parseFloat(document.getElementById('ee-qty-g')?.value);
+    const qtyOz = parseFloat(document.getElementById('ee-qty-oz')?.value);
+    const qty  = qtyG > 0 ? qtyG : qtyOz > 0 ? qtyOz : entry.quantity;
+    const unit = qtyG > 0 ? 'Grams' : qtyOz > 0 ? 'OZ' : (entry.unit || 'Grams');
     entry.date = document.getElementById('ee-date').value;
     entry.mealType = document.getElementById('ee-mealtype').value;
+    entry.quantity = qty; entry.unit = unit;
     entry.cal = cal; entry.protein = pro; entry.fiber = fib; entry.carbs = carb; entry.fat = fat;
     entry.items = [{name, cal, protein:pro, fiber:fib, carbs:carb, fat}];
   } else if (type === 'weight') {
@@ -4009,7 +4134,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '4.5';
+      const localVersion  = '4.6';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
