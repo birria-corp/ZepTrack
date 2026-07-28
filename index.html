@@ -666,11 +666,12 @@
             </div>
             <div class="field-group">
               <label>Item</label>
-              <!-- Water 30 quick button -->
-              <div style="margin-bottom:10px">
-                <button onclick="logWater30()" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:var(--sans)">
-                  💧 Water 30 oz
-                </button>
+              <!-- Water quick buttons -->
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">
+                <button onclick="logWaterQuick(30)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 30 oz</button>
+                <button onclick="logWaterQuick(24)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 24 oz</button>
+                <button onclick="logWaterQuick(12)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 12 oz</button>
+                <button onclick="logWaterQuick(8)"  style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 8 oz</button>
               </div>
 
               <!-- Quick pick grid -->
@@ -1620,7 +1621,7 @@ function showIntakeSubtab(sub) {
 // QUICK-PICK LIST
 // ═══════════════════════════════════════════════════════
 const DEFAULT_QUICK_PICKS = [
-  'Water','Coffee','Iced Tea','Hard Boiled Egg','Cheese Stick',
+  'Coffee','Iced Tea','Hard Boiled Egg','Cheese Stick',
   'Nuts','Trail Mix','SK Protein Shake','Banana','Apple','Yogurt','Other'
 ];
 
@@ -1709,19 +1710,21 @@ const HARDCODED_NUTRITION = {
 // Whole milk per oz (for coffee add-in)
 const MILK_SHOT = { cal: 19, protein: 1, carbs: 1.5, fat: 1, fiber: 0, servingG: 29.5 };
 
-function logWater30() {
+function logWaterQuick(oz) {
   DB.push('meals', {
     date: document.getElementById('meal-date')?.value || today(),
     mealType: 'drink', type: 'drink',
-    items: [{ name: 'Water (30 OZ)', cal:0, protein:0, carbs:0, fat:0, fiber:0 }],
+    items: [{ name: `Water (${oz} OZ)`, cal:0, protein:0, carbs:0, fat:0, fiber:0 }],
     cal:0, protein:0, carbs:0, fat:0, fiber:0,
-    quantity:30, unit:'OZ', drinkName:'Water', drinkVolume:30,
+    quantity:oz, unit:'OZ', drinkName:'Water', drinkVolume:oz,
     ts: Date.now()
   });
   updateWaterDisplay();
   renderToday();
-  showToast('+30oz water logged!');
+  showToast(`+${oz}oz water logged!`);
 }
+
+function logWater30() { logWaterQuick(30); }
 
 function getHardcodedNutrition(name) {
   const key = name.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
@@ -3043,7 +3046,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v4.6</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v4.7</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4134,7 +4137,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '4.6';
+      const localVersion  = '4.7';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
