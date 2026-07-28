@@ -49,7 +49,7 @@ All user data is stored in the browser's `localStorage` on the device. Nothing l
 - Last injection badge with days-since indicator
 
 ### Intake Logging
-- **Water 30oz** — one-tap button for standard bottle
+- **Water buttons** — four one-tap buttons (30 / 24 / 12 / 8 oz) at the top of the food log; log instantly with no form
 - **Quick-pick grid** — hardcoded items with confirmed nutrition data (Coffee, Iced Tea, SK Protein Shake, Hard Boiled Egg, Cheese Stick, Nuts, Trail Mix, Banana, Apple, Yogurt)
 - **Gram/OZ dual input** — enter portion in either unit; fields sync automatically
 - **Coffee + milk option** — checkbox adds 1oz whole milk (19 cal, 1g fat, 1.5g carb, 1g protein)
@@ -362,6 +362,7 @@ Select recipe → enter portion weight in oz (imperial) or g (metric) → nutrit
 | v4.2 | Water no longer creates Wellness check-in entries in History |
 | v4.3 | `version.json` update system — reliable Check for Update |
 | v4.5 | Confirmed nutrition data for all quick-pick items |
+| v4.7 | Four water quick-buttons (30/24/12/8 oz), Water removed from quick-pick grid |
 | v4.6 | History edit volume fields, weight display size, recipe paste parser |
 
 ---
