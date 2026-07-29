@@ -58,12 +58,13 @@ All user data is stored in the browser's `localStorage` on the device. Nothing l
 - **Other / custom items** — three-tier lookup: Recipe Library → Custom Items Library → USDA → manual entry
 - **Drink presets** — saved drinks with volume, additions, nutrition, optional water-goal contribution
 
-### Recipe System
-- **Per-ingredient builder** — type ingredient name, USDA auto-fetches nutrition per 100g, scales to entered quantity
-- **Bulk entry mode** — enter total recipe nutrition directly with paste-and-parse support
-- **Paste parser** — paste free-form text from another AI assistant; app extracts name and all five macros automatically
-- **Recipe library** — saved recipes with total weight in grams; log any portion by weight for auto-scaled nutrition
-- **Weight unit selector** — enter recipe total weight in g, oz, or ml; stored internally in grams
+### Recipe Library (enhanced in v4.8)
+- **Recipe cards** — tap any recipe to open a full card view: macro pills (per 100g), step-by-step instructions, GLP-1 tips, star rating (1–5), cook count tracker
+- **One-tap macro copy** — "📋 Copy for ZepTrack" button copies the standard macro block to clipboard for pasting into any AI conversation
+- **Search/filter** — search recipes by name or tag
+- **Tags** — glp1-friendly, high-protein, high-fiber, no-cook, meal-prep, quick, one-pan
+- **5 GLP-1 seed recipes** pre-loaded: Grilled Salmon + Lentil Tabbouleh, Turkey-Stuffed Bell Peppers, Shrimp + Edamame Stir-Fry, White Bean + Tuna Salad, Spiced Chickpea + Chicken Thigh Skillet
+- **Gram/OZ dual input** for portion logging — fields sync automatically
 
 ### Injection Tracker
 - Log dose (2.5mg–15mg), date, injection site
@@ -89,6 +90,7 @@ All user data is stored in the browser's `localStorage` on the device. Nothing l
 - Quick-Pick list manager (add/remove items from the intake grid)
 - Injection reminder (day of week + time, push notification)
 - **Check for Update** — fetches `version.json` from GitHub, compares to local version, clears cache and reloads if different
+- **Auto-backup** — on app load, if no backup has been exported in 3+ days, automatically downloads a JSON backup file named `zeptrack-auto-[date].json`
 - Export data as JSON backup
 - Import from JSON backup (with overwrite warning)
 - Copy to clipboard — Summary or Full Log (for Google Docs / provider sharing)
@@ -362,6 +364,8 @@ Select recipe → enter portion weight in oz (imperial) or g (metric) → nutrit
 | v4.2 | Water no longer creates Wellness check-in entries in History |
 | v4.3 | `version.json` update system — reliable Check for Update |
 | v4.5 | Confirmed nutrition data for all quick-pick items |
+| v5.1 | Version bump — marks stable release combining all v4.x improvements |
+| v4.8 | Recipe card view, 5 GLP-1 seed recipes, star ratings, cook count, one-tap macro copy, auto-backup every 3 days |
 | v4.7 | Four water quick-buttons (30/24/12/8 oz), Water removed from quick-pick grid |
 | v4.6 | History edit volume fields, weight display size, recipe paste parser |
 
