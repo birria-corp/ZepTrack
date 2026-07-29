@@ -791,42 +791,63 @@
 
         <!-- RECIPE sub-tab -->
         <div id="itab-recipe" style="display:none">
-          <div class="card">
-            <div class="card-title">Recipes</div>
-            <div id="recipes-list"></div>
-            <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRecipeModal()">+ New Recipe</button>
-          </div>
-          <div class="card">
-            <div class="card-title">Log Recipe Portion</div>
-            <div class="field-group">
-              <label>Select Recipe</label>
-              <select id="recipe-select" onchange="onRecipeSelect()">
-                <option value="">— choose a recipe —</option>
-              </select>
-            </div>
-            <div id="recipe-log-details" style="display:none">
-              <div id="recipe-nutrition-per100" style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:10px"></div>
-              <div class="field-group">
-                <label>Your portion weight (<span class="recipe-wt-unit">g</span>)</label>
-                <div class="stepper">
-                  <button onclick="step('recipe-portion',-10)">−</button>
-                  <input type="number" id="recipe-portion" value="150" min="1" oninput="updateRecipePortionCalc()" />
-                  <button onclick="step('recipe-portion',10)">+</button>
-                </div>
+
+          <!-- Recipe list / library view -->
+          <div id="recipe-library-view">
+            <div class="card">
+              <div class="card-title">Recipe Library</div>
+              <div style="display:flex;gap:8px;margin-bottom:10px">
+                <input type="text" id="recipe-search" placeholder="Search recipes…" style="flex:1;font-size:0.85rem" oninput="filterRecipeLibrary(this.value)" />
               </div>
-              <div id="recipe-portion-nutrition" style="font-family:var(--mono);font-size:0.82rem;color:var(--text);background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px"></div>
+              <div id="recipes-list"></div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRecipeModal()">+ New Recipe</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Log Recipe Portion</div>
               <div class="field-group">
-                <label>Meal Type</label>
-                <select id="recipe-meal-type">
-                  <option value="breakfast">Breakfast</option>
-                  <option value="lunch">Lunch</option>
-                  <option value="dinner">Dinner</option>
-                  <option value="snack">Snack</option>
+                <label>Select Recipe</label>
+                <select id="recipe-select" onchange="onRecipeSelect()">
+                  <option value="">— choose a recipe —</option>
                 </select>
               </div>
-              <button class="btn btn-primary" onclick="logRecipePortion()">Log This Portion</button>
+              <div id="recipe-log-details" style="display:none">
+                <div id="recipe-nutrition-per100" style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:10px"></div>
+                <div class="field-group">
+                  <label>Your portion weight (<span class="recipe-wt-unit">oz</span>)</label>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                    <div>
+                      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
+                      <input type="number" id="recipe-portion-g" placeholder="g" min="1" oninput="syncRecipePortion('g')" />
+                    </div>
+                    <div>
+                      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
+                      <input type="number" id="recipe-portion" placeholder="oz" min="0.1" step="0.5" oninput="syncRecipePortion('oz')" />
+                    </div>
+                  </div>
+                </div>
+                <div id="recipe-portion-nutrition" style="font-family:var(--mono);font-size:0.82rem;color:var(--text);background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px"></div>
+                <div class="field-group">
+                  <label>Meal Type</label>
+                  <select id="recipe-meal-type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" onclick="logRecipePortion()">Log This Portion</button>
+              </div>
             </div>
           </div>
+
+          <!-- Recipe card detail view (hidden until recipe tapped) -->
+          <div id="recipe-card-view" style="display:none">
+            <button onclick="closeRecipeCard()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;margin-bottom:12px;padding:0">
+              ← Back to Recipes
+            </button>
+            <div class="card" id="recipe-card-content"></div>
+          </div>
+
         </div>
       </div>
 
@@ -1612,7 +1633,7 @@ function showIntakeSubtab(sub) {
     if (btn) btn.classList.toggle('active', s === sub);
   });
   if (sub === 'drink')  renderDrinkPresets();
-  if (sub === 'recipe') { renderRecipesList(); renderRecipeSelect(); }
+  if (sub === 'recipe') { renderRecipesList(); renderRecipeSelect(); closeRecipeCard(); }
   if (sub === 'water')  updateWaterDisplay();
   if (sub === 'food')   renderQuickPickGrid();
 }
@@ -2913,21 +2934,305 @@ function deleteRecipe(id) {
   renderRecipeSelect();
 }
 
-function renderRecipesList() {
+// ── GLP-1 SEED RECIPES (imported from ZepTrack Recipes app) ──────────────
+const GLP1_SEED_RECIPES = [
+  {
+    id: 'glp1-r1', name: 'Grilled Salmon with Lentil Tabbouleh',
+    totalWeight: 480, weightUnit:'g', isBulk:true, totalCal:552, totalProtein:39.4,
+    totalCarbs:43.7, totalFat:25.4, totalFiber:10.1, ingredients:[],
+    steps:[
+      'Season salmon fillets with salt, pepper, and a drizzle of olive oil.',
+      'Grill salmon 4–5 min per side until cooked through. Rest 2 min.',
+      'Cook lentils in salted water until tender (~20 min). Drain and cool.',
+      'Combine lentils with diced cucumber, tomato, parsley, mint, lemon juice, and olive oil.',
+      'Serve salmon over tabbouleh.'
+    ],
+    tips:'Swap salmon for chicken breast for a lower-fat version. Lentils can be made a day ahead.',
+    tags:['high-protein','glp1-friendly','meal-prep'],
+    servingBase:3
+  },
+  {
+    id: 'glp1-r2', name: 'Turkey-Stuffed Bell Peppers',
+    totalWeight:600, weightUnit:'g', isBulk:true, totalCal:504, totalProtein:33.6,
+    totalCarbs:47.4, totalFat:21.0, totalFiber:7.2, ingredients:[],
+    steps:[
+      'Preheat oven to 375°F. Cut tops off peppers, remove seeds.',
+      'Brown ground turkey with onion, garlic, and Italian seasoning.',
+      'Mix in cooked rice, diced tomatoes, and tomato paste. Season to taste.',
+      'Stuff peppers with turkey mixture. Place in baking dish.',
+      'Top with shredded mozzarella. Bake 30–35 min until peppers are tender.'
+    ],
+    tips:'Use cauliflower rice instead of white rice to reduce carbs by ~12g per 100g.',
+    tags:['high-protein','glp1-friendly','meal-prep'],
+    servingBase:3
+  },
+  {
+    id: 'glp1-r3', name: 'Shrimp + Edamame Stir-Fry with Brown Rice',
+    totalWeight:620, weightUnit:'g', isBulk:true, totalCal:645, totalProtein:53.3,
+    totalCarbs:69.4, totalFat:16.7, totalFiber:6.8, ingredients:[],
+    steps:[
+      'Cook brown rice per package directions.',
+      'Heat sesame oil in a wok over high heat.',
+      'Stir-fry shrimp 2–3 min until pink. Remove and set aside.',
+      'Add edamame, snap peas, and bell pepper. Stir-fry 3–4 min.',
+      'Return shrimp to wok. Add soy sauce, ginger, and garlic. Toss to coat.',
+      'Serve over brown rice.'
+    ],
+    tips:'Frozen shrimp work great here — thaw in cold water for 10 min. Edamame is a GLP-1 MVP for protein + fiber.',
+    tags:['high-protein','high-fiber','glp1-friendly'],
+    servingBase:3
+  },
+  {
+    id: 'glp1-r4', name: 'White Bean + Tuna Salad with Lemon Vinaigrette',
+    totalWeight:450, weightUnit:'g', isBulk:true, totalCal:419, totalProtein:36.0,
+    totalCarbs:37.4, totalFat:14.4, totalFiber:9.0, ingredients:[],
+    steps:[
+      'Drain and rinse white beans and tuna.',
+      'Whisk together lemon juice, olive oil, Dijon, garlic, salt, and pepper.',
+      'Combine beans, tuna, arugula, red onion, and capers in a large bowl.',
+      'Drizzle with vinaigrette and toss gently.',
+      'Serve immediately or refrigerate up to 2 days.'
+    ],
+    tips:'No-cook meal — great for days when appetite is low. High fiber keeps you full longer.',
+    tags:['no-cook','high-fiber','glp1-friendly','quick'],
+    servingBase:3
+  },
+  {
+    id: 'glp1-r5', name: 'Spiced Chickpea + Chicken Thigh Skillet',
+    totalWeight:580, weightUnit:'g', isBulk:true, totalCal:574, totalProtein:45.8,
+    totalCarbs:30.7, totalFat:29.0, totalFiber:7.5, ingredients:[],
+    steps:[
+      'Season chicken thighs with cumin, smoked paprika, coriander, salt, and pepper.',
+      'Sear chicken in olive oil 4–5 min per side. Remove from pan.',
+      'Sauté onion and garlic in the same pan until softened.',
+      'Add chickpeas, diced tomatoes, and chicken broth. Stir to combine.',
+      'Return chicken to pan. Simmer 15–20 min until cooked through.',
+      'Finish with fresh cilantro and a squeeze of lemon.'
+    ],
+    tips:'Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.',
+    tags:['high-protein','glp1-friendly','one-pan'],
+    servingBase:3
+  }
+];
+
+function seedGLP1Recipes() {
+  let recipes = DB.get('recipes') || [];
+  let added = 0;
+  GLP1_SEED_RECIPES.forEach(seed => {
+    if (!recipes.find(r => r.id === seed.id)) {
+      recipes.push({ ...seed, ts: Date.now() });
+      added++;
+    }
+  });
+  if (added > 0) { DB.set('recipes', recipes); console.log(`Seeded ${added} GLP-1 recipes`); }
+}
+
+// ── RECIPE CARD VIEW ──────────────────────────────────────────────────────
+let recipeCardServings = {};
+
+function openRecipeCard(id) {
+  const recipes = DB.get('recipes') || [];
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+
+  document.getElementById('recipe-library-view').style.display = 'none';
+  document.getElementById('recipe-card-view').style.display = 'block';
+
+  const servings = recipeCardServings[id] || r.servingBase || 1;
+  recipeCardServings[id] = servings;
+
+  renderRecipeCardContent(r, servings);
+}
+
+function renderRecipeCardContent(r, servings) {
+  const base = r.servingBase || 1;
+  const tw = r.totalWeight || 100;
+  const per100cal  = Math.round(r.totalCal  / tw * 100);
+  const per100pro  = Math.round(r.totalProtein / tw * 100 * 10) / 10;
+  const per100carb = Math.round(r.totalCarbs / tw * 100 * 10) / 10;
+  const per100fat  = Math.round(r.totalFat  / tw * 100 * 10) / 10;
+  const per100fib  = Math.round(r.totalFiber / tw * 100 * 10) / 10;
+
+  const ratings = DB.get('recipeRatings') || {};
+  const cooks   = DB.get('recipeCooks')   || {};
+  const rating  = ratings[r.id] || 0;
+  const cookCount = cooks[r.id] || 0;
+
+  const stars = [1,2,3,4,5].map(n =>
+    `<span onclick="setRecipeRating('${r.id}',${n})" style="font-size:1.2rem;cursor:pointer;color:${n<=rating?'#d29922':'var(--border)'}">${n<=rating?'★':'☆'}</span>`
+  ).join('');
+
+  const tags = (r.tags||[]).map(t =>
+    `<span style="font-size:0.65rem;padding:2px 7px;border-radius:10px;background:var(--surface2);color:var(--muted);font-family:var(--mono)">${t}</span>`
+  ).join(' ');
+
+  // macro pills
+  const macroPill = (label, val, unit, color) =>
+    `<div style="text-align:center;padding:8px 4px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border)">
+      <div style="font-family:var(--mono);font-size:0.9rem;color:${color};font-weight:600">${val}${unit}</div>
+      <div style="font-size:0.65rem;color:var(--muted);margin-top:2px">${label}</div>
+    </div>`;
+
+  // steps
+  const stepsHtml = r.steps?.length
+    ? `<div style="margin-top:16px">
+        <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">Instructions</div>
+        ${r.steps.map((s,i) => `
+          <div style="display:flex;gap:12px;margin-bottom:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div>
+            <div style="font-size:0.85rem;line-height:1.5">${s}</div>
+          </div>`).join('')}
+      </div>` : '';
+
+  // tip
+  const tipHtml = r.tips
+    ? `<div style="background:rgba(210,153,34,0.1);border:1px solid rgba(210,153,34,0.3);border-radius:var(--radius-sm);padding:12px;margin-top:12px">
+        <div style="font-size:0.72rem;color:#d29922;font-family:var(--mono);margin-bottom:4px">💡 TIP</div>
+        <div style="font-size:0.82rem">${r.tips}</div>
+      </div>` : '';
+
+  // ZepTrack macro block
+  const macroBlock = `Recipe Name: ${r.name}\nPer 100g:\nCalories: ${per100cal}\nProtein: ${per100pro}g\nCarbs: ${per100carb}g\nFat: ${per100fat}g\nFiber: ${per100fib}g`;
+
+  const el = document.getElementById('recipe-card-content');
+  el.innerHTML = `
+    <div style="margin-bottom:4px;display:flex;gap:6px;flex-wrap:wrap">${tags}</div>
+    <h2 style="font-size:1.15rem;font-weight:700;margin:8px 0 4px">${r.name}</h2>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="display:flex;gap:2px">${stars}</div>
+      <div style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">🍳 Cooked ${cookCount}×
+        <button onclick="bumpCookCount('${r.id}')" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.7rem;padding:1px 6px;cursor:pointer;margin-left:4px">+1</button>
+      </div>
+    </div>
+
+    <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px">Per 100g · ${tw}g total</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px">
+      ${macroPill('Cal',per100cal,'','#6c8aff')}
+      ${macroPill('Pro',per100pro,'g','#a78bfa')}
+      ${macroPill('Carb',per100carb,'g','#fbbf24')}
+      ${macroPill('Fiber',per100fib,'g','#34d399')}
+    </div>
+
+    ${stepsHtml}
+    ${tipHtml}
+
+    <div style="margin-top:16px">
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">ZepTrack Macro Block</div>
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:10px;font-family:var(--mono);font-size:0.75rem;white-space:pre;color:var(--text);border:1px solid var(--border)">${macroBlock}</div>
+      <button onclick="copyRecipeMacroBlock('${r.id}')" style="margin-top:6px;width:100%;padding:9px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:none;color:var(--accent);font-size:0.8rem;cursor:pointer">📋 Copy for ZepTrack</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-ghost btn-sm" onclick="openRecipeModal('${r.id}')">Edit Recipe</button>
+      <button class="btn btn-primary btn-sm" onclick="closeRecipeCard();onRecipeSelect();document.getElementById('recipe-select').value='${r.id}';onRecipeSelect()">Log Portion</button>
+    </div>`;
+}
+
+function closeRecipeCard() {
+  document.getElementById('recipe-card-view').style.display = 'none';
+  document.getElementById('recipe-library-view').style.display = 'block';
+}
+
+function setRecipeRating(id, n) {
+  const ratings = DB.get('recipeRatings') || {};
+  ratings[id] = n;
+  DB.set('recipeRatings', ratings);
+  // re-render card
+  const r = (DB.get('recipes')||[]).find(x=>x.id===id);
+  if (r) renderRecipeCardContent(r, recipeCardServings[id] || r.servingBase || 1);
+}
+
+function bumpCookCount(id) {
+  const cooks = DB.get('recipeCooks') || {};
+  cooks[id] = (cooks[id] || 0) + 1;
+  DB.set('recipeCooks', cooks);
+  const r = (DB.get('recipes')||[]).find(x=>x.id===id);
+  if (r) renderRecipeCardContent(r, recipeCardServings[id] || r.servingBase || 1);
+  showToast('Cook count updated!');
+}
+
+function copyRecipeMacroBlock(id) {
+  const r = (DB.get('recipes')||[]).find(x=>x.id===id);
+  if (!r) return;
+  const tw = r.totalWeight || 100;
+  const block = `Recipe Name: ${r.name}\nPer 100g:\nCalories: ${Math.round(r.totalCal/tw*100)}\nProtein: ${Math.round(r.totalProtein/tw*100*10)/10}g\nCarbs: ${Math.round(r.totalCarbs/tw*100*10)/10}g\nFat: ${Math.round(r.totalFat/tw*100*10)/10}g\nFiber: ${Math.round(r.totalFiber/tw*100*10)/10}g`;
+  navigator.clipboard.writeText(block)
+    .then(() => showToast('Macro block copied!'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = block; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Macro block copied!');
+    });
+}
+
+function filterRecipeLibrary(query) {
+  renderRecipesList(query);
+}
+
+function syncRecipePortion(from) {
+  if (from === 'g') {
+    const g = parseFloat(document.getElementById('recipe-portion-g').value);
+    if (g > 0) document.getElementById('recipe-portion').value = Math.round(g/28.3495*100)/100;
+  } else {
+    const oz = parseFloat(document.getElementById('recipe-portion').value);
+    if (oz > 0) document.getElementById('recipe-portion-g').value = Math.round(oz*28.3495);
+  }
+  updateRecipePortionCalc();
+}
+
+function renderRecipesList(query='') {
   const recipes = DB.get('recipes')||[];
+  const ratings = DB.get('recipeRatings') || {};
+  const cooks   = DB.get('recipeCooks')   || {};
   const el = document.getElementById('recipes-list');
   if (!el) return;
-  if (!recipes.length) { el.innerHTML=`<div style="color:var(--muted);font-size:0.82rem;margin-bottom:8px">No recipes yet.</div>`; return; }
-  const unit = UNITS==='metric'?'g':'oz';
-  el.innerHTML = recipes.map(r=>`
-    <div style="padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <div style="flex:1;font-weight:600;font-size:0.88rem">📖 ${r.name}</div>
-        <button class="btn btn-ghost btn-sm" onclick="openRecipeModal('${r.id}')">Edit</button>
-        <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger)" onclick="deleteRecipe('${r.id}')">×</button>
+
+  const filtered = query
+    ? recipes.filter(r => r.name.toLowerCase().includes(query.toLowerCase()) ||
+        (r.tags||[]).some(t => t.toLowerCase().includes(query.toLowerCase())))
+    : recipes;
+
+  if (!filtered.length) {
+    el.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;margin-bottom:8px">${query?'No matches.':'No recipes yet.'}</div>`;
+    return;
+  }
+
+  const TAG_COLORS = {'glp1-friendly':'rgba(52,211,153,0.15)','high-protein':'rgba(167,139,250,0.15)','high-fiber':'rgba(52,211,153,0.15)','no-cook':'rgba(251,191,36,0.15)','meal-prep':'rgba(108,138,255,0.15)','quick':'rgba(251,191,36,0.15)','one-pan':'rgba(108,138,255,0.15)'};
+
+  el.innerHTML = filtered.map(r => {
+    const tw = r.totalWeight || 100;
+    const per100cal = Math.round(r.totalCal/tw*100);
+    const per100pro = Math.round(r.totalProtein/tw*100*10)/10;
+    const rating = ratings[r.id] || 0;
+    const stars = '★'.repeat(rating) + '☆'.repeat(5-rating);
+    const cookCount = cooks[r.id] || 0;
+    const tagHtml = (r.tags||[]).slice(0,2).map(t=>
+      `<span style="font-size:0.62rem;padding:2px 6px;border-radius:8px;background:${TAG_COLORS[t]||'var(--surface2)'};color:var(--muted)">${t}</span>`
+    ).join(' ');
+
+    return `<div onclick="openRecipeCard('${r.id}')" style="padding:12px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:var(--radius-sm);transition:background 0.1s"
+      onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px">
+        <div style="font-weight:600;font-size:0.88rem;flex:1;padding-right:8px">${r.name}</div>
+        <div style="font-size:0.78rem;color:#d29922;white-space:nowrap">${stars}</div>
       </div>
-      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono)">${r.totalWeight}g total · ${r.totalCal} cal · ${r.totalProtein}g pro · ${r.ingredients?.length||0} ingredients</div>
-    </div>`).join('');
+      <div style="display:flex;gap:10px;margin-bottom:5px">
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#6c8aff">${per100cal} cal</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#a78bfa">${per100pro}g pro</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${tw}g total${cookCount>0?' · 🍳'+cookCount+'×':''}</span>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
+        <div style="display:flex;gap:4px">${tagHtml}</div>
+        <div style="display:flex;gap:4px">
+          <button onclick="event.stopPropagation();openRecipeModal('${r.id}')" style="font-size:0.7rem;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer">Edit</button>
+          <button onclick="event.stopPropagation();deleteRecipe('${r.id}')" style="font-size:0.7rem;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--danger);cursor:pointer">×</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderRecipeSelect() {
@@ -3046,7 +3351,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v4.7</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.1</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4137,7 +4442,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '4.7';
+      const localVersion  = '5.1';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -4197,6 +4502,7 @@ function exportData() {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  DB.set('lastBackupDate', today());
 
   // Visual confirmation
   const statusEl = document.getElementById('export-status');
@@ -4711,12 +5017,72 @@ function migrateRecipeWeights() {
   if (changed) { DB.set('recipes', recipes); console.log('Recipe weights migrated'); }
 }
 
+// ── AUTO-BACKUP ───────────────────────────────────────────────────────────
+function checkAutoBackup() {
+  const lastBackup = DB.get('lastBackupDate');
+  const todayStr = today();
+  if (!lastBackup) {
+    // First run — set today as last backup date, don't nag immediately
+    DB.set('lastBackupDate', todayStr);
+    return;
+  }
+  const daysSince = Math.floor(
+    (new Date(todayStr) - new Date(lastBackup)) / 86400000
+  );
+  if (daysSince >= 3) {
+    // Show toast then auto-download after 3 seconds
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = `⚠️ Auto-backup (${daysSince}d since last) — downloading…`;
+      toast.style.background = 'var(--warn)';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.style.background = '';
+        triggerAutoBackup();
+      }, 3000);
+    } else {
+      triggerAutoBackup();
+    }
+  }
+}
+
+function triggerAutoBackup() {
+  const data = {
+    weights: DB.get('weights') || [],
+    meals:   DB.get('meals')   || [],
+    exercise:DB.get('exercise')|| [],
+    daily:   DB.get('daily')   || [],
+    injections: DB.get('injections') || [],
+    recipes: DB.get('recipes') || [],
+    drinkPresets: DB.get('drinkPresets') || [],
+    quickPicks: DB.get('quickPicks') || DEFAULT_QUICK_PICKS,
+    customItems: DB.get('customItems') || [],
+    goals: GOALS, units: UNITS,
+    exported: new Date().toISOString(),
+    autoBackup: true
+  };
+  const filename = 'zeptrack-auto-' + today() + '.json';
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  DB.set('lastBackupDate', today());
+  showToast('Auto-backup saved!');
+}
+
 initSettings();
 initReminders();
 migrateWaterEntries();
 migrateRecipeWeights();
+seedGLP1Recipes();
 renderQuickPickGrid();
 renderToday();
+checkAutoBackup();
 
 // SW for PWA
 if ('serviceWorker' in navigator) {
