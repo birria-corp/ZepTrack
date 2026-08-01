@@ -3,7 +3,7 @@
 > A personal health tracker built for Zepbound (tirzepatide) and GLP-1 medication users. Tracks weight, nutrition, water, exercise, injections, and wellness — installable as a mobile PWA, runs entirely in your browser with no server or account required.
 
 **Live app:** `https://spencer-thompson-2-vu.github.io/ZepTrack`  
-**Current version:** v5.1  
+**Current version:** v5.2  
 **Platform:** Android Chrome (PWA), any modern browser
 
 ---
@@ -319,6 +319,7 @@ Tap any recipe in the library to open its card: numbered steps, GLP-1 tip, per-1
 
 | Version | Key changes |
 |---------|-------------|
+| v5.2 | Fix recipe portion logging bug (grams field sync failure on mobile), Share Backup button |
 | v5.1 | Stable release — Recipe app folded in, GLP-1 seed recipes, auto-backup |
 | v4.8 | Recipe card view, 5 GLP-1 seed recipes, star ratings, cook count, macro copy, auto-backup |
 | v4.7 | Four water quick-buttons (30/24/12/8 oz), Water removed from quick-pick grid |

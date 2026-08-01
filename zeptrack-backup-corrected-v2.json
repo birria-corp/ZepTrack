@@ -1,0 +1,3547 @@
+{
+  "weights": [
+    {
+      "date": "2026-07-16",
+      "weight": 268,
+      "notes": ""
+    },
+    {
+      "date": "2026-07-24",
+      "weight": 259.6,
+      "notes": ""
+    },
+    {
+      "date": "2026-07-28",
+      "weight": 259.2,
+      "notes": ""
+    },
+    {
+      "date": "2026-07-30",
+      "weight": 257.8,
+      "notes": ""
+    },
+    {
+      "date": "2026-07-31",
+      "weight": 255.6,
+      "notes": ""
+    }
+  ],
+  "meals": [
+    {
+      "date": "2026-07-23",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Hard Boiled Egg (79 Grams)",
+          "cal": 122.5,
+          "protein": 9.95,
+          "carbs": 0.88,
+          "fat": 8.37,
+          "fiber": 0
+        }
+      ],
+      "cal": 122.5,
+      "protein": 9.95,
+      "carbs": 0.88,
+      "fat": 8.37,
+      "fiber": 0,
+      "quantity": 79,
+      "unit": "Grams",
+      "ts": 1784823180712
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Raw Strawberry (2 OZ)",
+          "cal": 18.1,
+          "protein": 0.38,
+          "carbs": 4.35,
+          "fat": 0.17,
+          "fiber": 1.13
+        }
+      ],
+      "cal": 18.1,
+      "protein": 0.38,
+      "carbs": 4.35,
+      "fat": 0.17,
+      "fiber": 1.13,
+      "quantity": 2,
+      "unit": "OZ",
+      "ts": 1784810812592
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Peach Raw (3 OZ)",
+          "cal": 35.7,
+          "protein": 0.77,
+          "carbs": 8.59,
+          "fat": 0.23,
+          "fiber": 1.28
+        }
+      ],
+      "cal": 35.7,
+      "protein": 0.77,
+      "carbs": 8.59,
+      "fat": 0.23,
+      "fiber": 1.28,
+      "quantity": 3,
+      "unit": "OZ",
+      "ts": 1784810777002
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "**SK Protein Shake** (12 OZ)",
+          "cal": 378.0,
+          "protein": 29.29,
+          "carbs": 43.47,
+          "fat": 12.28,
+          "fiber": 11.25
+        }
+      ],
+      "cal": 378.0,
+      "protein": 29.29,
+      "carbs": 43.47,
+      "fat": 12.28,
+      "fiber": 11.25,
+      "quantity": 12,
+      "unit": "OZ",
+      "ts": 1784810744073
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Superhero Muffin (3.5 OZ)",
+          "cal": 278.1,
+          "protein": 7.59,
+          "carbs": 24.38,
+          "fat": 19.32,
+          "fiber": 4.85
+        }
+      ],
+      "cal": 278.1,
+      "protein": 7.59,
+      "carbs": 24.38,
+      "fat": 19.32,
+      "fiber": 4.85,
+      "quantity": 3.5,
+      "unit": "OZ",
+      "ts": 1784776899191
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Curry Green Lentils (489 Grams)",
+          "cal": 229.9,
+          "protein": 11.38,
+          "carbs": 31.42,
+          "fat": 8.35,
+          "fiber": 10.09
+        }
+      ],
+      "cal": 229.9,
+      "protein": 11.38,
+      "carbs": 31.42,
+      "fat": 8.35,
+      "fiber": 10.09,
+      "quantity": 489,
+      "unit": "Grams",
+      "ts": 1784757935617
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Hard Boiled Egg (79 Grams)",
+          "cal": 122.5,
+          "protein": 9.95,
+          "carbs": 0.88,
+          "fat": 8.37,
+          "fiber": 0
+        }
+      ],
+      "cal": 122.5,
+      "protein": 9.95,
+      "carbs": 0.88,
+      "fat": 8.37,
+      "fiber": 0,
+      "quantity": 79,
+      "unit": "Grams",
+      "ts": 1784744068223
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "**Trail Mix** (2.5 OZ)",
+          "cal": 280,
+          "protein": 7,
+          "carbs": 28,
+          "fat": 4.5,
+          "fiber": 3
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "carbs": 28,
+      "fat": 4.5,
+      "fiber": 3,
+      "quantity": 2.5,
+      "unit": "OZ",
+      "ts": 1784734805125
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (2 OZ)",
+          "cal": 183.7,
+          "protein": 7.71,
+          "carbs": 15.42,
+          "fat": 10.15,
+          "fiber": 0.91
+        }
+      ],
+      "cal": 183.7,
+      "protein": 7.71,
+      "carbs": 15.42,
+      "fat": 10.15,
+      "fiber": 0.91,
+      "quantity": 2,
+      "unit": "OZ",
+      "ts": 1784733929711
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "**SK Protein Shake** (12 OZ)",
+          "cal": 378.0,
+          "protein": 29.29,
+          "carbs": 43.47,
+          "fat": 12.28,
+          "fiber": 11.25
+        }
+      ],
+      "cal": 378.0,
+      "protein": 29.29,
+      "carbs": 43.47,
+      "fat": 12.28,
+      "fiber": 11.25,
+      "quantity": 12,
+      "unit": "OZ",
+      "ts": 1784727157449
+    },
+    {
+      "date": "2026-07-21",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Hard Boiled Egg (2 OZ)",
+          "cal": 87.9,
+          "protein": 7.14,
+          "carbs": 0.64,
+          "fat": 6.01,
+          "fiber": 0
+        }
+      ],
+      "cal": 87.9,
+      "protein": 7.14,
+      "carbs": 0.64,
+      "fat": 6.01,
+      "fiber": 0,
+      "quantity": 2,
+      "unit": "OZ",
+      "ts": 1784690067269
+    },
+    {
+      "date": "2026-07-21",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "**SK Protein Shake** (12 OZ)",
+          "cal": 378.0,
+          "protein": 29.29,
+          "carbs": 43.47,
+          "fat": 12.28,
+          "fiber": 11.25
+        }
+      ],
+      "cal": 378.0,
+      "protein": 29.29,
+      "carbs": 43.47,
+      "fat": 12.28,
+      "fiber": 11.25,
+      "quantity": 12,
+      "unit": "OZ",
+      "ts": 1784689566881
+    },
+    {
+      "date": "2026-07-21",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Taco Bowl (8 OZ)",
+          "cal": 312.5,
+          "protein": 19.33,
+          "carbs": 23.51,
+          "fat": 15.02,
+          "fiber": 0.49
+        }
+      ],
+      "cal": 312.5,
+      "protein": 19.33,
+      "carbs": 23.51,
+      "fat": 15.02,
+      "fiber": 0.49,
+      "quantity": 8,
+      "unit": "OZ",
+      "ts": 1784684262668
+    },
+    {
+      "date": "2026-07-21",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "**Trail Mix** (2.5 OZ)",
+          "cal": 280,
+          "protein": 7,
+          "carbs": 28,
+          "fat": 4.5,
+          "fiber": 3
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "carbs": 28,
+      "fat": 4.5,
+      "fiber": 3,
+      "quantity": 2.5,
+      "unit": "OZ",
+      "ts": 1784664115163
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee (8 OZ)",
+          "cal": 2,
+          "protein": 0.28,
+          "carbs": 0,
+          "fat": 0.05,
+          "fiber": 0
+        }
+      ],
+      "cal": 2,
+      "protein": 0.28,
+      "carbs": 0,
+      "fat": 0.05,
+      "fiber": 0,
+      "drinkName": "Coffee",
+      "drinkVolume": 8,
+      "quantity": 8,
+      "unit": "OZ",
+      "ts": 1784823129357
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Iced Tea (12.0 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "drinkName": "Iced Tea",
+      "drinkVolume": 12,
+      "quantity": 12,
+      "unit": "OZ",
+      "ts": 1784765286609
+    },
+    {
+      "date": "2026-07-22",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee (8 OZ)",
+          "cal": 2,
+          "protein": 0.28,
+          "carbs": 0,
+          "fat": 0.05,
+          "fiber": 0
+        }
+      ],
+      "cal": 2,
+      "protein": 0.28,
+      "carbs": 0,
+      "fat": 0.05,
+      "fiber": 0,
+      "drinkName": "Coffee",
+      "drinkVolume": 8,
+      "quantity": 8,
+      "unit": "OZ",
+      "ts": 1784727398141
+    },
+    {
+      "date": "2026-07-21",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Iced Tea (12.0 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "drinkName": "Iced Tea",
+      "drinkVolume": 12,
+      "quantity": 12,
+      "unit": "OZ",
+      "ts": 1784672077556
+    },
+    {
+      "date": "2026-07-21",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee (8 OZ)",
+          "cal": 2,
+          "protein": 0.28,
+          "carbs": 0,
+          "fat": 0.05,
+          "fiber": 0
+        }
+      ],
+      "cal": 2,
+      "protein": 0.28,
+      "carbs": 0,
+      "fat": 0.05,
+      "fiber": 0,
+      "drinkName": "Coffee",
+      "drinkVolume": 8,
+      "quantity": 8,
+      "unit": "OZ",
+      "ts": 1784664032429
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Apple (172 Grams)",
+          "cal": 98,
+          "protein": 0.43,
+          "fiber": 4,
+          "carbs": 23.5,
+          "fat": 0
+        }
+      ],
+      "cal": 98,
+      "protein": 0.43,
+      "fiber": 4,
+      "carbs": 23.5,
+      "fat": 0,
+      "quantity": 172,
+      "unit": "Grams",
+      "ts": 1784842464643
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "food",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "ts": 1784842455839
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "food",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "ts": 1784842442899
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "food",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "ts": 1784842436923
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Sweet 'N Salty Mix Trail Mix (2.5 OZ)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "ts": 1784842429288,
+      "quantity": 2.5,
+      "unit": "OZ"
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "food",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "ts": 1784842595823
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "ts": 1784842543899
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (12 OZ)",
+          "cal": 378.0,
+          "protein": 29.29,
+          "fiber": 11.25,
+          "carbs": 43.47,
+          "fat": 12.28
+        }
+      ],
+      "cal": 378.0,
+      "protein": 29.29,
+      "fiber": 11.25,
+      "carbs": 43.47,
+      "fat": 12.28,
+      "quantity": 12,
+      "unit": "OZ",
+      "ts": 1784908444507
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1784908508627
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee (8 OZ)",
+          "cal": 2,
+          "protein": 0.28,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0.05
+        }
+      ],
+      "cal": 2,
+      "protein": 0.28,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0.05,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Coffee",
+      "drinkVolume": 8,
+      "ts": 1784909086087
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Sweet 'N Salty Mix Trail Mix (2.5 OZ)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "ts": 1784913645490,
+      "quantity": 2.5,
+      "unit": "OZ"
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1784914422703
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Tacos (10 OZ)",
+          "cal": 391,
+          "protein": 24.1,
+          "fiber": 0.6,
+          "carbs": 29.5,
+          "fat": 18.7
+        }
+      ],
+      "cal": 391,
+      "protein": 24.1,
+      "fiber": 0.6,
+      "carbs": 29.5,
+      "fat": 18.7,
+      "quantity": 10,
+      "unit": "OZ",
+      "ts": 1784914586471
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Apple (172 Grams)",
+          "cal": 98,
+          "protein": 0.43,
+          "fiber": 4,
+          "carbs": 23.5,
+          "fat": 0
+        }
+      ],
+      "cal": 98,
+      "protein": 0.43,
+      "fiber": 4,
+      "carbs": 23.5,
+      "fat": 0,
+      "ts": 1784921016455,
+      "quantity": 172,
+      "unit": "Grams"
+    },
+    {
+      "date": "2026-07-23",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1784921034330
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1784932091005
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Grilled Chicken Breast (113 Grams)",
+          "cal": 175,
+          "protein": 31,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 3.5
+        }
+      ],
+      "cal": 175,
+      "protein": 31,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 3.5,
+      "ts": 1784932461153,
+      "quantity": 113,
+      "unit": "Grams"
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Panzanella NYT (10 OZ)",
+          "cal": 352,
+          "protein": 12.2,
+          "fiber": 3.7,
+          "carbs": 21.8,
+          "fat": 25.5
+        }
+      ],
+      "cal": 352,
+      "protein": 12.2,
+      "fiber": 3.7,
+      "carbs": 21.8,
+      "fat": 25.5,
+      "quantity": 10,
+      "unit": "OZ",
+      "ts": 1784941181391
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1784941215936
+    },
+    {
+      "date": "2026-07-24",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1784942193294
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (16 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 16,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 16,
+      "ts": 1784994104988
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785003510840
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785003515529
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Superhero Muffin (85 Grams)",
+          "cal": 238,
+          "protein": 6.5,
+          "fiber": 4.2,
+          "carbs": 20.9,
+          "fat": 16.6
+        }
+      ],
+      "cal": 238,
+      "protein": 6.5,
+      "fiber": 4.2,
+      "carbs": 20.9,
+      "fat": 16.6,
+      "quantity": 85,
+      "unit": "Grams",
+      "ts": 1785003584310
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785003604573
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785005607785
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Grilled chicken breast (227 Grams)",
+          "cal": 343,
+          "protein": 69.2,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 7.3
+        }
+      ],
+      "cal": 343,
+      "protein": 69.2,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 7.3,
+      "quantity": 227,
+      "unit": "Grams",
+      "ts": 1785005657787
+    },
+    {
+      "date": "2026-07-25",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Shrimp and Edamame Stir fry (400 Grams)",
+          "cal": 340,
+          "protein": 36,
+          "fiber": 12,
+          "carbs": 28,
+          "fat": 12
+        }
+      ],
+      "cal": 340,
+      "protein": 36,
+      "fiber": 12,
+      "carbs": 28,
+      "fat": 12,
+      "quantity": 400,
+      "unit": "Grams",
+      "ts": 1785021443214
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785071286768
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Fiber supplement (3.5 Grams)",
+          "cal": 9,
+          "protein": 0,
+          "fiber": 2.6,
+          "carbs": 2.6,
+          "fat": 0
+        }
+      ],
+      "cal": 9,
+      "protein": 0,
+      "fiber": 2.6,
+      "carbs": 2.6,
+      "fat": 0,
+      "quantity": 3.5,
+      "unit": "Grams",
+      "ts": 1785071423500
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785073614777
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Super hero muffin (85 Grams)",
+          "cal": 319,
+          "protein": 3.8,
+          "fiber": 0.9,
+          "carbs": 45.1,
+          "fat": 13.7
+        }
+      ],
+      "cal": 319,
+      "protein": 3.8,
+      "fiber": 0.9,
+      "carbs": 45.1,
+      "fat": 13.7,
+      "quantity": 85,
+      "unit": "Grams",
+      "ts": 1785084927280
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Shrimp and Edamame Stir fry (170 Grams)",
+          "cal": 145,
+          "protein": 15.3,
+          "fiber": 5.1,
+          "carbs": 11.9,
+          "fat": 5.1
+        }
+      ],
+      "cal": 145,
+      "protein": 15.3,
+      "fiber": 5.1,
+      "carbs": 11.9,
+      "fat": 5.1,
+      "quantity": 170,
+      "unit": "Grams",
+      "ts": 1785087860476
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785087873125
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785097909226
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785108570760
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785123864146
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Popcorn (113 Grams)",
+          "cal": 397,
+          "protein": 20,
+          "fiber": 1.1,
+          "carbs": 24,
+          "fat": 24.5
+        }
+      ],
+      "cal": 397,
+      "protein": 20,
+      "fiber": 1.1,
+      "carbs": 24,
+      "fat": 24.5,
+      "quantity": 113,
+      "unit": "Grams",
+      "ts": 1785123896546
+    },
+    {
+      "date": "2026-07-26",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Spiced chickpea (200 Grams)",
+          "cal": 198,
+          "protein": 15.8,
+          "fiber": 2.6,
+          "carbs": 10.6,
+          "fat": 10
+        }
+      ],
+      "cal": 198,
+      "protein": 15.8,
+      "fiber": 2.6,
+      "carbs": 10.6,
+      "fat": 10,
+      "quantity": 200,
+      "unit": "Grams",
+      "ts": 1785168966423
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785168914313
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785168921329
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785168935295
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Trail Mix (71 Grams)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "quantity": 71,
+      "unit": "Grams",
+      "ts": 1785168950531
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785180904931
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785180911183
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Hard Boiled Egg (79 Grams)",
+          "cal": 122,
+          "protein": 10,
+          "fiber": 0,
+          "carbs": 0.9,
+          "fat": 8.4
+        }
+      ],
+      "cal": 122,
+      "protein": 10,
+      "fiber": 0,
+      "carbs": 0.9,
+      "fat": 8.4,
+      "quantity": 79,
+      "unit": "Grams",
+      "ts": 1785180917480
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785180969491
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785191227087
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Pollo asado (180 Grams)",
+          "cal": 324,
+          "protein": 25.2,
+          "fiber": 5.4,
+          "carbs": 27,
+          "fat": 9
+        }
+      ],
+      "cal": 324,
+      "protein": 25.2,
+      "fiber": 5.4,
+      "carbs": 27,
+      "fat": 9,
+      "quantity": 180,
+      "unit": "Grams",
+      "ts": 1785199245453
+    },
+    {
+      "date": "2026-07-27",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785205026943
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785255342201
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785255363874
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785255370316
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785255382423
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785255385668
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Apple (172 Grams)",
+          "cal": 98,
+          "protein": 0.4,
+          "fiber": 4,
+          "carbs": 23.5,
+          "fat": 0
+        }
+      ],
+      "cal": 98,
+      "protein": 0.4,
+      "fiber": 4,
+      "carbs": 23.5,
+      "fat": 0,
+      "quantity": 172,
+      "unit": "Grams",
+      "ts": 1785255389174
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Trail Mix (71 Grams)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "quantity": 71,
+      "unit": "Grams",
+      "ts": 1785270201171
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785270210858
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785270212228
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Farro bowl with (350 Grams)",
+          "cal": 284,
+          "protein": 14,
+          "fiber": 8,
+          "carbs": 51.5,
+          "fat": 3.9
+        }
+      ],
+      "cal": 284,
+      "protein": 14,
+      "fiber": 8,
+      "carbs": 51.5,
+      "fat": 3.9,
+      "quantity": 350,
+      "unit": "Grams",
+      "ts": 1785281347319
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785281371049
+    },
+    {
+      "date": "2026-07-28",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1785281386961
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785348595443
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785348596365
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1785348598705
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785348606146
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Hard Boiled Egg (79 Grams)",
+          "cal": 122,
+          "protein": 10,
+          "fiber": 0,
+          "carbs": 0.9,
+          "fat": 8.4
+        }
+      ],
+      "cal": 122,
+      "protein": 10,
+      "fiber": 0,
+      "carbs": 0.9,
+      "fat": 8.4,
+      "quantity": 79,
+      "unit": "Grams",
+      "ts": 1785348617538
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Trail Mix (71 Grams)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "quantity": 71,
+      "unit": "Grams",
+      "ts": 1785348621748
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Iced Tea (355 Grams)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 355,
+      "unit": "Grams",
+      "drinkName": "Iced Tea",
+      "drinkVolume": 355,
+      "ts": 1785348633328
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785348646984
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Farro bowl with (350 Grams)",
+          "cal": 284,
+          "protein": 14,
+          "fiber": 8,
+          "carbs": 51.5,
+          "fat": 3.9
+        }
+      ],
+      "cal": 284,
+      "protein": 14,
+      "fiber": 8,
+      "carbs": 51.5,
+      "fat": 3.9,
+      "quantity": 350,
+      "unit": "Grams",
+      "ts": 1785364584850
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785364968604
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785365067536
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Thin Wheat Tomato Basil Crackers (\u00d72)",
+          "cal": 260,
+          "protein": 4,
+          "fiber": 4,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 260,
+      "protein": 4,
+      "fiber": 4,
+      "carbs": 0,
+      "fat": 0,
+      "ts": 1785467704869,
+      "quantity": 25,
+      "unit": "Grams"
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785380707243
+    },
+    {
+      "date": "2026-07-29",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (12 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 12,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 12,
+      "ts": 1785380712281
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785423096389
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1785423098524
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785423161712
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785423121596
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785429652079
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Hard Boiled Egg (79 Grams)",
+          "cal": 122,
+          "protein": 10,
+          "fiber": 0,
+          "carbs": 0.9,
+          "fat": 8.4
+        }
+      ],
+      "cal": 122,
+      "protein": 10,
+      "fiber": 0,
+      "carbs": 0.9,
+      "fat": 8.4,
+      "quantity": 79,
+      "unit": "Grams",
+      "ts": 1785429665013
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785429668087
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Apple (172 Grams)",
+          "cal": 98,
+          "protein": 0.4,
+          "fiber": 4,
+          "carbs": 23.5,
+          "fat": 0
+        }
+      ],
+      "cal": 98,
+      "protein": 0.4,
+      "fiber": 4,
+      "carbs": 23.5,
+      "fat": 0,
+      "quantity": 172,
+      "unit": "Grams",
+      "ts": 1785429679997
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Turkey Stuffed Bell pepper (350 Grams)",
+          "cal": 294.0,
+          "protein": 19.6,
+          "fiber": 4.2,
+          "carbs": 27.65,
+          "fat": 12.25
+        }
+      ],
+      "cal": 294.0,
+      "protein": 19.6,
+      "fiber": 4.2,
+      "carbs": 27.65,
+      "fat": 12.25,
+      "quantity": 350,
+      "unit": "Grams",
+      "ts": 1785467736873
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Superhero Muffin (118 Grams)",
+          "cal": 330,
+          "protein": 9,
+          "fiber": 5.8,
+          "carbs": 29,
+          "fat": 23
+        }
+      ],
+      "cal": 330,
+      "protein": 9,
+      "fiber": 5.8,
+      "carbs": 29,
+      "fat": 23,
+      "quantity": 118,
+      "unit": "Grams",
+      "ts": 1785467747008
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (12 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 12,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 12,
+      "ts": 1785461647910
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (12 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 12,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 12,
+      "ts": 1785461648952
+    },
+    {
+      "date": "2026-07-30",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785461650081
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785507015243
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (12 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 12,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 12,
+      "ts": 1785507017849
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785507046432
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1785510377060
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1785510379739
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Vu salad bar (350 Grams)",
+          "cal": 385,
+          "protein": 47.3,
+          "fiber": 9.1,
+          "carbs": 37.4,
+          "fat": 16.8
+        }
+      ],
+      "cal": 385,
+      "protein": 47.3,
+      "fiber": 9.1,
+      "carbs": 37.4,
+      "fat": 16.8,
+      "quantity": 350,
+      "unit": "Grams",
+      "ts": 1785515839472
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Iced Tea (355 Grams)",
+          "cal": 0,
+          "protein": 0,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 0,
+      "quantity": 355,
+      "unit": "Grams",
+      "drinkName": "Iced Tea",
+      "drinkVolume": 355,
+      "ts": 1785515855625
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785542404982
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785542405961
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Ciabatta Toastie (250 Grams)",
+          "cal": 420,
+          "protein": 17.8,
+          "fiber": 6.8,
+          "carbs": 42.5,
+          "fat": 21.3
+        }
+      ],
+      "cal": 420,
+      "protein": 17.8,
+      "fiber": 6.8,
+      "carbs": 42.5,
+      "fat": 21.3,
+      "quantity": 250,
+      "unit": "Grams",
+      "ts": 1785542432520
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Home salad (200 Grams)",
+          "cal": 102,
+          "protein": 2.2,
+          "fiber": 3.8,
+          "carbs": 11.8,
+          "fat": 6
+        }
+      ],
+      "cal": 102,
+      "protein": 2.2,
+      "fiber": 3.8,
+      "carbs": 11.8,
+      "fat": 6,
+      "quantity": 200,
+      "unit": "Grams",
+      "ts": 1785542827398
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "dinner",
+      "type": "food",
+      "quantity": 475,
+      "unit": "Grams",
+      "items": [
+        {
+          "name": "Yuengling Lager 475g (pint) (31.75oz)",
+          "cal": 171.0,
+          "protein": 1.43,
+          "fiber": 0.0,
+          "carbs": 15.67,
+          "fat": 0.0
+        }
+      ],
+      "cal": 171.0,
+      "protein": 1.43,
+      "fiber": 0.0,
+      "carbs": 15.67,
+      "fat": 0.0,
+      "ts": 1785543262560
+    },
+    {
+      "date": "2026-07-31",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785554228991
+    },
+    {
+      "date": "2026-08-01",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785588671924
+    },
+    {
+      "date": "2026-08-01",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (8 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 8,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 8,
+      "ts": 1785588686264
+    },
+    {
+      "date": "2026-08-01",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785603592806
+    },
+    {
+      "date": "2026-08-01",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Turkey stuffed bell pepper (283 Grams)",
+          "cal": 237.7,
+          "protein": 15.85,
+          "fiber": 3.4,
+          "carbs": 22.36,
+          "fat": 9.91
+        }
+      ],
+      "cal": 237.7,
+      "protein": 15.85,
+      "fiber": 3.4,
+      "carbs": 22.36,
+      "fat": 9.91,
+      "quantity": 283,
+      "unit": "Grams",
+      "ts": 1785612896586
+    },
+    {
+      "date": "2026-08-01",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785612461599
+    },
+    {
+      "date": "2026-08-01",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785612462740
+    }
+  ],
+  "exercise": [
+    {
+      "date": "2026-07-23",
+      "type": "walking",
+      "duration": 60,
+      "steps": 0,
+      "notes": "",
+      "ts": 1784831855254
+    },
+    {
+      "date": "2026-07-25",
+      "type": "other",
+      "duration": 70,
+      "steps": 0,
+      "notes": "Pickleball",
+      "ts": 1785003691944
+    }
+  ],
+  "daily": [
+    {
+      "date": "2026-07-21",
+      "water": 133,
+      "energy": 5,
+      "mood": 5,
+      "sideEffects": [],
+      "notes": "Imported from Google Sheet",
+      "ts": 1784830475342
+    },
+    {
+      "date": "2026-07-22",
+      "water": 99,
+      "energy": 5,
+      "mood": 5,
+      "sideEffects": [],
+      "notes": "Imported from Google Sheet",
+      "ts": 1784830475342
+    },
+    {
+      "date": "2026-07-23",
+      "water": 55,
+      "energy": 6,
+      "mood": 7,
+      "sideEffects": [
+        "none"
+      ],
+      "notes": "",
+      "ts": 1784831897682
+    },
+    {
+      "date": "2026-07-25",
+      "water": 76,
+      "energy": 6,
+      "mood": 7,
+      "sideEffects": [
+        "none"
+      ],
+      "notes": "",
+      "ts": 1785003728363
+    }
+  ],
+  "injections": [
+    {
+      "date": "2026-07-20",
+      "dose": "2.5mg",
+      "site": "abd-ll",
+      "notes": "First injection ",
+      "ts": 1784509176528
+    },
+    {
+      "date": "2026-07-25",
+      "dose": "2.5mg",
+      "site": "thigh-l",
+      "notes": "",
+      "ts": 1785031225447
+    }
+  ],
+  "recipes": [
+    {
+      "id": "6999578666198",
+      "name": "Taco Bowl",
+      "totalWeight": 1615.9,
+      "ingredients": [],
+      "notes": "Imported from Google Sheet",
+      "totalCal": 2226.3,
+      "totalProtein": 137.74,
+      "totalFiber": 3.5,
+      "totalCarbs": 167.54,
+      "totalFat": 107,
+      "ts": 1784683679106
+    },
+    {
+      "id": "4986528820690",
+      "name": "Trail Mix",
+      "totalWeight": 56.7,
+      "ingredients": [],
+      "notes": "Imported from Google Sheet",
+      "totalCal": 278.4,
+      "totalProtein": 7.61,
+      "totalFiber": 4.28,
+      "totalCarbs": 25.57,
+      "totalFat": 18.93,
+      "ts": 1784734663040
+    },
+    {
+      "id": "7076582763402",
+      "name": "Curry Green Lentils",
+      "totalWeight": 3396.9,
+      "ingredients": [],
+      "notes": "Imported from Google Sheet",
+      "totalCal": 1596.8,
+      "totalProtein": 79.04,
+      "totalFiber": 70.07,
+      "totalCarbs": 218.26,
+      "totalFat": 57.99,
+      "ts": 1784757865980
+    },
+    {
+      "id": "7305881564431",
+      "name": "Superhero Muffin",
+      "totalWeight": 98.1,
+      "ingredients": [],
+      "notes": "Imported from Google Sheet",
+      "totalCal": 275,
+      "totalProtein": 7.5,
+      "totalFiber": 4.8,
+      "totalCarbs": 24.1,
+      "totalFat": 19.1,
+      "ts": 1784776787957
+    },
+    {
+      "id": "1784941039423",
+      "name": "Panzanella NYT",
+      "totalWeight": 1400,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 1734,
+      "totalProtein": 60,
+      "totalFiber": 18,
+      "totalCarbs": 108,
+      "totalFat": 126,
+      "isBulk": true,
+      "ts": 1784941039423
+    },
+    {
+      "id": "1784992748855",
+      "name": "SK Protein Shake",
+      "totalWeight": 360,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "Powder, banana, oat milk, chia and flax",
+      "totalCal": 400,
+      "totalProtein": 31,
+      "totalFiber": 11.9,
+      "totalCarbs": 46,
+      "totalFat": 13,
+      "isBulk": true,
+      "ts": 1784992785108
+    },
+    {
+      "id": "1785021170445",
+      "name": "Shrimp and Edamame Stir Fry",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 85,
+      "totalProtein": 9,
+      "totalFiber": 3,
+      "totalCarbs": 7,
+      "totalFat": 3,
+      "isBulk": true,
+      "ts": 1785021170445
+    },
+    {
+      "id": "1785071383997",
+      "name": "Fiber supplement",
+      "totalWeight": 4,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 10,
+      "totalProtein": 0,
+      "totalFiber": 3,
+      "totalCarbs": 3,
+      "totalFat": 0,
+      "isBulk": true,
+      "ts": 1785071383997
+    },
+    {
+      "id": "1785168832985",
+      "name": "Spiced Chickpea + Chicken Thigh Skillet",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 99,
+      "totalProtein": 7.9,
+      "totalFiber": 1.3,
+      "totalCarbs": 5.3,
+      "totalFat": 5,
+      "isBulk": true,
+      "ts": 1785168832985
+    },
+    {
+      "id": "1785199133755",
+      "name": "Pollo Asado Tacos",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 180,
+      "totalProtein": 14,
+      "totalFiber": 3,
+      "totalCarbs": 15,
+      "totalFat": 5,
+      "isBulk": true,
+      "ts": 1785199133755
+    },
+    {
+      "id": "1785281313255",
+      "name": "Farro Bowl with Ginger Dressing",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 81,
+      "totalProtein": 4,
+      "totalFiber": 2.3,
+      "totalCarbs": 14.7,
+      "totalFat": 1.1,
+      "isBulk": true,
+      "ts": 1785281313255
+    },
+    {
+      "id": "glp1-r1",
+      "name": "Grilled Salmon with Lentil Tabbouleh",
+      "totalWeight": 480,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 552,
+      "totalProtein": 39.4,
+      "totalCarbs": 43.7,
+      "totalFat": 25.4,
+      "totalFiber": 10.1,
+      "ingredients": [],
+      "steps": [
+        "Season salmon fillets with salt, pepper, and a drizzle of olive oil.",
+        "Grill salmon 4\u20135 min per side until cooked through. Rest 2 min.",
+        "Cook lentils in salted water until tender (~20 min). Drain and cool.",
+        "Combine lentils with diced cucumber, tomato, parsley, mint, lemon juice, and olive oil.",
+        "Serve salmon over tabbouleh."
+      ],
+      "tips": "Swap salmon for chicken breast for a lower-fat version. Lentils can be made a day ahead.",
+      "tags": [
+        "high-protein",
+        "glp1-friendly",
+        "meal-prep"
+      ],
+      "servingBase": 3,
+      "ts": 1785349379482
+    },
+    {
+      "id": "glp1-r2",
+      "name": "Turkey-Stuffed Bell Peppers",
+      "totalWeight": 600,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 504,
+      "totalProtein": 33.6,
+      "totalCarbs": 47.4,
+      "totalFat": 21,
+      "totalFiber": 7.2,
+      "ingredients": [],
+      "steps": [
+        "Preheat oven to 375\u00b0F. Cut tops off peppers, remove seeds.",
+        "Brown ground turkey with onion, garlic, and Italian seasoning.",
+        "Mix in cooked rice, diced tomatoes, and tomato paste. Season to taste.",
+        "Stuff peppers with turkey mixture. Place in baking dish.",
+        "Top with shredded mozzarella. Bake 30\u201335 min until peppers are tender."
+      ],
+      "tips": "Use cauliflower rice instead of white rice to reduce carbs by ~12g per 100g.",
+      "tags": [
+        "high-protein",
+        "glp1-friendly",
+        "meal-prep"
+      ],
+      "servingBase": 3,
+      "ts": 1785349379482
+    },
+    {
+      "id": "glp1-r3",
+      "name": "Shrimp + Edamame Stir-Fry with Brown Rice",
+      "totalWeight": 620,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 645,
+      "totalProtein": 53.3,
+      "totalCarbs": 69.4,
+      "totalFat": 16.7,
+      "totalFiber": 6.8,
+      "ingredients": [],
+      "steps": [
+        "Cook brown rice per package directions.",
+        "Heat sesame oil in a wok over high heat.",
+        "Stir-fry shrimp 2\u20133 min until pink. Remove and set aside.",
+        "Add edamame, snap peas, and bell pepper. Stir-fry 3\u20134 min.",
+        "Return shrimp to wok. Add soy sauce, ginger, and garlic. Toss to coat.",
+        "Serve over brown rice."
+      ],
+      "tips": "Frozen shrimp work great here \u2014 thaw in cold water for 10 min. Edamame is a GLP-1 MVP for protein + fiber.",
+      "tags": [
+        "high-protein",
+        "high-fiber",
+        "glp1-friendly"
+      ],
+      "servingBase": 3,
+      "ts": 1785349379482
+    },
+    {
+      "id": "glp1-r4",
+      "name": "White Bean + Tuna Salad with Lemon Vinaigrette",
+      "totalWeight": 450,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 419,
+      "totalProtein": 36,
+      "totalCarbs": 37.4,
+      "totalFat": 14.4,
+      "totalFiber": 9,
+      "ingredients": [],
+      "steps": [
+        "Drain and rinse white beans and tuna.",
+        "Whisk together lemon juice, olive oil, Dijon, garlic, salt, and pepper.",
+        "Combine beans, tuna, arugula, red onion, and capers in a large bowl.",
+        "Drizzle with vinaigrette and toss gently.",
+        "Serve immediately or refrigerate up to 2 days."
+      ],
+      "tips": "No-cook meal \u2014 great for days when appetite is low. High fiber keeps you full longer.",
+      "tags": [
+        "no-cook",
+        "high-fiber",
+        "glp1-friendly",
+        "quick"
+      ],
+      "servingBase": 3,
+      "ts": 1785349379482
+    },
+    {
+      "id": "glp1-r5",
+      "name": "Spiced Chickpea + Chicken Thigh Skillet",
+      "totalWeight": 580,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 574,
+      "totalProtein": 45.8,
+      "totalCarbs": 30.7,
+      "totalFat": 29,
+      "totalFiber": 7.5,
+      "ingredients": [],
+      "steps": [
+        "Season chicken thighs with cumin, smoked paprika, coriander, salt, and pepper.",
+        "Sear chicken in olive oil 4\u20135 min per side. Remove from pan.",
+        "Saut\u00e9 onion and garlic in the same pan until softened.",
+        "Add chickpeas, diced tomatoes, and chicken broth. Stir to combine.",
+        "Return chicken to pan. Simmer 15\u201320 min until cooked through.",
+        "Finish with fresh cilantro and a squeeze of lemon."
+      ],
+      "tips": "Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.",
+      "tags": [
+        "high-protein",
+        "glp1-friendly",
+        "one-pan"
+      ],
+      "servingBase": 3,
+      "ts": 1785349379482
+    },
+    {
+      "id": "1785515776417",
+      "name": "VU Salad Bar",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 110,
+      "totalProtein": 13.5,
+      "totalFiber": 2.6,
+      "totalCarbs": 10.7,
+      "totalFat": 4.8,
+      "isBulk": true,
+      "ts": 1785515776417
+    },
+    {
+      "id": "1785542394585",
+      "name": "Ciabatta Toastie 250g",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 168,
+      "totalProtein": 7.1,
+      "totalFiber": 2.7,
+      "totalCarbs": 17,
+      "totalFat": 8.5,
+      "isBulk": true,
+      "ts": 1785542394585
+    },
+    {
+      "id": "1785542802888",
+      "name": "Home Salad 200g",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 51,
+      "totalProtein": 1.1,
+      "totalFiber": 1.9,
+      "totalCarbs": 5.9,
+      "totalFat": 3,
+      "isBulk": true,
+      "ts": 1785542802888
+    },
+    {
+      "id": "1785543041706",
+      "name": "Yuengling Lager 475g (pint)",
+      "totalWeight": 100,
+      "weightUnit": "g",
+      "ingredients": [],
+      "notes": "",
+      "totalCal": 36,
+      "totalProtein": 0.3,
+      "totalFiber": 0,
+      "totalCarbs": 3.3,
+      "totalFat": 0,
+      "isBulk": true,
+      "ts": 1785543041706
+    }
+  ],
+  "drinkPresets": [
+    {
+      "id": "1784226655415",
+      "name": "Iced Tea",
+      "category": "tea",
+      "volume": 12,
+      "additions": "",
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "countsAsWater": false
+    }
+  ],
+  "quickPicks": [
+    "Water",
+    "Coffee",
+    "Iced Tea",
+    "Hard Boiled Egg",
+    "Cheese Stick",
+    "Nuts",
+    "Trail Mix",
+    "SK Protein Shake",
+    "Banana",
+    "Apple",
+    "Other"
+  ],
+  "customItems": [],
+  "goals": {
+    "calories": 1800,
+    "protein": 130,
+    "fiber": 30,
+    "water": 125,
+    "steps": 8000
+  },
+  "units": "imperial",
+  "exported": "2026-08-01T19:35:02.521Z"
+}

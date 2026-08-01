@@ -1229,7 +1229,10 @@
             <div class="settings-label">Export All Data</div>
             <div class="settings-sub" id="export-status">Download as JSON backup</div>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="exportData()">Export</button>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="exportData()">Export</button>
+            <button class="btn btn-ghost btn-sm" onclick="shareBackup()" style="color:var(--accent2);border-color:var(--accent2)">Share</button>
+          </div>
         </div>
         <div class="settings-row">
           <div>
@@ -3106,7 +3109,18 @@ function renderRecipeCardContent(r, servings) {
       </div>
     </div>
 
-    <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px">Per 100g · ${tw}g total</div>
+    <!-- Full Recipe Macros -->
+    <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Full Recipe — ${tw}g</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:14px">
+      ${macroPill('Weight',tw,'g','var(--muted)')}
+      ${macroPill('Cal',r.totalCal,'','#6c8aff')}
+      ${macroPill('Pro',Math.round(r.totalProtein*10)/10,'g','#a78bfa')}
+      ${macroPill('Carb',Math.round(r.totalCarbs*10)/10,'g','#fbbf24')}
+      ${macroPill('Fiber',Math.round(r.totalFiber*10)/10,'g','#34d399')}
+    </div>
+
+    <!-- Per 100g Macros -->
+    <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Per 100g — used for logging</div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px">
       ${macroPill('Cal',per100cal,'','#6c8aff')}
       ${macroPill('Pro',per100pro,'g','#a78bfa')}
@@ -3219,10 +3233,19 @@ function renderRecipesList(query='') {
         <div style="font-weight:600;font-size:0.88rem;flex:1;padding-right:8px">${r.name}</div>
         <div style="font-size:0.78rem;color:#d29922;white-space:nowrap">${stars}</div>
       </div>
+      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">Full recipe (${tw}g)</div>
+      <div style="display:flex;gap:10px;margin-bottom:4px">
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#6c8aff">${r.totalCal} cal</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#a78bfa">${Math.round(r.totalProtein*10)/10}g pro</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#34d399">${Math.round(r.totalFiber*10)/10}g fib</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#fbbf24">${Math.round(r.totalCarbs*10)/10}g carb</span>
+      </div>
+      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">Per 100g${cookCount>0?' · 🍳'+cookCount+'×':''}</div>
       <div style="display:flex;gap:10px;margin-bottom:5px">
         <span style="font-family:var(--mono);font-size:0.72rem;color:#6c8aff">${per100cal} cal</span>
         <span style="font-family:var(--mono);font-size:0.72rem;color:#a78bfa">${per100pro}g pro</span>
-        <span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${tw}g total${cookCount>0?' · 🍳'+cookCount+'×':''}</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#34d399">${per100fib}g fib</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#fbbf24">${per100carb}g carb</span>
       </div>
       <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
         <div style="display:flex;gap:4px">${tagHtml}</div>
@@ -3250,14 +3273,37 @@ function onRecipeSelect() {
   if (!id) { details.style.display='none'; return; }
   const recipe = (DB.get('recipes')||[]).find(r=>r.id===id);
   if (!recipe) return;
-  // totalWeight always stored in grams — show per-100g nutrition
-  const per = v => Math.round(v/recipe.totalWeight*100*10)/10;
+
+  const tw = recipe.totalWeight || 100;
+  const per = v => Math.round(v/tw*100*10)/10;
   const displayUnit = UNITS==='metric'?'g':'oz';
-  document.getElementById('recipe-nutrition-per100').textContent =
-    `Per 100g: ${per(recipe.totalCal)} cal · ${per(recipe.totalProtein)}g pro · ${per(recipe.totalFiber)}g fib · ${per(recipe.totalCarbs)}g carb · ${per(recipe.totalFat)}g fat`;
+
+  document.getElementById('recipe-nutrition-per100').innerHTML =
+    `<div style="margin-bottom:6px">
+      <div style="font-size:0.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px">Full Recipe (${tw}g)</div>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#6c8aff">${recipe.totalCal} cal</span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)"> · </span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#a78bfa">${Math.round(recipe.totalProtein*10)/10}g pro</span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)"> · </span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#34d399">${Math.round(recipe.totalFiber*10)/10}g fib</span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)"> · </span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#fbbf24">${Math.round(recipe.totalCarbs*10)/10}g carb</span>
+    </div>
+    <div>
+      <div style="font-size:0.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px">Per 100g — used for logging</div>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#6c8aff">${per(recipe.totalCal)} cal</span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)"> · </span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#a78bfa">${per(recipe.totalProtein)}g pro</span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)"> · </span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#34d399">${per(recipe.totalFiber)}g fib</span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)"> · </span>
+      <span style="font-family:var(--mono);font-size:0.75rem;color:#fbbf24">${per(recipe.totalCarbs)}g carb</span>
+    </div>`;
+
   document.querySelectorAll('.recipe-wt-unit').forEach(el=>el.textContent=displayUnit);
-  // default portion — 4 oz or 100g
-  document.getElementById('recipe-portion').value = UNITS==='metric' ? 100 : 4;
+  // default to 100g in grams field
+  document.getElementById('recipe-portion-g').value = 100;
+  document.getElementById('recipe-portion').value = Math.round(100/28.3495*100)/100;
   updateRecipePortionCalc();
   details.style.display='block';
 }
@@ -3266,9 +3312,13 @@ function updateRecipePortionCalc() {
   const id = document.getElementById('recipe-select')?.value;
   const recipe = id ? (DB.get('recipes')||[]).find(r=>r.id===id) : null;
   if (!recipe) return;
-  const portionInput = parseFloat(document.getElementById('recipe-portion').value)||0;
-  // convert display unit to grams
-  const portionG = UNITS==='metric' ? portionInput : portionInput * 28.3495;
+
+  // Read from both fields — prefer grams
+  const gramsVal = parseFloat(document.getElementById('recipe-portion-g').value);
+  const ozVal    = parseFloat(document.getElementById('recipe-portion').value);
+  const portionG = gramsVal > 0 ? gramsVal : ozVal > 0 ? ozVal * 28.3495 : 0;
+  if (!portionG) return;
+
   const factor = portionG / recipe.totalWeight;
   const calc = {
     cal:     Math.round(recipe.totalCal*factor),
@@ -3278,29 +3328,45 @@ function updateRecipePortionCalc() {
     fat:     Math.round(recipe.totalFat*factor*10)/10
   };
   const el = document.getElementById('recipe-portion-nutrition');
-  if (el) el.innerHTML = `${calc.cal} cal · ${calc.protein}g pro · ${calc.fiber}g fib<br>${calc.carbs}g carb · ${calc.fat}g fat`;
+  if (el) el.innerHTML = `<span style="color:${METRIC_COLORS.cal}">${calc.cal} cal</span> · <span style="color:${METRIC_COLORS.protein}">${calc.protein}g pro</span> · <span style="color:${METRIC_COLORS.fiber}">${calc.fiber}g fib</span><br><span style="color:var(--muted)">${calc.carbs}g carb · ${calc.fat}g fat</span>`;
 }
 
 function logRecipePortion() {
   const id = document.getElementById('recipe-select')?.value;
   const recipe = id ? (DB.get('recipes')||[]).find(r=>r.id===id) : null;
   if (!recipe) return;
-  const portionInput = parseFloat(document.getElementById('recipe-portion').value)||0;
-  if (!portionInput) { alert('Enter portion weight'); return; }
 
-  // portion is entered in the display unit (oz for imperial, g for metric)
-  // totalWeight is ALWAYS stored in grams — convert portion to grams
-  const displayUnit = UNITS==='metric' ? 'g' : 'oz';
-  const portionG = UNITS==='metric' ? portionInput : portionInput * 28.3495;
+  // Read from BOTH fields — prefer grams (direct entry), fall back to oz
+  // This prevents the mobile oninput sync failure bug where oz field stays
+  // stale when user fills grams via autocomplete or paste
+  const gramsVal = parseFloat(document.getElementById('recipe-portion-g').value);
+  const ozVal    = parseFloat(document.getElementById('recipe-portion').value);
+
+  let portionG, portionDisplay, displayUnit;
+  if (gramsVal > 0) {
+    portionG = gramsVal;
+    portionDisplay = gramsVal;
+    displayUnit = 'Grams';
+  } else if (ozVal > 0) {
+    portionG = ozVal * 28.3495;
+    portionDisplay = ozVal;
+    displayUnit = 'OZ';
+  } else {
+    alert('Enter portion weight in grams or ounces');
+    return;
+  }
+
+  if (portionG <= 0) { alert('Enter portion weight'); return; }
+
   const factor = portionG / recipe.totalWeight;
 
   DB.push('meals', {
     date: document.getElementById('meal-date')?.value || today(),
     mealType: document.getElementById('recipe-meal-type').value,
     type: 'food',
-    quantity: portionInput, unit: displayUnit,
-    items: [{ name: `${recipe.name} (${portionInput}${displayUnit})`,
-              cal: Math.round(recipe.totalCal*factor),
+    quantity: portionDisplay, unit: displayUnit,
+    items: [{ name: `${recipe.name} (${portionDisplay}${displayUnit})`,
+              cal:     Math.round(recipe.totalCal*factor),
               protein: Math.round(recipe.totalProtein*factor*10)/10,
               fiber:   Math.round(recipe.totalFiber*factor*10)/10,
               carbs:   Math.round(recipe.totalCarbs*factor*10)/10,
@@ -3312,6 +3378,10 @@ function logRecipePortion() {
     fat:     Math.round(recipe.totalFat*factor*10)/10,
     ts: Date.now()
   });
+  // reset portion fields
+  document.getElementById('recipe-portion-g').value = '';
+  document.getElementById('recipe-portion').value = '';
+  document.getElementById('recipe-portion-nutrition').innerHTML = '';
   showToast(`${recipe.name} logged!`);
   renderToday();
 }
@@ -3351,7 +3421,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.1</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.2</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4442,7 +4512,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.1';
+      const localVersion  = '5.2';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -4512,6 +4582,46 @@ function exportData() {
     setTimeout(() => { statusEl.textContent = 'Download as JSON backup'; statusEl.style.color = ''; }, 5000);
   }
   showToast('Export saved to Downloads!');
+}
+
+async function shareBackup() {
+  const data = {
+    weights: DB.get('weights') || [],
+    meals:   DB.get('meals')   || [],
+    exercise:DB.get('exercise')|| [],
+    daily:   DB.get('daily')   || [],
+    injections: DB.get('injections') || [],
+    recipes: DB.get('recipes') || [],
+    drinkPresets: DB.get('drinkPresets') || [],
+    quickPicks: DB.get('quickPicks') || DEFAULT_QUICK_PICKS,
+    customItems: DB.get('customItems') || [],
+    goals: GOALS, units: UNITS,
+    exported: new Date().toISOString()
+  };
+  const filename = 'zeptrack-backup-' + today() + '.json';
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const file = new File([blob], filename, {type:'application/json'});
+
+  if (navigator.canShare && navigator.canShare({files:[file]})) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'ZepTrack Backup',
+        text: `ZepTrack data backup — ${today()}`
+      });
+      DB.set('lastBackupDate', today());
+      showToast('Backup shared!');
+    } catch(e) {
+      if (e.name !== 'AbortError') {
+        // Fall back to download if share fails
+        exportData();
+      }
+    }
+  } else {
+    // Browser doesn't support file sharing — fall back to download
+    exportData();
+    showToast('Share not supported — downloaded instead');
+  }
 }
 
 function importFromJSON(input) {
