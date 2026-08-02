@@ -1636,7 +1636,13 @@ function showIntakeSubtab(sub) {
     if (btn) btn.classList.toggle('active', s === sub);
   });
   if (sub === 'drink')  renderDrinkPresets();
-  if (sub === 'recipe') { renderRecipesList(); renderRecipeSelect(); closeRecipeCard(); }
+  if (sub === 'recipe') {
+    const searchEl = document.getElementById('recipe-search');
+    if (searchEl) searchEl.value = '';
+    renderRecipesList('');
+    renderRecipeSelect();
+    closeRecipeCard();
+  }
   if (sub === 'water')  updateWaterDisplay();
   if (sub === 'food')   renderQuickPickGrid();
 }
@@ -2951,8 +2957,8 @@ const GLP1_SEED_RECIPES = [
       'Serve salmon over tabbouleh.'
     ],
     tips:'Swap salmon for chicken breast for a lower-fat version. Lentils can be made a day ahead.',
-    tags:['high-protein','glp1-friendly','meal-prep'],
-    servingBase:3
+    tags:['mediterranean','high-protein','glp1-friendly','meal-prep','salmon','lentils'],
+    servingBase:4
   },
   {
     id: 'glp1-r2', name: 'Turkey-Stuffed Bell Peppers',
@@ -2966,8 +2972,8 @@ const GLP1_SEED_RECIPES = [
       'Top with shredded mozzarella. Bake 30–35 min until peppers are tender.'
     ],
     tips:'Use cauliflower rice instead of white rice to reduce carbs by ~12g per 100g.',
-    tags:['high-protein','glp1-friendly','meal-prep'],
-    servingBase:3
+    tags:['american','high-protein','glp1-friendly','meal-prep','turkey','carnivore'],
+    servingBase:4
   },
   {
     id: 'glp1-r3', name: 'Shrimp + Edamame Stir-Fry with Brown Rice',
@@ -2982,8 +2988,8 @@ const GLP1_SEED_RECIPES = [
       'Serve over brown rice.'
     ],
     tips:'Frozen shrimp work great here — thaw in cold water for 10 min. Edamame is a GLP-1 MVP for protein + fiber.',
-    tags:['high-protein','high-fiber','glp1-friendly'],
-    servingBase:3
+    tags:['asian','high-protein','high-fiber','glp1-friendly','shrimp','carnivore'],
+    servingBase:4
   },
   {
     id: 'glp1-r4', name: 'White Bean + Tuna Salad with Lemon Vinaigrette',
@@ -2997,8 +3003,8 @@ const GLP1_SEED_RECIPES = [
       'Serve immediately or refrigerate up to 2 days.'
     ],
     tips:'No-cook meal — great for days when appetite is low. High fiber keeps you full longer.',
-    tags:['no-cook','high-fiber','glp1-friendly','quick'],
-    servingBase:3
+    tags:['mediterranean','no-cook','high-fiber','glp1-friendly','quick','tuna','beans'],
+    servingBase:4
   },
   {
     id: 'glp1-r5', name: 'Spiced Chickpea + Chicken Thigh Skillet',
@@ -3013,10 +3019,191 @@ const GLP1_SEED_RECIPES = [
       'Finish with fresh cilantro and a squeeze of lemon.'
     ],
     tips:'Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.',
-    tags:['high-protein','glp1-friendly','one-pan'],
-    servingBase:3
+    id: 'glp1-r5', name: 'Spiced Chickpea + Chicken Thigh Skillet',
+    totalWeight:580, weightUnit:'g', isBulk:true, totalCal:574, totalProtein:45.8,
+    totalCarbs:30.7, totalFat:29.0, totalFiber:7.5, ingredients:[],
+    steps:[
+      'Season chicken thighs with cumin, smoked paprika, coriander, salt, and pepper.',
+      'Sear chicken in olive oil 4\u20135 min per side. Remove from pan.',
+      'Sa\u00fct\u00e9 onion and garlic in the same pan until softened.',
+      'Add chickpeas, diced tomatoes, and chicken broth. Stir to combine.',
+      'Return chicken to pan. Simmer 15\u201320 min until cooked through.',
+      'Finish with fresh cilantro and a squeeze of lemon.'
+    ],
+    tips:'Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.',
+    tags:['high-protein','glp1-friendly','one-pan','chicken','chickpeas','middle-eastern'],
+    servingBase:4
+  },
+  {
+    id: 'glp1-r6', name: 'Chicken Tinga Bowls',
+    totalWeight:1450, weightUnit:'g', isBulk:true,
+    totalCal:1421, totalProtein:162.4, totalCarbs:98.6, totalFat:44.95, totalFiber:30.45,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Sa\u00fct\u00e9 sliced onion in a little oil until soft, about 5 minutes. Add garlic, cumin, and oregano, cook 1 minute.',
+      'Add crushed tomatoes, chipotle peppers in adobo, and chicken thighs. Cover and simmer 25 minutes until chicken is cooked through.',
+      'Remove chicken and shred with two forks. Return to sauce and simmer uncovered 5 minutes to thicken.',
+      'Cook cauliflower rice in a dry pan 4\u20135 minutes. Season with salt and lime juice.',
+      'Warm black beans. Assemble bowls: cauliflower rice, black beans, tinga chicken, a dollop of Greek yogurt crema, cilantro, and lime.'
+    ],
+    tips:'Chipotle gives big smoky flavor in small portions. Cauliflower rice keeps carbs low without feeling like a sacrifice.',
+    tags:['mexican','high-protein','glp1-friendly','meal-prep','chicken','beans','carnivore']
+  },
+  {
+    id: 'glp1-r7', name: 'Vegetarian Tinga Bowls',
+    totalWeight:1380, weightUnit:'g', isBulk:true,
+    totalCal:994, totalProtein:52.4, totalCarbs:154.6, totalFat:12.4, totalFiber:46.9,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Sa\u00fct\u00e9 sliced onion until soft. Add garlic, cumin, and oregano, cook 1 minute.',
+      'Add torn mushrooms and cook until they release liquid and begin to brown, about 8 minutes.',
+      'Add drained shredded jackfruit, crushed tomatoes, and chipotle peppers. Simmer 20 minutes, shredding jackfruit with a fork as it softens.',
+      'Cook cauliflower rice in a dry pan. Warm black beans.',
+      'Assemble bowls: cauliflower rice, black beans, mushroom-jackfruit tinga, yogurt crema, cilantro, and lime.'
+    ],
+    tips:'Jackfruit mimics pulled meat texture beautifully. Mushrooms add umami depth so you won\u2019t miss the chicken.',
+    tags:['mexican','vegetarian','glp1-friendly','high-fiber','mushrooms','beans','jackfruit']
+  },
+  {
+    id: 'glp1-r8', name: 'Carne Asada Pepper Bowl',
+    totalWeight:1600, weightUnit:'g', isBulk:true,
+    totalCal:2272, totalProtein:220.8, totalCarbs:150.4, totalFat:89.6, totalFiber:28.8,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Marinate flank steak in lime juice, orange juice, garlic, cumin, and smoked paprika for at least 1 hour (overnight is better).',
+      'Toss sliced poblanos, red onion, and bell peppers in olive oil. Roast at 425\u00b0F for 25 minutes until charred at the edges.',
+      'Grill or sear steak over very high heat, 3\u20134 minutes per side for medium. Rest 5 minutes, then slice thinly against the grain.',
+      'Serve over brown rice with roasted peppers, sliced avocado, and fresh pico de gallo.'
+    ],
+    tips:'Slice the steak thin against the grain \u2014 it feels like more food visually. A good char on the peppers is key to the flavor.',
+    tags:['mexican','high-protein','glp1-friendly','beef','carnivore']
+  },
+  {
+    id: 'glp1-r9', name: 'Vegetarian Carne Asada Bowl',
+    totalWeight:1600, weightUnit:'g', isBulk:true,
+    totalCal:1424, totalProtein:62.4, totalCarbs:209.6, totalFat:44.8, totalFiber:62.4,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Cut cauliflower into thick steaks. Marinate in lime juice, orange juice, garlic, cumin, smoked paprika, and chili powder for 30 minutes.',
+      'Roast cauliflower at 425\u00b0F for 30\u201335 minutes, flipping once, until charred and tender.',
+      'Roast sliced peppers and onion alongside. Warm black beans.',
+      'Serve over brown rice with roasted vegetables, sliced avocado, and pico de gallo.'
+    ],
+    tips:'A very hot oven is essential \u2014 the char on the cauliflower is where all the flavor comes from.',
+    tags:['mexican','vegetarian','glp1-friendly','high-fiber','cauliflower','beans']
+  },
+  {
+    id: 'glp1-r10', name: 'Saag Chicken',
+    totalWeight:1350, weightUnit:'g', isBulk:true,
+    totalCal:1202, totalProtein:180.9, totalCarbs:56.7, totalFat:35.1, totalFiber:24.3,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Blend or finely chop spinach and set aside.',
+      'Heat ghee in a large pan. Sa\u00fct\u00e9 onion until golden, about 8 minutes. Add garlic and ginger, cook 2 minutes.',
+      'Add cumin, coriander, turmeric, garam masala, and chili powder. Stir 1 minute. Add diced tomatoes and cook until sauce thickens, about 5 minutes.',
+      'Add cubed chicken breast and cook through, 8\u201310 minutes.',
+      'Stir in spinach and simmer 5 minutes. Remove from heat and stir in Greek yogurt.',
+      'Serve with cauliflower rice or a small portion of naan.'
+    ],
+    tips:'Spinach is extremely volume-efficient \u2014 500g cooks down to almost nothing but keeps you full. Greek yogurt adds creaminess without heavy cream.',
+    tags:['indian','high-protein','glp1-friendly','chicken','carnivore','spinach']
+  },
+  {
+    id: 'glp1-r11', name: 'Saag Paneer',
+    totalWeight:1250, weightUnit:'g', isBulk:true,
+    totalCal:1400, totalProtein:105.0, totalCarbs:60.0, totalFat:86.25, totalFiber:20.0,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Cut paneer into cubes and pan-fry in ghee until golden on each side. Set aside.',
+      'In the same pan, sa\u00fct\u00e9 onion until golden. Add garlic, ginger, and all spices, cook 2 minutes.',
+      'Add diced tomatoes and cook until oil separates, about 5 minutes.',
+      'Add spinach and simmer 5 minutes. Stir in Greek yogurt.',
+      'Fold in the pan-fried paneer gently. Simmer 3 minutes and serve.'
+    ],
+    tips:'Pan-frying paneer first gives it a golden crust that holds up in the sauce. Don\u2019t skip this step.',
+    tags:['indian','vegetarian','glp1-friendly','paneer','high-protein','spinach']
+  },
+  {
+    id: 'glp1-r12', name: 'Dal Makhani',
+    totalWeight:1100, weightUnit:'g', isBulk:true,
+    totalCal:1298, totalProtein:74.8, totalCarbs:156.2, totalFat:42.9, totalFiber:52.8,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Soak black lentils overnight. Drain and rinse.',
+      'Simmer lentils in fresh water until very soft, about 45\u201360 minutes on stovetop (20 minutes in a pressure cooker).',
+      'Sa\u00fct\u00e9 onion in butter until deep golden. Add garlic, ginger, and spices, cook 2 minutes.',
+      'Add crushed tomatoes and cook until the oil separates, about 8 minutes.',
+      'Add cooked lentils, kidney beans, and 200ml water. Simmer 20 minutes, stirring occasionally.',
+      'Stir in Greek yogurt or a splash of cream. Adjust seasoning and serve.'
+    ],
+    tips:'Urad dal is one of the highest-fiber legumes \u2014 a 200g portion is extremely filling. Better the next day after the flavors meld.',
+    tags:['indian','vegetarian','high-fiber','glp1-friendly','lentils','beans']
+  },
+  {
+    id: 'glp1-r13', name: 'Ginger Beef Broccoli Stir Fry',
+    totalWeight:1750, weightUnit:'g', isBulk:true,
+    totalCal:1803, totalProtein:203.0, totalCarbs:143.5, totalFat:50.75, totalFiber:33.25,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Mix soy sauce, oyster sauce, rice vinegar, ginger, garlic, sesame oil, and cornstarch into a sauce. Toss sliced beef in half the sauce and marinate 15 minutes.',
+      'Blanch broccoli florets in boiling water for 2 minutes. Drain.',
+      'Sear beef in a very hot wok in batches, 1\u20132 minutes per batch. Remove and set aside.',
+      'Stir fry broccoli, snap peas, and bell pepper 3\u20134 minutes until tender-crisp.',
+      'Return beef to the wok, add remaining sauce. Toss 1 minute until sauce coats everything.',
+      'Serve over brown rice.'
+    ],
+    tips:'Sear beef in small batches \u2014 overcrowding steams instead of sears. A hot wok makes all the difference.',
+    tags:['chinese','high-protein','glp1-friendly','beef','carnivore','broccoli']
+  },
+  {
+    id: 'glp1-r14', name: 'Ginger Tofu Broccoli Stir Fry',
+    totalWeight:1700, weightUnit:'g', isBulk:true,
+    totalCal:1547, totalProtein:115.6, totalCarbs:154.7, totalFat:47.6, totalFiber:35.7,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Press tofu well for at least 20 minutes (wrap in a clean towel with something heavy on top). Cut into cubes.',
+      'Toss tofu in half the sauce mixture. Bake at 400\u00b0F for 25 minutes, flipping halfway, until golden and slightly crisp.',
+      'Blanch broccoli 2 minutes. Stir fry vegetables in a hot wok 3\u20134 minutes.',
+      'Add baked tofu and remaining sauce. Toss 1 minute.',
+      'Serve over brown rice and top with sesame seeds.'
+    ],
+    tips:'Pressing tofu is essential \u2014 moisture is the enemy of a good sear. Baking instead of frying gives a meatier texture with less oil.',
+    tags:['chinese','vegetarian','glp1-friendly','tofu','broccoli','high-fiber']
+  },
+  {
+    id: 'glp1-r15', name: 'Kung Pao Chicken',
+    totalWeight:1600, weightUnit:'g', isBulk:true,
+    totalCal:1888, totalProtein:198.4, totalCarbs:142.4, totalFat:60.8, totalFiber:25.6,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Mix sauce: soy sauce, rice vinegar, hoisin, sesame oil, cornstarch, and 2 tbsp water.',
+      'Toss cubed chicken in 1 tbsp soy sauce and a little cornstarch. Sear in a hot wok until cooked through, about 6 minutes. Remove.',
+      'Stir fry dried chilies and minced garlic in sesame oil for 30 seconds.',
+      'Add zucchini, celery, and bell pepper. Cook 3\u20134 minutes until tender-crisp.',
+      'Return chicken to wok. Add sauce and roasted peanuts. Toss 1\u20132 minutes until sauce thickens.',
+      'Serve over brown rice.'
+    ],
+    tips:'Peanuts add satisfying fat and crunch \u2014 a small amount goes a long way. Zucchini adds bulk with almost no calories.',
+    tags:['chinese','high-protein','glp1-friendly','chicken','carnivore','peanuts']
+  },
+  {
+    id: 'glp1-r16', name: 'Kung Pao Tofu',
+    totalWeight:1650, weightUnit:'g', isBulk:true,
+    totalCal:1551, totalProtein:133.65, totalCarbs:151.8, totalFat:47.85, totalFiber:39.6,
+    ingredients:[], servingBase:4,
+    steps:[
+      'Press and cube tofu. Bake at 400\u00b0F for 25 minutes until golden and crisp.',
+      'Mix sauce: soy sauce, hoisin, rice vinegar, sesame oil, cornstarch, water.',
+      'Stir fry dried chilies and garlic in sesame oil 30 seconds.',
+      'Add zucchini, celery, bell pepper, and edamame. Cook 3\u20134 minutes.',
+      'Add baked tofu and sauce. Toss 1\u20132 minutes. Top with sesame seeds.',
+      'Serve over brown rice.'
+    ],
+    tips:'Edamame adds a protein boost that tofu alone doesn\u2019t fully provide. Baking the tofu ahead of time means faster stir fry assembly.',
+    tags:['chinese','vegetarian','glp1-friendly','tofu','edamame','high-protein']
   }
 ];
+
 
 function seedGLP1Recipes() {
   let recipes = DB.get('recipes') || [];
@@ -3183,7 +3370,7 @@ function copyRecipeMacroBlock(id) {
 }
 
 function filterRecipeLibrary(query) {
-  renderRecipesList(query);
+  renderRecipesList((query||'').trim());
 }
 
 function syncRecipePortion(from) {
@@ -3198,6 +3385,7 @@ function syncRecipePortion(from) {
 }
 
 function renderRecipesList(query='') {
+  query = (query||'').trim();
   const recipes = DB.get('recipes')||[];
   const ratings = DB.get('recipeRatings') || {};
   const cooks   = DB.get('recipeCooks')   || {};
@@ -3421,7 +3609,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.2</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.3</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4512,7 +4700,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.2';
+      const localVersion  = '5.3';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
