@@ -1195,6 +1195,17 @@
       </div>
 
       <div class="card">
+        <div class="card-title">Recipe Library</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Restore Default Recipes</div>
+            <div class="settings-sub">Re-adds all 16 built-in GLP-1 recipes. Your custom recipes are unaffected.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="restoreDefaultRecipes()">Restore</button>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-title">Custom Items Library</div>
         <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px">Saved foods not in USDA — looked up before USDA when logging</div>
         <div id="custom-items-settings-list"></div>
@@ -1224,6 +1235,13 @@
 
       <div class="card">
         <div class="card-title">Data</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Restore Seed Recipes</div>
+            <div class="settings-sub">Re-adds any missing built-in recipes</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="forceSeedRecipes()">Restore</button>
+        </div>
         <div class="settings-row">
           <div>
             <div class="settings-label">Export All Data</div>
@@ -3205,16 +3223,56 @@ const GLP1_SEED_RECIPES = [
 ];
 
 
-function seedGLP1Recipes() {
+function forceSeedRecipes() {
   let recipes = DB.get('recipes') || [];
-  let added = 0;
+  const before = recipes.length;
   GLP1_SEED_RECIPES.forEach(seed => {
     if (!recipes.find(r => r.id === seed.id)) {
       recipes.push({ ...seed, ts: Date.now() });
-      added++;
     }
   });
-  if (added > 0) { DB.set('recipes', recipes); console.log(`Seeded ${added} GLP-1 recipes`); }
+  DB.set('recipes', recipes);
+  const added = recipes.length - before;
+  renderRecipesList('');
+  renderRecipeSelect();
+  showToast(added > 0 ? `Restored ${added} recipes!` : 'All seed recipes already present ✓');
+}
+
+function seedGLP1Recipes(force=false) {
+  let recipes = DB.get('recipes') || [];
+  let added = 0, updated = 0;
+  GLP1_SEED_RECIPES.forEach(seed => {
+    const idx = recipes.findIndex(r => r.id === seed.id);
+    if (idx === -1) {
+      // Not found — add it
+      recipes.push({ ...seed, ts: Date.now() });
+      added++;
+    } else if (force || !recipes[idx].name || recipes[idx].totalCal === 0) {
+      // Found but broken (no name or zero calories) — overwrite
+      recipes[idx] = { ...seed, ts: Date.now() };
+      updated++;
+    }
+  });
+  if (added > 0 || updated > 0) {
+    DB.set('recipes', recipes);
+    console.log(`Recipes: seeded ${added} new, updated ${updated} broken`);
+    renderRecipesList('');
+    renderRecipeSelect();
+  }
+  return added + updated;
+}
+
+function restoreDefaultRecipes() {
+  if (!confirm('This will restore all 16 default GLP-1 recipes. Your own custom recipes will not be affected. Continue?')) return;
+  let recipes = DB.get('recipes') || [];
+  const seedIds = new Set(GLP1_SEED_RECIPES.map(r => r.id));
+  // Remove existing seed entries so they fully re-add
+  recipes = recipes.filter(r => !seedIds.has(r.id));
+  DB.set('recipes', recipes);
+  const count = seedGLP1Recipes(true);
+  showToast(`Restored ${count} default recipes!`);
+  renderRecipesList('');
+  renderRecipeSelect();
 }
 
 // ── RECIPE CARD VIEW ──────────────────────────────────────────────────────
@@ -3609,7 +3667,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.3</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.4</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4700,7 +4758,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.3';
+      const localVersion  = '5.4';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
