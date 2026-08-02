@@ -91,6 +91,7 @@ All user data is stored in the browser's `localStorage` on the device. Nothing l
 - Custom Items Library
 - Quick-Pick list manager
 - Injection reminder (weekly push notification)
+- **New app icon** — Z letterform centered in a four-color quadrant ring (sky blue = Water, blue = Calories, purple = Protein, green = Fiber)
 - **Check for Update** — fetches `version.json` from GitHub, clears cache and reloads if newer
 - **Auto-backup** — downloads JSON automatically if no backup in 3+ days
 - Export / Import JSON backup

@@ -1,4 +1,4 @@
-const CACHE = 'zeptrack-v5';
+const CACHE = 'zeptrack-v6';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -16,13 +16,11 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const filename = url.pathname.split('/').pop();
 
-  // version.json and sw.js: NEVER cache, always network
   if (filename === 'version.json' || filename === 'sw.js') {
     e.respondWith(fetch(e.request.url + '?nocache=' + Date.now()));
     return;
   }
 
-  // index.html: network-first so updates are picked up
   if (filename === 'index.html' || url.pathname.endsWith('/')) {
     e.respondWith(
       fetch(e.request)
@@ -36,7 +34,6 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // everything else: cache-first
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );
