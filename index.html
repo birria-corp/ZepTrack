@@ -627,227 +627,129 @@
     <div class="view" id="v-log">
       <div class="tabs">
         <button class="tab active" onclick="showLogTab('intake')">Intake</button>
+        <button class="tab" onclick="showLogTab('recipes')">Recipes</button>
         <button class="tab" onclick="showLogTab('exercise')">Exercise</button>
-        <button class="tab" onclick="showLogTab('daily')">Daily</button>
         <button class="tab" onclick="showLogTab('injection')">Injection</button>
       </div>
 
       <!-- INTAKE TAB -->
       <div id="tab-intake">
-        <!-- sub-tabs -->
-        <div style="display:flex;gap:4px;margin-bottom:12px">
-          <button class="tab" id="itab-drink-btn" onclick="showIntakeSubtab('drink')" style="flex:1;font-size:0.78rem">☕ Drinks</button>
-          <button class="tab active" id="itab-food-btn" onclick="showIntakeSubtab('food')" style="flex:1;font-size:0.78rem">🍽 Food</button>
-          <button class="tab" id="itab-water-btn" onclick="showIntakeSubtab('water')" style="flex:1;font-size:0.78rem">💧 Water</button>
-          <button class="tab" id="itab-recipe-btn" onclick="showIntakeSubtab('recipe')" style="flex:1;font-size:0.78rem">📖 Recipes</button>
-        </div>
-
-        <!-- FOOD sub-tab -->
-        <div id="itab-food">
-          <div class="card">
-            <div class="card-title">Quick Log</div>
-            <div class="field-group">
-              <label>Date</label>
-              <div style="display:flex;gap:8px;align-items:center">
-                <button onclick="setMealDateToday()" style="padding:8px 14px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:none;color:var(--accent);font-size:0.8rem;font-family:var(--sans);cursor:pointer;white-space:nowrap">Today</button>
-                <input type="date" id="meal-date" style="flex:1" />
-              </div>
+        <div class="card">
+          <div class="card-title">Quick Log</div>
+          <div class="field-group">
+            <label>Date</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button onclick="setMealDateToday()" style="padding:8px 14px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:none;color:var(--accent);font-size:0.8rem;font-family:var(--sans);cursor:pointer;white-space:nowrap">Today</button>
+              <input type="date" id="meal-date" style="flex:1" />
             </div>
-            <div class="field-group">
-              <label>Meal Type</label>
-              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
-                <button class="meal-type-btn" data-val="drink" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Drink</button>
-                <button class="meal-type-btn active" data-val="breakfast" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.15);color:var(--accent);font-size:0.72rem;cursor:pointer">Breakfast</button>
-                <button class="meal-type-btn" data-val="lunch" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Lunch</button>
-                <button class="meal-type-btn" data-val="dinner" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Dinner</button>
-                <button class="meal-type-btn" data-val="snack" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Snack</button>
-              </div>
-              <input type="hidden" id="meal-type" value="breakfast" />
-            </div>
-            <div class="field-group">
-              <label>Item</label>
-              <!-- Water quick buttons -->
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">
-                <button onclick="logWaterQuick(30)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 30 oz</button>
-                <button onclick="logWaterQuick(24)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 24 oz</button>
-                <button onclick="logWaterQuick(12)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 12 oz</button>
-                <button onclick="logWaterQuick(8)"  style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">💧 8 oz</button>
-              </div>
-
-              <!-- Quick pick grid -->
-              <div id="quick-pick-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px"></div>
-
-              <!-- Coffee milk option (shown when Coffee selected) -->
-              <div id="coffee-milk-option" style="display:none;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:8px">
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.82rem">
-                  <input type="checkbox" id="coffee-add-milk" style="width:16px;height:16px;accent-color:var(--accent)" onchange="updateCoffeeMilkPreview()" />
-                  Add shot of milk (1 oz whole milk — 19 cal, 1g fat, 1.5g carb, 1g protein)
-                </label>
-              </div>
-
-              <div style="display:flex;gap:6px;margin-bottom:8px">
-                <input type="text" id="custom-item-input" placeholder="Custom item name"
-                  style="flex:1;display:none"
-                  onkeydown="if(event.key==='Enter')lookupCustomItem()"
-                  onblur="lookupCustomItem()" />
-                <button id="custom-lookup-btn" onclick="lookupCustomItem()"
-                  style="display:none;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--success);background:none;color:var(--success);font-size:0.78rem;cursor:pointer;white-space:nowrap">
-                  Look up
-                </button>
-              </div>
-              <div id="lookup-source-badge" style="display:none;font-size:0.68rem;font-family:var(--mono);margin-bottom:4px"></div>
-              <div id="selected-item-display" style="font-size:0.78rem;color:var(--accent2);font-family:var(--mono);min-height:18px;margin-bottom:4px"></div>
-            </div>
-            <div class="field-group">
-              <label>Portion Size</label>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <div>
-                  <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
-                  <input type="number" id="item-qty-grams" placeholder="g" step="1" min="0"
-                    style="width:100%" oninput="syncQtyFromGrams()" />
-                </div>
-                <div>
-                  <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
-                  <input type="number" id="item-qty-oz" placeholder="oz" step="0.25" min="0"
-                    style="width:100%" oninput="syncQtyFromOz()" />
-                </div>
-              </div>
-              <!-- hidden fields for saveQuickLog compatibility -->
-              <input type="hidden" id="item-quantity" value="" />
-              <input type="hidden" id="item-unit" value="Grams" />
-            </div>
-            <div id="quick-nutrition-preview" style="display:none;font-family:var(--mono);font-size:0.78rem;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:10px;color:var(--muted)"></div>
-            <div class="field-group" id="custom-nutrition-fields" style="display:none">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em">Nutrition (per serving)</div>
-                <button onclick="saveAsCustomItem()" style="font-size:0.68rem;padding:4px 8px;border-radius:var(--radius-sm);border:1px solid var(--accent2);background:none;color:var(--accent2);cursor:pointer">+ Save to Library</button>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <div><label>Calories</label><input type="number" id="ci-cal" placeholder="0" min="0" oninput="updateCustomPreview()" /></div>
-                <div><label>Protein (g)</label><input type="number" id="ci-pro" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
-                <div><label>Carbs (g)</label><input type="number" id="ci-carb" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
-                <div><label>Fat (g)</label><input type="number" id="ci-fat" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
-                <div><label>Fiber (g)</label><input type="number" id="ci-fib" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
-                <div><label>Serving size (<span class="ci-unit-label">g</span>)</label><input type="number" id="ci-serving" placeholder="100" min="1" value="100" oninput="updateCustomPreview()" /></div>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-              <button class="btn btn-ghost btn-sm" style="color:var(--success);border-color:var(--success)" onclick="openFoodSearch()">🔍 Search</button>
-              <button class="btn btn-ghost btn-sm" style="color:var(--accent2);border-color:var(--accent2)" onclick="openBarcodeScanner()">📷 Scan</button>
-            </div>
-            <button class="btn btn-primary" onclick="saveQuickLog()">Log Item</button>
           </div>
-          <div class="card">
-            <div class="card-title">Today's Food</div>
-            <div id="todays-meals-log"></div>
+          <div class="field-group">
+            <label>Meal Type</label>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
+              <button class="meal-type-btn" data-val="drink" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Drink</button>
+              <button class="meal-type-btn active" data-val="breakfast" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.15);color:var(--accent);font-size:0.72rem;cursor:pointer">Breakfast</button>
+              <button class="meal-type-btn" data-val="lunch" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Lunch</button>
+              <button class="meal-type-btn" data-val="dinner" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Dinner</button>
+              <button class="meal-type-btn" data-val="snack" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Snack</button>
+            </div>
+            <input type="hidden" id="meal-type" value="breakfast" />
           </div>
-        </div>
-
-        <!-- WATER sub-tab -->
-        <div id="itab-water" style="display:none">
-          <div class="card">
-            <div class="card-title">Water Intake</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="field-group">
+            <label>Item</label>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">
+              <button onclick="logWaterQuick(30)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">&#128167; 30 oz</button>
+              <button onclick="logWaterQuick(24)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">&#128167; 24 oz</button>
+              <button onclick="logWaterQuick(12)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">&#128167; 12 oz</button>
+              <button onclick="logWaterQuick(8)" style="padding:10px 4px;border-radius:var(--radius-sm);border:1px solid #38bdf8;background:rgba(56,189,248,0.1);color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--mono)">&#128167; 8 oz</button>
+            </div>
+            <div id="quick-pick-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px"></div>
+            <div id="coffee-milk-option" style="display:none;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:8px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.82rem">
+                <input type="checkbox" id="coffee-add-milk" style="width:16px;height:16px;accent-color:var(--accent)" onchange="updateCoffeeMilkPreview()" />
+                Add shot of milk (1 oz whole milk &mdash; 19 cal, 1g fat, 1.5g carb, 1g protein)
+              </label>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <input type="text" id="custom-item-input" placeholder="Custom item name" style="flex:1;display:none" onkeydown="if(event.key==='Enter')lookupCustomItem()" onblur="lookupCustomItem()" />
+              <button id="custom-lookup-btn" onclick="lookupCustomItem()" style="display:none;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--success);background:none;color:var(--success);font-size:0.78rem;cursor:pointer;white-space:nowrap">Look up</button>
+            </div>
+            <div id="lookup-source-badge" style="display:none;font-size:0.68rem;font-family:var(--mono);margin-bottom:4px"></div>
+            <div id="selected-item-display" style="font-size:0.78rem;color:var(--accent2);font-family:var(--mono);min-height:18px;margin-bottom:4px"></div>
+          </div>
+          <div class="field-group">
+            <label>Portion Size</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
               <div>
-                <span id="water-today-val" style="font-family:var(--mono);font-size:2.2rem;color:#38bdf8">0</span>
-                <span id="water-goal-label" style="font-size:0.8rem;color:var(--muted)"> / 64 oz</span>
+                <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
+                <input type="number" id="item-qty-grams" placeholder="g" step="1" min="0" style="width:100%" oninput="syncQtyFromGrams()" />
               </div>
-              <svg viewBox="0 0 56 56" style="width:56px;height:56px">
-                <circle class="ring-track" cx="28" cy="28" r="23"/>
-                <circle id="water-ring" class="ring-fill" cx="28" cy="28" r="23"
-                  stroke="#38bdf8" stroke-dasharray="144.51" stroke-dashoffset="144.51"/>
-              </svg>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px">
-              <button class="btn btn-ghost" style="padding:10px 0;font-size:0.7rem;font-family:var(--mono)" onclick="addWater(8)">+8oz</button>
-              <button class="btn btn-ghost" style="padding:10px 0;font-size:0.7rem;font-family:var(--mono)" onclick="addWater(16)">+16oz</button>
-              <button class="btn btn-ghost" style="padding:10px 0;font-size:0.7rem;font-family:var(--mono)" onclick="addWater(20)">+20oz</button>
-              <button class="btn btn-ghost" style="padding:10px 0;font-size:0.7rem;font-family:var(--mono)" onclick="addWater(30)">+30oz</button>
-              <button class="btn btn-ghost" style="padding:10px 0;font-size:0.7rem;font-family:var(--mono)" onclick="addWater(32)">+32oz</button>
-            </div>
-            <div class="divider"></div>
-            <div class="field-group" style="margin-top:12px">
-              <label>Custom amount</label>
-              <div style="display:flex;gap:8px">
-                <input type="number" id="custom-water-oz" placeholder="oz" style="flex:1" />
-                <button class="btn btn-ghost btn-sm" onclick="addWater(parseFloat(document.getElementById('custom-water-oz').value)||0)">Add</button>
+              <div>
+                <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
+                <input type="number" id="item-qty-oz" placeholder="oz" step="0.25" min="0" style="width:100%" oninput="syncQtyFromOz()" />
               </div>
             </div>
+            <input type="hidden" id="item-quantity" value="" />
+            <input type="hidden" id="item-unit" value="Grams" />
+          </div>
+          <div id="quick-nutrition-preview" style="display:none;font-family:var(--mono);font-size:0.78rem;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:10px;color:var(--muted)"></div>
+          <div class="field-group" id="custom-nutrition-fields" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em">Nutrition (per serving)</div>
+              <button onclick="saveAsCustomItem()" style="font-size:0.68rem;padding:4px 8px;border-radius:var(--radius-sm);border:1px solid var(--accent2);background:none;color:var(--accent2);cursor:pointer">+ Save to Library</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div><label>Calories</label><input type="number" id="ci-cal" placeholder="0" min="0" oninput="updateCustomPreview()" /></div>
+              <div><label>Protein (g)</label><input type="number" id="ci-pro" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
+              <div><label>Carbs (g)</label><input type="number" id="ci-carb" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
+              <div><label>Fat (g)</label><input type="number" id="ci-fat" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
+              <div><label>Fiber (g)</label><input type="number" id="ci-fib" placeholder="0" min="0" step="0.1" oninput="updateCustomPreview()" /></div>
+              <div><label>Serving size (<span class="ci-unit-label">g</span>)</label><input type="number" id="ci-serving" placeholder="100" min="1" value="100" oninput="updateCustomPreview()" /></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <button class="btn btn-ghost btn-sm" style="color:var(--success);border-color:var(--success)" onclick="openFoodSearch()">&#128269; Search</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--accent2);border-color:var(--accent2)" onclick="openBarcodeScanner()">&#128247; Scan</button>
+          </div>
+          <button class="btn btn-primary" onclick="saveQuickLog()">Log Item</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Today's Food</div>
+          <div id="todays-meals-log"></div>
+        </div>
+      </div>
+
+      <!-- RECIPES TAB -->
+      <div id="tab-recipes" style="display:none">
+        <div id="recipe-library-view">
+          <div class="card" style="padding-bottom:8px">
+            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+              <button class="recipe-sort-btn active" data-sort="cooked" onclick="setRecipeSort('cooked',this)" style="font-size:0.72rem;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.15);color:var(--accent);cursor:pointer;font-family:var(--mono)">Most Cooked</button>
+              <button class="recipe-sort-btn" data-sort="rated" onclick="setRecipeSort('rated',this)" style="font-size:0.72rem;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-family:var(--mono)">Highest Rated</button>
+              <button class="recipe-sort-btn" data-sort="stale" onclick="setRecipeSort('stale',this)" style="font-size:0.72rem;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-family:var(--mono)">Not Cooked Recently</button>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:10px">
+              <button id="diet-veg-btn" onclick="toggleDietFilter('vegetarian')" style="font-size:0.72rem;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-family:var(--mono)">&#129382; Vegetarian</button>
+              <button id="diet-carn-btn" onclick="toggleDietFilter('carnivore')" style="font-size:0.72rem;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-family:var(--mono)">&#129385; Carnivore</button>
+            </div>
+            <div style="position:relative">
+              <input type="text" id="recipe-tab-search" placeholder="Search by name or tag&hellip;" style="width:100%;font-size:0.85rem" oninput="onRecipeTabSearch(this.value)" onkeydown="onRecipeSearchKeydown(event)" autocomplete="off" />
+              <div id="recipe-tag-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);z-index:100;max-height:180px;overflow-y:auto;margin-top:2px"></div>
+            </div>
+            <div id="active-tag-pills" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:0"></div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin:8px 0 6px">Featured</div>
+          <div id="recipe-featured-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"></div>
+          <div class="card" style="margin-top:4px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div class="card-title" id="recipe-list-title" style="margin:0">All Recipes</div>
+              <button class="btn btn-ghost btn-sm" onclick="openRecipeModal()">+ New</button>
+            </div>
+            <div id="recipe-tab-list"></div>
           </div>
         </div>
-
-        <!-- DRINKS sub-tab -->
-        <div id="itab-drink" style="display:none">
-          <div class="card">
-            <div class="card-title">Quick-Add Drinks</div>
-            <div id="drink-presets-list"></div>
-            <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openDrinkPresetModal()">+ New Drink Preset</button>
-          </div>
-          <div class="card">
-            <div class="card-title">Today's Drinks</div>
-            <div id="todays-drinks-log"></div>
-          </div>
-        </div>
-
-        <!-- RECIPE sub-tab -->
-        <div id="itab-recipe" style="display:none">
-
-          <!-- Recipe list / library view -->
-          <div id="recipe-library-view">
-            <div class="card">
-              <div class="card-title">Recipe Library</div>
-              <div style="display:flex;gap:8px;margin-bottom:10px">
-                <input type="text" id="recipe-search" placeholder="Search recipes…" style="flex:1;font-size:0.85rem" oninput="filterRecipeLibrary(this.value)" />
-              </div>
-              <div id="recipes-list"></div>
-              <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRecipeModal()">+ New Recipe</button>
-            </div>
-            <div class="card">
-              <div class="card-title">Log Recipe Portion</div>
-              <div class="field-group">
-                <label>Select Recipe</label>
-                <select id="recipe-select" onchange="onRecipeSelect()">
-                  <option value="">— choose a recipe —</option>
-                </select>
-              </div>
-              <div id="recipe-log-details" style="display:none">
-                <div id="recipe-nutrition-per100" style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:10px"></div>
-                <div class="field-group">
-                  <label>Your portion weight (<span class="recipe-wt-unit">oz</span>)</label>
-                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                    <div>
-                      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
-                      <input type="number" id="recipe-portion-g" placeholder="g" min="1" oninput="syncRecipePortion('g')" />
-                    </div>
-                    <div>
-                      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
-                      <input type="number" id="recipe-portion" placeholder="oz" min="0.1" step="0.5" oninput="syncRecipePortion('oz')" />
-                    </div>
-                  </div>
-                </div>
-                <div id="recipe-portion-nutrition" style="font-family:var(--mono);font-size:0.82rem;color:var(--text);background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px"></div>
-                <div class="field-group">
-                  <label>Meal Type</label>
-                  <select id="recipe-meal-type">
-                    <option value="breakfast">Breakfast</option>
-                    <option value="lunch">Lunch</option>
-                    <option value="dinner">Dinner</option>
-                    <option value="snack">Snack</option>
-                  </select>
-                </div>
-                <button class="btn btn-primary" onclick="logRecipePortion()">Log This Portion</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recipe card detail view (hidden until recipe tapped) -->
-          <div id="recipe-card-view" style="display:none">
-            <button onclick="closeRecipeCard()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;margin-bottom:12px;padding:0">
-              ← Back to Recipes
-            </button>
-            <div class="card" id="recipe-card-content"></div>
-          </div>
-
+        <div id="recipe-card-view" style="display:none">
+          <button onclick="closeRecipeCard()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;margin-bottom:12px;padding:0">&#8592; Back to Recipes</button>
+          <div class="card" id="recipe-card-content"></div>
         </div>
       </div>
 
@@ -1633,36 +1535,25 @@ function showView(id) {
 }
 
 function showLogTab(tab) {
-  ['intake','exercise','daily','injection'].forEach(t => {
+  ['intake','recipes','exercise','daily','injection'].forEach(t => {
     const el = document.getElementById('tab-' + t);
     if (el) el.style.display = t === tab ? 'block' : 'none';
   });
   document.querySelectorAll('#v-log > .tabs .tab').forEach((b,i) => {
-    const tabs = ['intake','exercise','daily','injection'];
+    const tabs = ['intake','recipes','exercise','injection'];
     b.classList.toggle('active', tabs[i] === tab);
   });
-  if (tab === 'intake')    { showIntakeSubtab('food'); renderTodaysMealsLog(); }
+  if (tab === 'intake')    { renderTodaysMealsLog(); renderQuickPickGrid(); }
+  if (tab === 'recipes')   { requestAnimationFrame(() => renderRecipesTab()); }
   if (tab === 'exercise')  renderTodaysExerciseLog();
   if (tab === 'injection') { renderInjectionHistory(); initRotationDiagram(); }
 }
 
 function showIntakeSubtab(sub) {
-  ['food','water','drink','recipe'].forEach(s => {
-    const el = document.getElementById('itab-' + s);
-    if (el) el.style.display = s === sub ? 'block' : 'none';
-    const btn = document.getElementById('itab-' + s + '-btn');
-    if (btn) btn.classList.toggle('active', s === sub);
-  });
-  if (sub === 'drink')  renderDrinkPresets();
-  if (sub === 'recipe') {
-    const searchEl = document.getElementById('recipe-search');
-    if (searchEl) searchEl.value = '';
-    renderRecipesList('');
-    renderRecipeSelect();
-    closeRecipeCard();
+  // Legacy stub — intake is now unified, no sub-tabs
+  if (sub === 'food' || sub === 'drink' || sub === 'water') {
+    renderQuickPickGrid();
   }
-  if (sub === 'water')  updateWaterDisplay();
-  if (sub === 'food')   renderQuickPickGrid();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3390,7 +3281,8 @@ function renderRecipeCardContent(r, servings) {
 
 function closeRecipeCard() {
   document.getElementById('recipe-card-view').style.display = 'none';
-  document.getElementById('recipe-library-view').style.display = 'block';
+  const libView = document.getElementById('recipe-library-view');
+  if (libView) libView.style.display = 'block';
 }
 
 function setRecipeRating(id, n) {
@@ -3440,6 +3332,452 @@ function syncRecipePortion(from) {
     if (oz > 0) document.getElementById('recipe-portion-g').value = Math.round(oz*28.3495);
   }
   updateRecipePortionCalc();
+}
+
+
+// ═══════════════════════════════════════════════════════
+// RECIPES TAB — sort, filter, tag search, featured grid
+// ═══════════════════════════════════════════════════════
+let recipeTabSort   = 'cooked';
+let recipeTabDiet   = null;   // null | 'vegetarian' | 'carnivore'
+let recipeTabTags   = [];     // array of active tag strings
+let recipeTabQuery  = '';
+
+function renderRecipesTab() {
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+  renderRecipeSelect();
+}
+
+function closeRecipeCardNew() {
+  document.getElementById('recipe-card-view').style.display  = 'none';
+  document.getElementById('recipe-library-view').style.display = 'block';
+}
+
+function setRecipeSort(sort, btn) {
+  recipeTabSort = sort;
+  document.querySelectorAll('.recipe-sort-btn').forEach(b => {
+    const active = b.dataset.sort === sort;
+    b.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+    b.style.background  = active ? 'rgba(108,138,255,0.15)' : 'var(--surface2)';
+    b.style.color       = active ? 'var(--accent)' : 'var(--muted)';
+  });
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+}
+
+function toggleDietFilter(diet) {
+  recipeTabDiet = recipeTabDiet === diet ? null : diet;
+  const vegBtn  = document.getElementById('diet-veg-btn');
+  const carnBtn = document.getElementById('diet-carn-btn');
+  const styleActive = (btn) => { btn.style.borderColor='var(--success)'; btn.style.background='rgba(52,211,153,0.15)'; btn.style.color='var(--success)'; };
+  const styleOff    = (btn) => { btn.style.borderColor='var(--border)';  btn.style.background='var(--surface2)';        btn.style.color='var(--muted)'; };
+  if (recipeTabDiet === 'vegetarian') { styleActive(vegBtn); styleOff(carnBtn); }
+  else if (recipeTabDiet === 'carnivore') { styleOff(vegBtn); styleActive(carnBtn); }
+  else { styleOff(vegBtn); styleOff(carnBtn); }
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+}
+
+function onRecipeTabSearch(val) {
+  recipeTabQuery = (val || '').trim();
+  const dropdown = document.getElementById('recipe-tag-dropdown');
+
+  if (!recipeTabQuery) {
+    dropdown.style.display = 'none';
+    renderRecipeFeaturedGrid();
+    renderRecipeTabList();
+    return;
+  }
+
+  // Collect all tags from all recipes
+  const recipes = DB.get('recipes') || [];
+  const allTags = new Set();
+  recipes.forEach(r => (r.tags||[]).forEach(t => allTags.add(t)));
+
+  // Filter tags that match query and aren't already active
+  const matches = [...allTags].filter(t =>
+    t.includes(recipeTabQuery.toLowerCase()) && !recipeTabTags.includes(t)
+  );
+
+  if (matches.length) {
+    dropdown.style.display = 'block';
+    dropdown.innerHTML = matches.map(t => `
+      <div onclick="addRecipeTag('${t}')" style="padding:10px 12px;cursor:pointer;font-size:0.82rem;font-family:var(--mono);border-bottom:1px solid var(--border)"
+        onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+        ${t}
+      </div>`).join('');
+  } else {
+    dropdown.style.display = 'none';
+  }
+
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+}
+
+function onRecipeSearchKeydown(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('recipe-tag-dropdown').style.display = 'none';
+    document.getElementById('recipe-tab-search').value = '';
+    recipeTabQuery = '';
+    renderRecipeFeaturedGrid();
+    renderRecipeTabList();
+  }
+}
+
+function clearRecipeSearch() {
+  document.getElementById('recipe-tab-search').value = '';
+  document.getElementById('recipe-tag-dropdown').style.display = 'none';
+  recipeTabQuery = '';
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+}
+
+function addRecipeTag(tag) {
+  if (!recipeTabTags.includes(tag)) recipeTabTags.push(tag);
+  document.getElementById('recipe-tab-search').value = '';
+  document.getElementById('recipe-tag-dropdown').style.display = 'none';
+  recipeTabQuery = '';
+  renderActiveTagPills();
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+}
+
+function removeRecipeTag(tag) {
+  recipeTabTags = recipeTabTags.filter(t => t !== tag);
+  renderActiveTagPills();
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+}
+
+function renderActiveTagPills() {
+  const el = document.getElementById('active-tag-pills');
+  if (!el) return;
+  el.innerHTML = recipeTabTags.map(t => `
+    <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;background:rgba(108,138,255,0.15);border:1px solid var(--accent);font-size:0.72rem;font-family:var(--mono);color:var(--accent)">
+      ${t} <span onclick="removeRecipeTag('${t}')" style="cursor:pointer;font-size:0.9rem;opacity:0.7">&times;</span>
+    </span>`).join('');
+}
+
+function getFilteredSortedRecipes() {
+  let recipes = DB.get('recipes') || [];
+  const cooks   = DB.get('recipeCooks')   || {};
+  const ratings = DB.get('recipeRatings') || {};
+
+  // Diet filter
+  if (recipeTabDiet) {
+    recipes = recipes.filter(r => (r.tags||[]).includes(recipeTabDiet));
+  }
+
+  // Active tag filters (AND logic)
+  if (recipeTabTags.length) {
+    recipes = recipes.filter(r =>
+      recipeTabTags.every(tag => (r.tags||[]).includes(tag))
+    );
+  }
+
+  // Text search
+  if (recipeTabQuery) {
+    const q = recipeTabQuery.toLowerCase();
+    recipes = recipes.filter(r =>
+      r.name.toLowerCase().includes(q) ||
+      (r.tags||[]).some(t => t.includes(q))
+    );
+  }
+
+  // Sort
+  if (recipeTabSort === 'cooked') {
+    recipes.sort((a,b) => (cooks[b.id]||0) - (cooks[a.id]||0));
+  } else if (recipeTabSort === 'rated') {
+    recipes.sort((a,b) => (ratings[b.id]||0) - (ratings[a.id]||0));
+  } else if (recipeTabSort === 'stale') {
+    // Sort by lastCooked date ascending (least recently cooked first)
+    const lastCooked = DB.get('recipeLastCooked') || {};
+    recipes.sort((a,b) => {
+      const la = lastCooked[a.id] || 0;
+      const lb = lastCooked[b.id] || 0;
+      return la - lb;
+    });
+  }
+
+  return recipes;
+}
+
+function renderRecipeFeaturedGrid() {
+  const el = document.getElementById('recipe-featured-grid');
+  if (!el) return;
+  const recipes = getFilteredSortedRecipes().slice(0, 8);
+  const cooks   = DB.get('recipeCooks')   || {};
+  const ratings = DB.get('recipeRatings') || {};
+
+  if (!recipes.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;grid-column:1/-1;padding:8px 0">No recipes match.</div>';
+    return;
+  }
+
+  el.innerHTML = recipes.map(r => {
+    const tw = r.totalWeight || 100;
+    const p100cal = Math.round(r.totalCal/tw*100);
+    const p100pro = Math.round(r.totalProtein/tw*100*10)/10;
+    const stars = (ratings[r.id]||0);
+    const starStr = '&#9733;'.repeat(stars) + '&#9734;'.repeat(5-stars);
+    const cookCount = cooks[r.id] || 0;
+
+    return `<div onclick="openRecipeCardNew('${r.id}')" style="background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);padding:10px;cursor:pointer;transition:border-color 0.15s"
+      onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;line-height:1.3">${r.name.length>28?r.name.substring(0,26)+'…':r.name}</div>
+      <div style="font-size:0.7rem;color:#d29922;margin-bottom:4px">${starStr}</div>
+      <div style="font-family:var(--mono);font-size:0.68rem;color:#6c8aff">${p100cal} cal / 100g</div>
+      <div style="font-family:var(--mono);font-size:0.68rem;color:#a78bfa">${p100pro}g pro / 100g</div>
+      ${cookCount ? '<div style="font-size:0.65rem;color:var(--muted);margin-top:3px">&#127859; '+cookCount+'&times; cooked</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderRecipeTabList() {
+  const el = document.getElementById('recipe-tab-list');
+  const titleEl = document.getElementById('recipe-list-title');
+  if (!el) return;
+
+  const recipes = getFilteredSortedRecipes();
+  const cooks   = DB.get('recipeCooks')   || {};
+  const ratings = DB.get('recipeRatings') || {};
+
+  const isFiltered = recipeTabDiet || recipeTabTags.length || recipeTabQuery;
+  if (titleEl) titleEl.textContent = isFiltered ? `Filtered (${recipes.length})` : `All Recipes (${recipes.length})`;
+
+  if (!recipes.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No recipes match.</div>';
+    return;
+  }
+
+  const TAG_COLORS = {'glp1-friendly':'rgba(52,211,153,0.15)','high-protein':'rgba(167,139,250,0.15)','vegetarian':'rgba(52,211,153,0.15)','carnivore':'rgba(251,191,36,0.15)','mexican':'rgba(251,191,36,0.15)','indian':'rgba(251,146,60,0.15)','chinese':'rgba(239,68,68,0.15)','mediterranean':'rgba(56,189,248,0.15)'};
+
+  el.innerHTML = recipes.map(r => {
+    const tw = r.totalWeight || 100;
+    const p100cal = Math.round(r.totalCal/tw*100);
+    const p100pro = Math.round(r.totalProtein/tw*100*10)/10;
+    const cookCount = cooks[r.id] || 0;
+    const starCount = ratings[r.id] || 0;
+    const tagHtml = (r.tags||[]).slice(0,3).map(t =>
+      `<span style="font-size:0.6rem;padding:2px 5px;border-radius:8px;background:${TAG_COLORS[t]||'var(--surface2)'};color:var(--muted)">${t}</span>`
+    ).join(' ');
+
+    return `<div onclick="openRecipeCardNew('${r.id}')" style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:3px">
+        <div style="font-weight:600;font-size:0.85rem;flex:1;padding-right:8px">${r.name}</div>
+        <div style="font-size:0.72rem;color:#d29922;white-space:nowrap">${'&#9733;'.repeat(starCount)}${'&#9734;'.repeat(5-starCount)}</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:4px">
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#6c8aff">${p100cal} cal</span>
+        <span style="font-family:var(--mono);font-size:0.72rem;color:#a78bfa">${p100pro}g pro</span>
+        ${cookCount?'<span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#127859;'+cookCount+'&times;</span>':''}
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">${tagHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function openRecipeCardNew(id) {
+  const recipes = DB.get('recipes') || [];
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('recipe-library-view').style.display = 'none';
+  document.getElementById('recipe-card-view').style.display = 'block';
+  recipeCardServings[id] = recipeCardServings[id] || r.servingBase || 4;
+  renderRecipeCardContentNew(r);
+}
+
+function renderRecipeCardContentNew(r) {
+  const tw  = r.totalWeight || 100;
+  const ratings = DB.get('recipeRatings') || {};
+  const cooks   = DB.get('recipeCooks')   || {};
+  const lastCooked = DB.get('recipeLastCooked') || {};
+  const rating  = ratings[r.id] || 0;
+  const cookCount = cooks[r.id] || 0;
+  const lastCookStr = lastCooked[r.id] ? new Date(lastCooked[r.id]).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Never';
+
+  const per = v => Math.round(v/tw*100*10)/10;
+  const macroPill = (label, val, unit, color) =>
+    `<div style="text-align:center;padding:8px 4px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border)">
+      <div style="font-family:var(--mono);font-size:0.9rem;color:${color};font-weight:600">${val}${unit}</div>
+      <div style="font-size:0.65rem;color:var(--muted);margin-top:2px">${label}</div>
+    </div>`;
+
+  const stars = [1,2,3,4,5].map(n =>
+    `<span onclick="setRecipeRatingNew('${r.id}',${n})" style="font-size:1.3rem;cursor:pointer;color:${n<=rating?'#d29922':'var(--border)'}">${n<=rating?'&#9733;':'&#9734;'}</span>`
+  ).join('');
+
+  const tags = (r.tags||[]).map(t =>
+    `<span style="font-size:0.65rem;padding:2px 7px;border-radius:10px;background:var(--surface2);color:var(--muted);font-family:var(--mono)">${t}</span>`
+  ).join(' ');
+
+  const stepsHtml = r.steps?.length ? `
+    <div style="margin-top:16px">
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">Instructions</div>
+      ${r.steps.map((s,i) => `
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div>
+          <div style="font-size:0.85rem;line-height:1.5">${s}</div>
+        </div>`).join('')}
+    </div>` : '';
+
+  const tipHtml = r.tips ? `
+    <div style="background:rgba(210,153,34,0.1);border:1px solid rgba(210,153,34,0.3);border-radius:var(--radius-sm);padding:12px;margin-top:12px">
+      <div style="font-size:0.72rem;color:#d29922;font-family:var(--mono);margin-bottom:4px">&#128161; TIP</div>
+      <div style="font-size:0.82rem">${r.tips}</div>
+    </div>` : '';
+
+  // Log portion fields
+  const logSection = `
+    <div style="margin-top:16px;background:var(--surface2);border-radius:var(--radius-sm);padding:14px">
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">Log a Portion</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">GRAMS</div>
+          <input type="number" id="card-portion-g" placeholder="g" min="1" style="width:100%" oninput="syncCardPortion('g','${r.id}')" />
+        </div>
+        <div>
+          <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px">OUNCES</div>
+          <input type="number" id="card-portion-oz" placeholder="oz" min="0.1" step="0.5" style="width:100%" oninput="syncCardPortion('oz','${r.id}')" />
+        </div>
+      </div>
+      <div id="card-portion-preview" style="font-family:var(--mono);font-size:0.78rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;margin-bottom:10px;min-height:32px"></div>
+      <div style="display:flex;gap:8px;">
+        <select id="card-meal-type" style="flex:1;font-size:0.82rem">
+          <option value="breakfast">Breakfast</option>
+          <option value="lunch">Lunch</option>
+          <option value="dinner" selected>Dinner</option>
+          <option value="snack">Snack</option>
+        </select>
+        <button onclick="logCardPortion('${r.id}')" class="btn btn-primary" style="flex:1">Log Portion</button>
+      </div>
+    </div>`;
+
+  const macroBlock = `Recipe Name: ${r.name}\nPer 100g:\nCalories: ${Math.round(r.totalCal/tw*100)}\nProtein: ${Math.round(r.totalProtein/tw*100*10)/10}g\nCarbs: ${Math.round(r.totalCarbs/tw*100*10)/10}g\nFat: ${Math.round(r.totalFat/tw*100*10)/10}g\nFiber: ${Math.round(r.totalFiber/tw*100*10)/10}g`;
+
+  const el = document.getElementById('recipe-card-content');
+  el.innerHTML = `
+    <div style="margin-bottom:4px;display:flex;gap:6px;flex-wrap:wrap">${tags}</div>
+    <h2 style="font-size:1.1rem;font-weight:700;margin:8px 0 4px">${r.name}</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;gap:2px">${stars}</div>
+      <div style="font-size:0.75rem;color:var(--muted);font-family:var(--mono)">
+        &#127859; ${cookCount}&times; &nbsp;|&nbsp; Last: ${lastCookStr}
+      </div>
+    </div>
+
+    <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Full Recipe (${tw}g)</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px">
+      ${macroPill('Cal',r.totalCal,'','#6c8aff')}
+      ${macroPill('Pro',Math.round(r.totalProtein*10)/10,'g','#a78bfa')}
+      ${macroPill('Carb',Math.round(r.totalCarbs*10)/10,'g','#fbbf24')}
+      ${macroPill('Fiber',Math.round(r.totalFiber*10)/10,'g','#34d399')}
+    </div>
+
+    <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Per 100g</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:14px">
+      ${macroPill('Cal',per(r.totalCal),'','#6c8aff')}
+      ${macroPill('Pro',per(r.totalProtein),'g','#a78bfa')}
+      ${macroPill('Carb',per(r.totalCarbs),'g','#fbbf24')}
+      ${macroPill('Fiber',per(r.totalFiber),'g','#34d399')}
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button onclick="cookedThisRecipe('${r.id}')" style="flex:1;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--success);background:rgba(52,211,153,0.1);color:var(--success);font-size:0.85rem;font-weight:600;cursor:pointer">&#127859; Cooked This</button>
+      <button onclick="openRecipeModal('${r.id}')" class="btn btn-ghost btn-sm" style="flex:0">Edit</button>
+    </div>
+
+    ${logSection}
+    ${stepsHtml}
+    ${tipHtml}
+
+    <div style="margin-top:16px">
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">ZepTrack Macro Block</div>
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:10px;font-family:var(--mono);font-size:0.72rem;white-space:pre;color:var(--text);border:1px solid var(--border)">${macroBlock.replace(/\n/g,'\n')}</div>
+      <button onclick="copyRecipeMacroBlock('${r.id}')" style="margin-top:6px;width:100%;padding:9px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:none;color:var(--accent);font-size:0.8rem;cursor:pointer">&#128203; Copy for ZepTrack</button>
+    </div>`;
+}
+
+function setRecipeRatingNew(id, n) {
+  const ratings = DB.get('recipeRatings') || {};
+  ratings[id] = n;
+  DB.set('recipeRatings', ratings);
+  const r = (DB.get('recipes')||[]).find(x=>x.id===id);
+  if (r) renderRecipeCardContentNew(r);
+}
+
+function cookedThisRecipe(id) {
+  const cooks = DB.get('recipeCooks') || {};
+  cooks[id] = (cooks[id] || 0) + 1;
+  DB.set('recipeCooks', cooks);
+  const lastCooked = DB.get('recipeLastCooked') || {};
+  lastCooked[id] = Date.now();
+  DB.set('recipeLastCooked', lastCooked);
+  const r = (DB.get('recipes')||[]).find(x=>x.id===id);
+  if (r) renderRecipeCardContentNew(r);
+  showToast('Cook count updated!');
+}
+
+function syncCardPortion(from, recipeId) {
+  if (from === 'g') {
+    const g = parseFloat(document.getElementById('card-portion-g').value);
+    if (g > 0) document.getElementById('card-portion-oz').value = Math.round(g/28.3495*100)/100;
+  } else {
+    const oz = parseFloat(document.getElementById('card-portion-oz').value);
+    if (oz > 0) document.getElementById('card-portion-g').value = Math.round(oz*28.3495);
+  }
+  updateCardPortionPreview(recipeId);
+}
+
+function updateCardPortionPreview(recipeId) {
+  const recipe = (DB.get('recipes')||[]).find(r=>r.id===recipeId);
+  if (!recipe) return;
+  const grams = parseFloat(document.getElementById('card-portion-g').value);
+  const oz    = parseFloat(document.getElementById('card-portion-oz').value);
+  const portionG = grams > 0 ? grams : oz > 0 ? oz * 28.3495 : 0;
+  if (!portionG) { document.getElementById('card-portion-preview').innerHTML = ''; return; }
+  const factor = portionG / recipe.totalWeight;
+  const cal  = Math.round(recipe.totalCal     * factor);
+  const pro  = Math.round(recipe.totalProtein * factor * 10) / 10;
+  const fib  = Math.round(recipe.totalFiber   * factor * 10) / 10;
+  const carb = Math.round(recipe.totalCarbs   * factor * 10) / 10;
+  const fat  = Math.round(recipe.totalFat     * factor * 10) / 10;
+  document.getElementById('card-portion-preview').innerHTML =
+    `<span style="color:#6c8aff">${cal} cal</span> &nbsp;&#183;&nbsp; <span style="color:#a78bfa">${pro}g pro</span> &nbsp;&#183;&nbsp; <span style="color:#34d399">${fib}g fib</span> &nbsp;&#183;&nbsp; <span style="color:#fbbf24">${carb}g carb</span> &nbsp;&#183;&nbsp; <span style="color:var(--muted)">${fat}g fat</span>`;
+}
+
+function logCardPortion(recipeId) {
+  const recipe = (DB.get('recipes')||[]).find(r=>r.id===recipeId);
+  if (!recipe) return;
+  const grams = parseFloat(document.getElementById('card-portion-g').value);
+  const oz    = parseFloat(document.getElementById('card-portion-oz').value);
+  let portionG, portionDisplay, displayUnit;
+  if (grams > 0) { portionG = grams; portionDisplay = grams; displayUnit = 'Grams'; }
+  else if (oz > 0) { portionG = oz * 28.3495; portionDisplay = oz; displayUnit = 'OZ'; }
+  else { alert('Enter a portion size'); return; }
+  const mealType = document.getElementById('card-meal-type').value;
+  const factor = portionG / recipe.totalWeight;
+  DB.push('meals', {
+    date: today(), mealType, type: 'food',
+    quantity: portionDisplay, unit: displayUnit,
+    items: [{ name: `${recipe.name} (${portionDisplay}${displayUnit})`,
+              cal: Math.round(recipe.totalCal*factor), protein: Math.round(recipe.totalProtein*factor*10)/10,
+              fiber: Math.round(recipe.totalFiber*factor*10)/10, carbs: Math.round(recipe.totalCarbs*factor*10)/10,
+              fat: Math.round(recipe.totalFat*factor*10)/10 }],
+    cal:     Math.round(recipe.totalCal*factor),
+    protein: Math.round(recipe.totalProtein*factor*10)/10,
+    fiber:   Math.round(recipe.totalFiber*factor*10)/10,
+    carbs:   Math.round(recipe.totalCarbs*factor*10)/10,
+    fat:     Math.round(recipe.totalFat*factor*10)/10,
+    ts: Date.now()
+  });
+  // reset fields
+  document.getElementById('card-portion-g').value = '';
+  document.getElementById('card-portion-oz').value = '';
+  document.getElementById('card-portion-preview').innerHTML = '';
+  showToast(`${recipe.name} logged!`);
+  renderToday();
 }
 
 function renderRecipesList(query='') {
@@ -3667,7 +4005,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.4</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.5</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4758,7 +5096,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.4';
+      const localVersion  = '5.5';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
