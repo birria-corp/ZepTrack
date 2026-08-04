@@ -4186,7 +4186,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.5</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.6</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4795,16 +4795,12 @@ function renderWeightStats() {
 }
 
 function renderNutritionProgress() {
-  const meals  = DB.get('meals')  || [];
-  const dailys = DB.get('daily')  || [];
   const last7  = getLastNDays(7);
   const last30 = getLastNDays(30);
 
-  const dayTotal = (days, key) =>
-    avg(days.map(d => meals.filter(m=>m.date===d).reduce((a,m)=>a+(m[key]||0),0)));
-  const waterForDay = d => meals
-    .filter(m => m.date===d && (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
+  // Use getDayTotals which reads live meals + archive seamlessly
+  const dayTotal = (days, key) => avg(days.map(d => getDayTotals(d)[key] || 0));
+  const waterForDay = d => getDayTotals(d).water;
 
   const MACROS = [
     { name:'Water',    key:'water',   goal:GOALS.water,    color:'#38bdf8', unit:getWaterUnit(), barId:'bar-water'   },
@@ -4826,13 +4822,11 @@ function renderNutritionProgress() {
     </div>`;
   }).join('');
 
-  // 30-day individual bar charts
+  // 30-day individual bar charts — reads from getDayTotals (live + archive)
   const xLabels = last30.map(d => d.slice(5));
   MACROS.forEach(m => {
     const data = last30.map(d => {
-      const val = m.key === 'water'
-        ? waterForDay(d)
-        : meals.filter(x=>x.date===d).reduce((a,x)=>a+(x[m.key]||0),0);
+      const val = m.key === 'water' ? waterForDay(d) : getDayTotals(d)[m.key] || 0;
       return val > 0 ? Math.round(val / m.goal * 100) : 0;
     });
     drawBarChart(m.barId, xLabels, data, m.color);
@@ -4987,6 +4981,30 @@ function renderHistory(filter) {
       <div class="hi-body">${body}</div>
     </div>`;
   }).join('');
+
+  // Append archived daily summaries for dates beyond the 35-day window
+  if (filter === 'all' || filter === 'meal') {
+    const archive = DB.get('daily_archive') || {};
+    const archiveDates = Object.keys(archive).sort().reverse();
+    if (archiveDates.length) {
+      const archiveHtml = archiveDates.map(d => {
+        const v = archive[d];
+        return `<div class="history-item" style="opacity:0.65;cursor:default">
+          <div class="hi-date" style="font-size:0.72rem">${d} · Archived daily summary</div>
+          <div class="hi-body" style="font-size:0.78rem;font-family:var(--mono)">
+            <span style="color:#6c8aff">${Math.round(v.cal)} cal</span> ·
+            <span style="color:#a78bfa">${Math.round(v.protein*10)/10}g pro</span> ·
+            <span style="color:#34d399">${Math.round(v.fiber*10)/10}g fib</span> ·
+            <span style="color:#38bdf8">${Math.round(v.water)}${getWaterUnit()} water</span>
+          </div>
+        </div>`;
+      }).join('');
+      el.innerHTML += `
+        <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;padding:12px 0 6px">
+          Archived (beyond 35 days — daily summaries only)
+        </div>` + archiveHtml;
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -5277,7 +5295,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.5';
+      const localVersion  = '5.6';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -5326,6 +5344,7 @@ function exportData() {
     quickPicks: DB.get('quickPicks') || DEFAULT_QUICK_PICKS,
     customItems: DB.get('customItems') || [],
     goals: GOALS, units: UNITS,
+    daily_archive: DB.get('daily_archive') || {},
     exported: new Date().toISOString()
   };
   const filename = 'zeptrack-backup-' + today() + '.json';
@@ -5361,6 +5380,7 @@ async function shareBackup() {
     quickPicks: DB.get('quickPicks') || DEFAULT_QUICK_PICKS,
     customItems: DB.get('customItems') || [],
     goals: GOALS, units: UNITS,
+    daily_archive: DB.get('daily_archive') || {},
     exported: new Date().toISOString()
   };
   const filename = 'zeptrack-backup-' + today() + '.json';
@@ -5401,7 +5421,7 @@ function importFromJSON(input) {
     try {
       const data = JSON.parse(e.target.result);
       // Overwrite each key present in the backup
-      const keys = ['weights','meals','exercise','daily','injections','recipes','drinkPresets','goals','units','quickPicks','customItems'];
+      const keys = ['weights','meals','exercise','daily','daily_archive','injections','recipes','drinkPresets','goals','units','quickPicks','customItems'];
       keys.forEach(k => { if (data[k] !== undefined) DB.set(k, data[k]); });
       if (data.goals) { Object.assign(GOALS, data.goals); }
       if (data.units) { UNITS = data.units; }
@@ -5954,6 +5974,7 @@ initSettings();
 initReminders();
 migrateWaterEntries();
 migrateRecipeWeights();
+archiveAndPruneMeals();
 seedGLP1Recipes();
 renderQuickPickGrid();
 renderToday();

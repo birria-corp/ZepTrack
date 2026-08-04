@@ -3488,6 +3488,1220 @@
   ],
   "recipes": [
     {
+      "id": "glp1-r6",
+      "name": "Chicken Tinga Bowls",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Boneless skinless chicken thighs",
+          "base": 600,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Crushed tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Chipotle peppers in adobo",
+          "base": 30,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "White onion",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Dried oregano",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cauliflower rice",
+          "base": 400,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Black beans (canned, drained)",
+          "base": 240,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Plain Greek yogurt",
+          "base": 60,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Limes",
+          "base": 2,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh cilantro",
+          "base": 15,
+          "unit": "g",
+          "cat": "produce"
+        }
+      ],
+      "steps": [
+        "Saut\u00e9 sliced onion in a little oil until soft, about 5 min. Add garlic, cumin, and oregano, cook 1 min.",
+        "Add crushed tomatoes, chipotle peppers, and chicken thighs. Cover and simmer 25 min until chicken is cooked through.",
+        "Remove chicken and shred with two forks. Return to sauce and simmer uncovered 5 min to thicken.",
+        "Cook cauliflower rice in a dry pan 4\u20135 min. Season with salt and lime juice.",
+        "Warm black beans. Assemble bowls: cauliflower rice \u2192 black beans \u2192 tinga chicken \u2192 yogurt crema \u2192 cilantro + lime."
+      ],
+      "tips": "Chipotle gives big smoky flavor in small portions. Cauliflower rice keeps carbs low without feeling like a sacrifice.",
+      "tags": [
+        "mexican",
+        "high-protein",
+        "glp1-friendly",
+        "meal-prep",
+        "chicken",
+        "beans",
+        "carnivore"
+      ],
+      "ts": 1754000006000,
+      "totalWeight": 1450,
+      "totalCal": 1421,
+      "totalProtein": 162.4,
+      "totalCarbs": 98.6,
+      "totalFat": 44.95,
+      "totalFiber": 30.45
+    },
+    {
+      "id": "glp1-r7",
+      "name": "Vegetarian Tinga Bowls",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Oyster or cremini mushrooms",
+          "base": 400,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Young green jackfruit in brine (canned, drained)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Crushed tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Chipotle peppers in adobo",
+          "base": 30,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "White onion",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Dried oregano",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cauliflower rice",
+          "base": 400,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Black beans (canned, drained)",
+          "base": 240,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Plain Greek yogurt",
+          "base": 60,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Limes",
+          "base": 2,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh cilantro",
+          "base": 15,
+          "unit": "g",
+          "cat": "produce"
+        }
+      ],
+      "steps": [
+        "Saut\u00e9 sliced onion until soft. Add garlic, cumin, and oregano, cook 1 min.",
+        "Add torn mushrooms and cook until they release liquid and begin to brown, about 8 min.",
+        "Add drained shredded jackfruit, crushed tomatoes, and chipotle peppers. Simmer 20 min, shredding jackfruit with a fork as it softens.",
+        "Cook cauliflower rice in a dry pan. Warm black beans.",
+        "Assemble bowls same as Chicken Tinga."
+      ],
+      "tips": "Jackfruit mimics pulled meat texture beautifully. Mushrooms add umami depth so you won't miss the chicken.",
+      "tags": [
+        "mexican",
+        "vegetarian",
+        "glp1-friendly",
+        "high-fiber",
+        "mushrooms",
+        "beans",
+        "jackfruit"
+      ],
+      "ts": 1754000007000,
+      "totalWeight": 1380,
+      "totalCal": 994,
+      "totalProtein": 52.4,
+      "totalCarbs": 154.6,
+      "totalFat": 12.4,
+      "totalFiber": 46.9
+    },
+    {
+      "id": "glp1-r8",
+      "name": "Carne Asada Pepper Bowl",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Flank steak",
+          "base": 600,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Lime juice",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Orange juice",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Smoked paprika",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Poblano peppers",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red onion",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Bell peppers",
+          "base": 300,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 250,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Avocado",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh pico de gallo",
+          "base": 100,
+          "unit": "g",
+          "cat": "produce"
+        }
+      ],
+      "steps": [
+        "Marinate flank steak in lime juice, orange juice, garlic, cumin, and smoked paprika for at least 1 hour (overnight is better).",
+        "Toss sliced poblanos, red onion, and bell peppers in olive oil. Roast at 425\u00b0F for 25 min until charred at the edges.",
+        "Grill or sear steak over very high heat, 3\u20134 min per side for medium. Rest 5 min, then slice thinly against the grain.",
+        "Serve over brown rice with roasted peppers, sliced avocado, and fresh pico de gallo."
+      ],
+      "tips": "Slice the steak thin against the grain \u2014 it feels like more food visually. A good char on the peppers is key to the flavor.",
+      "tags": [
+        "mexican",
+        "high-protein",
+        "glp1-friendly",
+        "beef",
+        "carnivore"
+      ],
+      "ts": 1754000008000,
+      "totalWeight": 1600,
+      "totalCal": 2272,
+      "totalProtein": 220.8,
+      "totalCarbs": 150.4,
+      "totalFat": 89.6,
+      "totalFiber": 28.8
+    },
+    {
+      "id": "glp1-r9",
+      "name": "Vegetarian Carne Asada Bowl",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Cauliflower",
+          "base": 800,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Lime juice",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Orange juice",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Smoked paprika",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Chili powder",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Poblano peppers",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red onion",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Bell peppers",
+          "base": 300,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Black beans (canned, drained)",
+          "base": 240,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Avocado",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Pico de gallo",
+          "base": 100,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 250,
+          "unit": "g",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Cut cauliflower into thick steaks. Marinate in lime juice, orange juice, garlic, cumin, smoked paprika, and chili powder for 30 min.",
+        "Roast cauliflower at 425\u00b0F for 30\u201335 min, flipping once, until charred and tender.",
+        "Roast sliced peppers and onion alongside. Warm black beans.",
+        "Serve over brown rice with roasted vegetables, sliced avocado, and pico de gallo."
+      ],
+      "tips": "A very hot oven is essential \u2014 the char on the cauliflower is where all the flavor comes from.",
+      "tags": [
+        "mexican",
+        "vegetarian",
+        "glp1-friendly",
+        "high-fiber",
+        "cauliflower",
+        "beans"
+      ],
+      "ts": 1754000009000,
+      "totalWeight": 1600,
+      "totalCal": 1424,
+      "totalProtein": 62.4,
+      "totalCarbs": 209.6,
+      "totalFat": 44.8,
+      "totalFiber": 62.4
+    },
+    {
+      "id": "glp1-r10",
+      "name": "Saag Chicken",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Boneless skinless chicken breast",
+          "base": 600,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Fresh spinach",
+          "base": 500,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Onion",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh ginger",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Diced tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Plain Greek yogurt",
+          "base": 100,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Ghee or oil",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground coriander",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground turmeric",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garam masala",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Chili powder",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Blend or finely chop spinach and set aside.",
+        "Heat ghee. Saut\u00e9 onion until golden, about 8 min. Add garlic and ginger, cook 2 min.",
+        "Add cumin, coriander, turmeric, garam masala, and chili powder. Stir 1 min. Add diced tomatoes and cook until sauce thickens, about 5 min.",
+        "Add cubed chicken breast and cook through, 8\u201310 min.",
+        "Stir in spinach and simmer 5 min. Remove from heat and stir in Greek yogurt.",
+        "Serve with cauliflower rice or a small portion of naan."
+      ],
+      "tips": "Spinach is extremely volume-efficient \u2014 500g cooks down to almost nothing but keeps you full. Greek yogurt adds creaminess without heavy cream.",
+      "tags": [
+        "indian",
+        "high-protein",
+        "glp1-friendly",
+        "chicken",
+        "carnivore",
+        "spinach"
+      ],
+      "ts": 1754000010000,
+      "totalWeight": 1350,
+      "totalCal": 1202,
+      "totalProtein": 180.9,
+      "totalCarbs": 56.7,
+      "totalFat": 35.1,
+      "totalFiber": 24.3
+    },
+    {
+      "id": "glp1-r11",
+      "name": "Saag Paneer",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Paneer",
+          "base": 400,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Fresh spinach",
+          "base": 500,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Onion",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh ginger",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Diced tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Plain Greek yogurt",
+          "base": 100,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Ghee",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "dairy"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground coriander",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground turmeric",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garam masala",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Salt",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Cut paneer into cubes and pan-fry in ghee until golden on each side. Set aside.",
+        "In the same pan, saut\u00e9 onion until golden. Add garlic, ginger, and all spices, cook 2 min.",
+        "Add diced tomatoes and cook until oil separates from the sauce, about 5 min.",
+        "Add spinach and simmer 5 min until wilted. Stir in Greek yogurt.",
+        "Fold in the pan-fried paneer gently. Simmer 3 min and serve."
+      ],
+      "tips": "Pan-frying paneer first gives it a golden crust that holds up in the sauce. Don't skip this step.",
+      "tags": [
+        "indian",
+        "vegetarian",
+        "glp1-friendly",
+        "paneer",
+        "high-protein",
+        "spinach"
+      ],
+      "ts": 1754000011000,
+      "totalWeight": 1250,
+      "totalCal": 1400,
+      "totalProtein": 105.0,
+      "totalCarbs": 60.0,
+      "totalFat": 86.25,
+      "totalFiber": 20.0
+    },
+    {
+      "id": "glp1-r12",
+      "name": "Dal Makhani",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Whole black lentils (urad dal), soaked overnight",
+          "base": 200,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Kidney beans (canned, drained)",
+          "base": 240,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Onion",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh ginger",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Crushed tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Butter or ghee",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "dairy"
+        },
+        {
+          "name": "Plain Greek yogurt or light cream",
+          "base": 60,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Cumin seeds",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground coriander",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garam masala",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Chili powder",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Soak black lentils overnight. Drain and rinse.",
+        "Simmer lentils in fresh water until very soft, about 45\u201360 min on stovetop (20 min in pressure cooker).",
+        "Saut\u00e9 onion in butter until deep golden. Add garlic, ginger, and spices, cook 2 min.",
+        "Add crushed tomatoes and cook until the oil separates, about 8 min.",
+        "Add cooked lentils, kidney beans, and 200ml water. Simmer 20 min, stirring occasionally.",
+        "Stir in Greek yogurt or cream. Adjust seasoning and serve."
+      ],
+      "tips": "Urad dal is one of the highest-fiber legumes \u2014 a 200g portion is extremely filling. Better the next day after the flavors meld.",
+      "tags": [
+        "indian",
+        "vegetarian",
+        "high-fiber",
+        "glp1-friendly",
+        "lentils",
+        "beans"
+      ],
+      "ts": 1754000012000,
+      "totalWeight": 1100,
+      "totalCal": 1298,
+      "totalProtein": 74.8,
+      "totalCarbs": 156.2,
+      "totalFat": 42.9,
+      "totalFiber": 52.8
+    },
+    {
+      "id": "glp1-r13",
+      "name": "Ginger Beef Broccoli Stir Fry",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Flank steak, thinly sliced",
+          "base": 550,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Broccoli florets",
+          "base": 600,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Snap peas",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red bell pepper",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Low-sodium soy sauce",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Oyster sauce",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Rice vinegar",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Fresh ginger, minced",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Sesame oil",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cornstarch",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 300,
+          "unit": "g",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Mix soy sauce, oyster sauce, rice vinegar, ginger, garlic, sesame oil, and cornstarch into a sauce. Toss sliced beef in half and marinate 15 min.",
+        "Blanch broccoli florets in boiling water for 2 min. Drain.",
+        "Sear beef in a very hot wok in batches, 1\u20132 min per batch. Remove and set aside.",
+        "Stir fry broccoli, snap peas, and bell pepper 3\u20134 min until tender-crisp.",
+        "Return beef to the wok, add remaining sauce. Toss 1 min until sauce coats everything.",
+        "Serve over brown rice."
+      ],
+      "tips": "Sear beef in small batches \u2014 overcrowding steams instead of sears. A hot wok makes all the difference.",
+      "tags": [
+        "chinese",
+        "high-protein",
+        "glp1-friendly",
+        "beef",
+        "carnivore",
+        "broccoli"
+      ],
+      "ts": 1754000013000,
+      "totalWeight": 1750,
+      "totalCal": 1803,
+      "totalProtein": 203.0,
+      "totalCarbs": 143.5,
+      "totalFat": 50.75,
+      "totalFiber": 33.25
+    },
+    {
+      "id": "glp1-r14",
+      "name": "Ginger Tofu Broccoli Stir Fry",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Extra-firm tofu, pressed",
+          "base": 600,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Broccoli florets",
+          "base": 600,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Snap peas",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red bell pepper",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Low-sodium soy sauce",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Hoisin sauce",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Rice vinegar",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Fresh ginger, minced",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Sesame oil",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cornstarch",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 300,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Sesame seeds",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Press tofu well for at least 20 min (wrap in a clean towel with something heavy on top). Cut into cubes.",
+        "Toss tofu in half the sauce mixture. Bake at 400\u00b0F for 25 min, flipping halfway, until golden and slightly crisp.",
+        "Blanch broccoli 2 min. Stir fry vegetables in a hot wok 3\u20134 min.",
+        "Add baked tofu and remaining sauce. Toss 1 min.",
+        "Serve over brown rice and top with sesame seeds."
+      ],
+      "tips": "Pressing tofu is essential \u2014 moisture is the enemy of a good sear. Baking instead of frying gives a meatier texture with less oil.",
+      "tags": [
+        "chinese",
+        "vegetarian",
+        "glp1-friendly",
+        "tofu",
+        "broccoli",
+        "high-fiber"
+      ],
+      "ts": 1754000014000,
+      "totalWeight": 1700,
+      "totalCal": 1547,
+      "totalProtein": 115.6,
+      "totalCarbs": 154.7,
+      "totalFat": 47.6,
+      "totalFiber": 35.7
+    },
+    {
+      "id": "glp1-r15",
+      "name": "Kung Pao Chicken",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Boneless skinless chicken breast, cubed",
+          "base": 550,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Zucchini, diced",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Celery, sliced",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red bell pepper",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Roasted unsalted peanuts",
+          "base": 60,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Dried red chilies",
+          "base": 4,
+          "unit": "count",
+          "cat": "pantry"
+        },
+        {
+          "name": "Low-sodium soy sauce",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Rice vinegar",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Hoisin sauce",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Sesame oil",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cornstarch",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh ginger",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 300,
+          "unit": "g",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Mix sauce: soy sauce, rice vinegar, hoisin, sesame oil, cornstarch, and 2 tbsp water.",
+        "Toss cubed chicken in 1 tbsp soy sauce and a little cornstarch. Sear in a hot wok until cooked through, about 6 min. Remove.",
+        "Stir fry dried chilies and minced garlic in sesame oil for 30 seconds.",
+        "Add zucchini, celery, and bell pepper. Cook 3\u20134 min until tender-crisp.",
+        "Return chicken to wok. Add sauce and roasted peanuts. Toss 1\u20132 min until sauce thickens.",
+        "Serve over brown rice."
+      ],
+      "tips": "Peanuts add satisfying fat and crunch \u2014 a small amount goes a long way. Zucchini adds bulk with almost no calories.",
+      "tags": [
+        "chinese",
+        "high-protein",
+        "glp1-friendly",
+        "chicken",
+        "carnivore",
+        "peanuts"
+      ],
+      "ts": 1754000015000,
+      "totalWeight": 1600,
+      "totalCal": 1888,
+      "totalProtein": 198.4,
+      "totalCarbs": 142.4,
+      "totalFat": 60.8,
+      "totalFiber": 25.6
+    },
+    {
+      "id": "glp1-r16",
+      "name": "Kung Pao Tofu",
+      "weightUnit": "g",
+      "isBulk": true,
+      "servingBase": 4,
+      "ingredients": [
+        {
+          "name": "Extra-firm tofu, pressed and cubed",
+          "base": 600,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Shelled edamame",
+          "base": 200,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Zucchini, diced",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Celery, sliced",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red bell pepper",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Dried red chilies",
+          "base": 4,
+          "unit": "count",
+          "cat": "pantry"
+        },
+        {
+          "name": "Low-sodium soy sauce",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Hoisin sauce",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Rice vinegar",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Sesame oil",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cornstarch",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh ginger",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 300,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Sesame seeds",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Press and cube tofu. Bake at 400\u00b0F for 25 min until golden and crisp.",
+        "Mix sauce: soy sauce, hoisin, rice vinegar, sesame oil, cornstarch, and 2 tbsp water.",
+        "Stir fry dried chilies and garlic in sesame oil 30 seconds.",
+        "Add zucchini, celery, bell pepper, and edamame. Cook 3\u20134 min.",
+        "Add baked tofu and sauce. Toss 1\u20132 min. Top with sesame seeds.",
+        "Serve over brown rice."
+      ],
+      "tips": "Edamame adds a meaningful protein boost. Baking the tofu ahead of time means faster stir fry assembly.",
+      "tags": [
+        "chinese",
+        "vegetarian",
+        "glp1-friendly",
+        "tofu",
+        "edamame",
+        "high-protein"
+      ],
+      "ts": 1754000016000,
+      "totalWeight": 1650,
+      "totalCal": 1551,
+      "totalProtein": 133.65,
+      "totalCarbs": 151.8,
+      "totalFat": 47.85,
+      "totalFiber": 39.6
+    },
+    {
       "id": "6999578666198",
       "name": "Taco Bowl",
       "totalWeight": 1615.9,
@@ -3498,7 +4712,12 @@
       "totalFiber": 3.5,
       "totalCarbs": 167.54,
       "totalFat": 107,
-      "ts": 1784683679106
+      "ts": 1784683679106,
+      "tags": [
+        "mexican",
+        "carnivore",
+        "meal-prep"
+      ]
     },
     {
       "id": "4986528820690",
@@ -3511,7 +4730,12 @@
       "totalFiber": 4.28,
       "totalCarbs": 25.57,
       "totalFat": 18.93,
-      "ts": 1784734663040
+      "ts": 1784734663040,
+      "tags": [
+        "snack",
+        "no-cook",
+        "quick"
+      ]
     },
     {
       "id": "7076582763402",
@@ -3524,7 +4748,14 @@
       "totalFiber": 70.07,
       "totalCarbs": 218.26,
       "totalFat": 57.99,
-      "ts": 1784757865980
+      "ts": 1784757865980,
+      "tags": [
+        "indian",
+        "vegetarian",
+        "high-fiber",
+        "lentils",
+        "glp1-friendly"
+      ]
     },
     {
       "id": "7305881564431",
@@ -3537,7 +4768,13 @@
       "totalFiber": 4.8,
       "totalCarbs": 24.1,
       "totalFat": 19.1,
-      "ts": 1784776787957
+      "ts": 1784776787957,
+      "tags": [
+        "snack",
+        "vegetarian",
+        "high-fiber",
+        "meal-prep"
+      ]
     },
     {
       "id": "1784941039423",
@@ -3552,7 +4789,12 @@
       "totalCarbs": 108,
       "totalFat": 126,
       "isBulk": true,
-      "ts": 1784941039423
+      "ts": 1784941039423,
+      "tags": [
+        "mediterranean",
+        "vegetarian",
+        "no-cook"
+      ]
     },
     {
       "id": "1784992748855",
@@ -3567,7 +4809,13 @@
       "totalCarbs": 46,
       "totalFat": 13,
       "isBulk": true,
-      "ts": 1784992785108
+      "ts": 1784992785108,
+      "tags": [
+        "drink",
+        "high-protein",
+        "quick",
+        "glp1-friendly"
+      ]
     },
     {
       "id": "1785021170445",
@@ -3582,7 +4830,13 @@
       "totalCarbs": 7,
       "totalFat": 3,
       "isBulk": true,
-      "ts": 1785021170445
+      "ts": 1785021170445,
+      "tags": [
+        "asian",
+        "high-protein",
+        "carnivore",
+        "shrimp"
+      ]
     },
     {
       "id": "1785071383997",
@@ -3597,7 +4851,10 @@
       "totalCarbs": 3,
       "totalFat": 0,
       "isBulk": true,
-      "ts": 1785071383997
+      "ts": 1785071383997,
+      "tags": [
+        "supplement"
+      ]
     },
     {
       "id": "1785168832985",
@@ -3612,7 +4869,15 @@
       "totalCarbs": 5.3,
       "totalFat": 5,
       "isBulk": true,
-      "ts": 1785168832985
+      "ts": 1785168832985,
+      "tags": [
+        "middle-eastern",
+        "high-protein",
+        "carnivore",
+        "chicken",
+        "chickpeas",
+        "one-pan"
+      ]
     },
     {
       "id": "1785199133755",
@@ -3627,7 +4892,13 @@
       "totalCarbs": 15,
       "totalFat": 5,
       "isBulk": true,
-      "ts": 1785199133755
+      "ts": 1785199133755,
+      "tags": [
+        "mexican",
+        "carnivore",
+        "high-protein",
+        "chicken"
+      ]
     },
     {
       "id": "1785281313255",
@@ -3642,7 +4913,12 @@
       "totalCarbs": 14.7,
       "totalFat": 1.1,
       "isBulk": true,
-      "ts": 1785281313255
+      "ts": 1785281313255,
+      "tags": [
+        "asian",
+        "vegetarian",
+        "meal-prep"
+      ]
     },
     {
       "id": "glp1-r1",
@@ -3655,15 +4931,70 @@
       "totalCarbs": 43.7,
       "totalFat": 25.4,
       "totalFiber": 10.1,
-      "ingredients": [],
+      "ingredients": [
+        {
+          "name": "Salmon fillets",
+          "base": 400,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Green or brown lentils (dry)",
+          "base": 150,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cucumber",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Roma tomatoes",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh parsley",
+          "base": 30,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh mint",
+          "base": 15,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Lemons (juice of 2)",
+          "base": 2,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Olive oil",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Salt and pepper",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        }
+      ],
       "steps": [
-        "Season salmon fillets with salt, pepper, and a drizzle of olive oil.",
+        "Season salmon with salt, pepper, and a drizzle of olive oil.",
         "Grill salmon 4\u20135 min per side until cooked through. Rest 2 min.",
-        "Cook lentils in salted water until tender (~20 min). Drain and cool.",
-        "Combine lentils with diced cucumber, tomato, parsley, mint, lemon juice, and olive oil.",
+        "Cook lentils in salted water until tender, about 20 minutes. Drain and cool completely.",
+        "Combine cooled lentils with diced cucumber, tomato, parsley, mint, lemon juice, and olive oil.",
         "Serve salmon over tabbouleh."
       ],
-      "tips": "Swap salmon for chicken breast for a lower-fat version. Lentils can be made a day ahead.",
+      "tips": "Swap salmon for chicken breast for a lower-fat version. Lentils can be made a day ahead and refrigerated.",
       "tags": [
         "mediterranean",
         "high-protein",
@@ -3686,15 +5017,76 @@
       "totalCarbs": 47.4,
       "totalFat": 21,
       "totalFiber": 7.2,
-      "ingredients": [],
+      "ingredients": [
+        {
+          "name": "Ground turkey (93% lean)",
+          "base": 400,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Large bell peppers",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Cooked white rice",
+          "base": 150,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Diced tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Tomato paste",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Onion",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 3,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Italian seasoning",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Shredded mozzarella",
+          "base": 80,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Salt and pepper",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        }
+      ],
       "steps": [
-        "Preheat oven to 375\u00b0F. Cut tops off peppers, remove seeds.",
+        "Preheat oven to 375\u00b0F. Cut tops off peppers and remove seeds.",
         "Brown ground turkey with onion, garlic, and Italian seasoning.",
         "Mix in cooked rice, diced tomatoes, and tomato paste. Season to taste.",
-        "Stuff peppers with turkey mixture. Place in baking dish.",
+        "Stuff peppers with turkey mixture and place in a baking dish.",
         "Top with shredded mozzarella. Bake 30\u201335 min until peppers are tender."
       ],
-      "tips": "Use cauliflower rice instead of white rice to reduce carbs by ~12g per 100g.",
+      "tips": "Use cauliflower rice instead of white rice to reduce carbs significantly. These reheat well the next day.",
       "tags": [
         "american",
         "high-protein",
@@ -3717,16 +5109,71 @@
       "totalCarbs": 69.4,
       "totalFat": 16.7,
       "totalFiber": 6.8,
-      "ingredients": [],
+      "ingredients": [
+        {
+          "name": "Large shrimp, peeled and deveined",
+          "base": 400,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Shelled edamame (frozen, thawed)",
+          "base": 200,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Snap peas",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red bell pepper",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Cooked brown rice",
+          "base": 250,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Sesame oil",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Low-sodium soy sauce",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Fresh ginger, minced",
+          "base": 1,
+          "unit": "tbsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 3,
+          "unit": "count",
+          "cat": "produce"
+        }
+      ],
       "steps": [
         "Cook brown rice per package directions.",
-        "Heat sesame oil in a wok over high heat.",
+        "Heat sesame oil in a wok over high heat until smoking.",
         "Stir-fry shrimp 2\u20133 min until pink. Remove and set aside.",
         "Add edamame, snap peas, and bell pepper. Stir-fry 3\u20134 min.",
-        "Return shrimp to wok. Add soy sauce, ginger, and garlic. Toss to coat.",
+        "Return shrimp to wok. Add soy sauce, ginger, and garlic. Toss to coat for 1 min.",
         "Serve over brown rice."
       ],
-      "tips": "Frozen shrimp work great here \u2014 thaw in cold water for 10 min. Edamame is a GLP-1 MVP for protein + fiber.",
+      "tips": "Frozen shrimp work great \u2014 thaw in cold water for 10 min. Edamame is a GLP-1 MVP for protein + fiber.",
       "tags": [
         "asian",
         "high-protein",
@@ -3749,7 +5196,68 @@
       "totalCarbs": 37.4,
       "totalFat": 14.4,
       "totalFiber": 9,
-      "ingredients": [],
+      "ingredients": [
+        {
+          "name": "Cannellini beans (canned, drained)",
+          "base": 480,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Tuna in water (canned, drained)",
+          "base": 280,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Arugula",
+          "base": 60,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Red onion",
+          "base": 75,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Capers",
+          "base": 2,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Lemons (juice of 2)",
+          "base": 2,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Olive oil",
+          "base": 3,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Dijon mustard",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garlic clove",
+          "base": 1,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Salt and pepper",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        }
+      ],
       "steps": [
         "Drain and rinse white beans and tuna.",
         "Whisk together lemon juice, olive oil, Dijon, garlic, salt, and pepper.",
@@ -3781,23 +5289,91 @@
       "totalCarbs": 30.7,
       "totalFat": 29,
       "totalFiber": 7.5,
-      "ingredients": [],
+      "ingredients": [
+        {
+          "name": "Boneless skinless chicken thighs",
+          "base": 500,
+          "unit": "g",
+          "cat": "meat"
+        },
+        {
+          "name": "Chickpeas (canned, drained)",
+          "base": 240,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Diced tomatoes (canned)",
+          "base": 400,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Onion",
+          "base": 150,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves",
+          "base": 4,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Chicken broth",
+          "base": 200,
+          "unit": "ml",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground cumin",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Smoked paprika",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Ground coriander",
+          "base": 1,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Fresh cilantro",
+          "base": 15,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Lemon",
+          "base": 1,
+          "unit": "count",
+          "cat": "produce"
+        }
+      ],
       "steps": [
         "Season chicken thighs with cumin, smoked paprika, coriander, salt, and pepper.",
-        "Sear chicken in olive oil 4\u20135 min per side. Remove from pan.",
-        "Saut\u00e9 onion and garlic in the same pan until softened.",
+        "Sear chicken in olive oil 4\u20135 min per side until golden. Remove from pan.",
+        "Saut\u00e9 onion and garlic in the same pan until softened, about 4 min.",
         "Add chickpeas, diced tomatoes, and chicken broth. Stir to combine.",
         "Return chicken to pan. Simmer 15\u201320 min until cooked through.",
         "Finish with fresh cilantro and a squeeze of lemon."
       ],
-      "tips": "Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.",
+      "tips": "Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup makes this ideal for low-energy days.",
       "tags": [
         "middle-eastern",
         "high-protein",
         "glp1-friendly",
         "one-pan",
         "chicken",
-        "chickpeas"
+        "chickpeas",
+        "carnivore"
       ],
       "servingBase": 3,
       "ts": 1785349379482
@@ -3815,7 +5391,12 @@
       "totalCarbs": 10.7,
       "totalFat": 4.8,
       "isBulk": true,
-      "ts": 1785515776417
+      "ts": 1785515776417,
+      "tags": [
+        "salad",
+        "no-cook",
+        "quick"
+      ]
     },
     {
       "id": "1785542394585",
@@ -3830,7 +5411,11 @@
       "totalCarbs": 17,
       "totalFat": 8.5,
       "isBulk": true,
-      "ts": 1785542394585
+      "ts": 1785542394585,
+      "tags": [
+        "quick",
+        "snack"
+      ]
     },
     {
       "id": "1785542802888",
@@ -3845,7 +5430,13 @@
       "totalCarbs": 5.9,
       "totalFat": 3,
       "isBulk": true,
-      "ts": 1785542802888
+      "ts": 1785542802888,
+      "tags": [
+        "salad",
+        "no-cook",
+        "quick",
+        "vegetarian"
+      ]
     },
     {
       "id": "1785543041706",
@@ -3860,352 +5451,10 @@
       "totalCarbs": 3.3,
       "totalFat": 0,
       "isBulk": true,
-      "ts": 1785543041706
-    },
-    {
-      "id": "glp1-r6",
-      "name": "Chicken Tinga Bowls",
-      "totalWeight": 1450,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1421,
-      "totalProtein": 162.4,
-      "totalCarbs": 98.6,
-      "totalFat": 44.95,
-      "totalFiber": 30.45,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Saut\u00e9 sliced onion in a little oil until soft, about 5 minutes. Add garlic, cumin, and oregano, cook 1 minute.",
-        "Add crushed tomatoes, chipotle peppers in adobo, and chicken thighs. Cover and simmer 25 minutes until chicken is cooked through.",
-        "Remove chicken and shred with two forks. Return to sauce and simmer uncovered 5 minutes to thicken.",
-        "Cook cauliflower rice in a dry pan 4\u20135 minutes. Season with salt and lime juice.",
-        "Warm black beans. Assemble bowls: cauliflower rice, black beans, tinga chicken, a dollop of Greek yogurt crema, cilantro, and lime."
-      ],
-      "tips": "Chipotle gives big smoky flavor in small portions. Cauliflower rice keeps carbs low without feeling like a sacrifice.",
+      "ts": 1785543041706,
       "tags": [
-        "mexican",
-        "high-protein",
-        "glp1-friendly",
-        "meal-prep",
-        "chicken",
-        "beans",
-        "carnivore"
-      ],
-      "ts": 1754000000000
-    },
-    {
-      "id": "glp1-r7",
-      "name": "Vegetarian Tinga Bowls",
-      "totalWeight": 1380,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 994,
-      "totalProtein": 52.4,
-      "totalCarbs": 154.6,
-      "totalFat": 12.4,
-      "totalFiber": 46.9,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Saut\u00e9 sliced onion until soft. Add garlic, cumin, and oregano, cook 1 minute.",
-        "Add torn mushrooms and cook until they release liquid and begin to brown, about 8 minutes.",
-        "Add drained shredded jackfruit, crushed tomatoes, and chipotle peppers. Simmer 20 minutes, shredding jackfruit with a fork as it softens.",
-        "Cook cauliflower rice in a dry pan. Warm black beans.",
-        "Assemble bowls: cauliflower rice, black beans, mushroom-jackfruit tinga, yogurt crema, cilantro, and lime."
-      ],
-      "tips": "Jackfruit mimics pulled meat texture beautifully. Mushrooms add umami depth so you won't miss the chicken.",
-      "tags": [
-        "mexican",
-        "vegetarian",
-        "glp1-friendly",
-        "high-fiber",
-        "mushrooms",
-        "beans",
-        "jackfruit"
-      ],
-      "ts": 1754000000001
-    },
-    {
-      "id": "glp1-r8",
-      "name": "Carne Asada Pepper Bowl",
-      "totalWeight": 1600,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 2272,
-      "totalProtein": 220.8,
-      "totalCarbs": 150.4,
-      "totalFat": 89.6,
-      "totalFiber": 28.8,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Marinate flank steak in lime juice, orange juice, garlic, cumin, and smoked paprika for at least 1 hour (overnight is better).",
-        "Toss sliced poblanos, red onion, and bell peppers in olive oil. Roast at 425\u00b0F for 25 minutes until charred at the edges.",
-        "Grill or sear steak over very high heat, 3\u20134 minutes per side for medium. Rest 5 minutes, then slice thinly against the grain.",
-        "Serve over brown rice with roasted peppers, sliced avocado, and fresh pico de gallo."
-      ],
-      "tips": "Slice the steak thin against the grain \u2014 it feels like more food visually. A good char on the peppers is key to the flavor.",
-      "tags": [
-        "mexican",
-        "high-protein",
-        "glp1-friendly",
-        "beef",
-        "carnivore"
-      ],
-      "ts": 1754000000002
-    },
-    {
-      "id": "glp1-r9",
-      "name": "Vegetarian Carne Asada Bowl",
-      "totalWeight": 1600,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1424,
-      "totalProtein": 62.4,
-      "totalCarbs": 209.6,
-      "totalFat": 44.8,
-      "totalFiber": 62.4,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Cut cauliflower into thick steaks. Marinate in lime juice, orange juice, garlic, cumin, smoked paprika, and chili powder for 30 minutes.",
-        "Roast cauliflower at 425\u00b0F for 30\u201335 minutes, flipping once, until charred and tender.",
-        "Roast sliced peppers and onion alongside. Warm black beans.",
-        "Serve over brown rice with roasted vegetables, sliced avocado, and pico de gallo."
-      ],
-      "tips": "A very hot oven is essential \u2014 the char on the cauliflower is where all the flavor comes from.",
-      "tags": [
-        "mexican",
-        "vegetarian",
-        "glp1-friendly",
-        "high-fiber",
-        "cauliflower",
-        "beans"
-      ],
-      "ts": 1754000000003
-    },
-    {
-      "id": "glp1-r10",
-      "name": "Saag Chicken",
-      "totalWeight": 1350,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1202,
-      "totalProtein": 180.9,
-      "totalCarbs": 56.7,
-      "totalFat": 35.1,
-      "totalFiber": 24.3,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Blend or finely chop spinach and set aside.",
-        "Heat ghee in a large pan. Saut\u00e9 onion until golden, about 8 minutes. Add garlic and ginger, cook 2 minutes.",
-        "Add cumin, coriander, turmeric, garam masala, and chili powder. Stir 1 minute. Add diced tomatoes and cook until sauce thickens, about 5 minutes.",
-        "Add cubed chicken breast and cook through, 8\u201310 minutes.",
-        "Stir in spinach and simmer 5 minutes. Remove from heat and stir in Greek yogurt.",
-        "Serve with cauliflower rice or a small portion of naan."
-      ],
-      "tips": "Spinach is extremely volume-efficient \u2014 500g cooks down to almost nothing but keeps you full. Greek yogurt adds creaminess without heavy cream.",
-      "tags": [
-        "indian",
-        "high-protein",
-        "glp1-friendly",
-        "chicken",
-        "carnivore",
-        "spinach"
-      ],
-      "ts": 1754000000004
-    },
-    {
-      "id": "glp1-r11",
-      "name": "Saag Paneer",
-      "totalWeight": 1250,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1400,
-      "totalProtein": 105.0,
-      "totalCarbs": 60.0,
-      "totalFat": 86.25,
-      "totalFiber": 20.0,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Cut paneer into cubes and pan-fry in ghee until golden on each side. Set aside.",
-        "In the same pan, saut\u00e9 onion until golden. Add garlic, ginger, and all spices, cook 2 minutes.",
-        "Add diced tomatoes and cook until oil separates, about 5 minutes.",
-        "Add spinach and simmer 5 minutes. Stir in Greek yogurt.",
-        "Fold in the pan-fried paneer gently. Simmer 3 minutes and serve."
-      ],
-      "tips": "Pan-frying paneer first gives it a golden crust that holds up in the sauce. Don't skip this step.",
-      "tags": [
-        "indian",
-        "vegetarian",
-        "glp1-friendly",
-        "paneer",
-        "high-protein",
-        "spinach"
-      ],
-      "ts": 1754000000005
-    },
-    {
-      "id": "glp1-r12",
-      "name": "Dal Makhani",
-      "totalWeight": 1100,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1298,
-      "totalProtein": 74.8,
-      "totalCarbs": 156.2,
-      "totalFat": 42.9,
-      "totalFiber": 52.8,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Soak black lentils overnight. Drain and rinse.",
-        "Simmer lentils in fresh water until very soft, about 45\u201360 minutes on stovetop (20 minutes in a pressure cooker).",
-        "Saut\u00e9 onion in butter until deep golden. Add garlic, ginger, and spices, cook 2 minutes.",
-        "Add crushed tomatoes and cook until the oil separates, about 8 minutes.",
-        "Add cooked lentils, kidney beans, and 200ml water. Simmer 20 minutes, stirring occasionally.",
-        "Stir in Greek yogurt or a splash of cream. Adjust seasoning and serve."
-      ],
-      "tips": "Urad dal is one of the highest-fiber legumes \u2014 a 200g portion is extremely filling. Better the next day after the flavors meld.",
-      "tags": [
-        "indian",
-        "vegetarian",
-        "high-fiber",
-        "glp1-friendly",
-        "lentils",
-        "beans"
-      ],
-      "ts": 1754000000006
-    },
-    {
-      "id": "glp1-r13",
-      "name": "Ginger Beef Broccoli Stir Fry",
-      "totalWeight": 1750,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1803,
-      "totalProtein": 203.0,
-      "totalCarbs": 143.5,
-      "totalFat": 50.75,
-      "totalFiber": 33.25,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Mix soy sauce, oyster sauce, rice vinegar, ginger, garlic, sesame oil, and cornstarch into a sauce. Toss sliced beef in half the sauce and marinate 15 minutes.",
-        "Blanch broccoli florets in boiling water for 2 minutes. Drain.",
-        "Sear beef in a very hot wok in batches, 1\u20132 minutes per batch. Remove and set aside.",
-        "Stir fry broccoli, snap peas, and bell pepper 3\u20134 minutes until tender-crisp.",
-        "Return beef to the wok, add remaining sauce. Toss 1 minute until sauce coats everything.",
-        "Serve over brown rice."
-      ],
-      "tips": "Sear beef in small batches \u2014 overcrowding steams instead of sears. A hot wok makes all the difference.",
-      "tags": [
-        "chinese",
-        "high-protein",
-        "glp1-friendly",
-        "beef",
-        "carnivore",
-        "broccoli"
-      ],
-      "ts": 1754000000007
-    },
-    {
-      "id": "glp1-r14",
-      "name": "Ginger Tofu Broccoli Stir Fry",
-      "totalWeight": 1700,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1547,
-      "totalProtein": 115.6,
-      "totalCarbs": 154.7,
-      "totalFat": 47.6,
-      "totalFiber": 35.7,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Press tofu well for at least 20 minutes (wrap in a clean towel with something heavy on top). Cut into cubes.",
-        "Toss tofu in half the sauce mixture. Bake at 400\u00b0F for 25 minutes, flipping halfway, until golden and slightly crisp.",
-        "Blanch broccoli 2 minutes. Stir fry vegetables in a hot wok 3\u20134 minutes.",
-        "Add baked tofu and remaining sauce. Toss 1 minute.",
-        "Serve over brown rice and top with sesame seeds."
-      ],
-      "tips": "Pressing tofu is essential \u2014 moisture is the enemy of a good sear. Baking instead of frying gives a meatier texture with less oil.",
-      "tags": [
-        "chinese",
-        "vegetarian",
-        "glp1-friendly",
-        "tofu",
-        "broccoli",
-        "high-fiber"
-      ],
-      "ts": 1754000000008
-    },
-    {
-      "id": "glp1-r15",
-      "name": "Kung Pao Chicken",
-      "totalWeight": 1600,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1888,
-      "totalProtein": 198.4,
-      "totalCarbs": 142.4,
-      "totalFat": 60.8,
-      "totalFiber": 25.6,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Mix sauce: soy sauce, rice vinegar, hoisin, sesame oil, cornstarch, and 2 tbsp water.",
-        "Toss cubed chicken in 1 tbsp soy sauce and a little cornstarch. Sear in a hot wok until cooked through, about 6 minutes. Remove.",
-        "Stir fry dried chilies and minced garlic in sesame oil for 30 seconds.",
-        "Add zucchini, celery, and bell pepper. Cook 3\u20134 minutes until tender-crisp.",
-        "Return chicken to wok. Add sauce and roasted peanuts. Toss 1\u20132 minutes until sauce thickens.",
-        "Serve over brown rice."
-      ],
-      "tips": "Peanuts add satisfying fat and crunch \u2014 a small amount goes a long way. Zucchini adds bulk with almost no calories.",
-      "tags": [
-        "chinese",
-        "high-protein",
-        "glp1-friendly",
-        "chicken",
-        "carnivore",
-        "peanuts"
-      ],
-      "ts": 1754000000009
-    },
-    {
-      "id": "glp1-r16",
-      "name": "Kung Pao Tofu",
-      "totalWeight": 1650,
-      "weightUnit": "g",
-      "isBulk": true,
-      "totalCal": 1551,
-      "totalProtein": 133.65,
-      "totalCarbs": 151.8,
-      "totalFat": 47.85,
-      "totalFiber": 39.6,
-      "ingredients": [],
-      "servingBase": 4,
-      "steps": [
-        "Press and cube tofu. Bake at 400\u00b0F for 25 minutes until golden and crisp.",
-        "Mix sauce: soy sauce, hoisin, rice vinegar, sesame oil, cornstarch, water.",
-        "Stir fry dried chilies and garlic in sesame oil 30 seconds.",
-        "Add zucchini, celery, bell pepper, and edamame. Cook 3\u20134 minutes.",
-        "Add baked tofu and sauce. Toss 1\u20132 minutes. Top with sesame seeds.",
-        "Serve over brown rice."
-      ],
-      "tips": "Edamame adds a protein boost that tofu alone does not fully provide. Baking the tofu ahead of time means faster stir fry assembly.",
-      "tags": [
-        "chinese",
-        "vegetarian",
-        "glp1-friendly",
-        "tofu",
-        "edamame",
-        "high-protein"
-      ],
-      "ts": 1754000000010
+        "drink"
+      ]
     }
   ],
   "drinkPresets": [
@@ -4244,5 +5493,5 @@
     "steps": 8000
   },
   "units": "imperial",
-  "exported": "2026-08-02T12:00:00.000Z"
+  "exported": "2026-08-02T18:42:11.870Z"
 }
