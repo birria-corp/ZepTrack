@@ -2393,20 +2393,30 @@ function showSummaryTab(tab) {
 }
 
 function getMacrosForRange(startDate, endDate) {
-  const meals = DB.get('meals') || [];
-  const daily = DB.get('daily') || [];
-  const filtered = meals.filter(m => m.date >= startDate && m.date <= endDate);
-  const cal     = filtered.reduce((a,m) => a + (m.cal||0), 0);
-  const protein = filtered.reduce((a,m) => a + (m.protein||0), 0);
-  const carbs   = filtered.reduce((a,m) => a + (m.carbs||0), 0);
-  const fat     = filtered.reduce((a,m) => a + (m.fat||0), 0);
-  const fiber   = filtered.reduce((a,m) => a + (m.fiber||0), 0);
-
-  // water from meal entries only
-  const water = filtered
-    .filter(m => (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
-
+  const meals   = DB.get('meals') || [];
+  const archive = DB.get('daily_archive') || {};
+  let cal=0, protein=0, carbs=0, fat=0, fiber=0, water=0;
+  // Live meals in range
+  meals.filter(m => m.date >= startDate && m.date <= endDate).forEach(m => {
+    cal     += m.cal     || 0;
+    protein += m.protein || 0;
+    carbs   += m.carbs   || 0;
+    fat     += m.fat     || 0;
+    fiber   += m.fiber   || 0;
+    const name = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
+    if (name.includes('water')) water += m.quantity||m.drinkVolume||0;
+  });
+  // Archived days in range
+  Object.entries(archive).forEach(([d,v]) => {
+    if (d >= startDate && d <= endDate) {
+      cal     += v.cal     || 0;
+      protein += v.protein || 0;
+      carbs   += v.carbs   || 0;
+      fat     += v.fat     || 0;
+      fiber   += v.fiber   || 0;
+      water   += v.water   || 0;
+    }
+  });
   return { cal, protein, carbs, fat, fiber, water };
 }
 
@@ -5268,6 +5278,74 @@ function saveGoals() {
   GOALS.steps    = parseInt(document.getElementById('goal-steps').value) || 8000;
   DB.set('goals', GOALS);
   showToast('Goals saved!');
+}
+
+// ═══════════════════════════════════════════════════════
+// MEAL ARCHIVE — 35-day rolling window
+// ═══════════════════════════════════════════════════════
+const MEAL_WINDOW_DAYS = 35;
+
+function archiveAndPruneMeals() {
+  const meals   = DB.get('meals') || [];
+  const archive = DB.get('daily_archive') || {};
+  const cutoff  = new Date();
+  cutoff.setDate(cutoff.getDate() - MEAL_WINDOW_DAYS);
+  const cutoffStr = cutoff.getFullYear() + '-' +
+    String(cutoff.getMonth()+1).padStart(2,'0') + '-' +
+    String(cutoff.getDate()).padStart(2,'0');
+
+  const toKeep    = [];
+  const toArchive = {};
+
+  meals.forEach(m => {
+    if (!m.date || m.date >= cutoffStr) { toKeep.push(m); return; }
+    if (!toArchive[m.date]) toArchive[m.date] = {cal:0,protein:0,carbs:0,fat:0,fiber:0,water:0};
+    toArchive[m.date].cal     += m.cal     || 0;
+    toArchive[m.date].protein += m.protein || 0;
+    toArchive[m.date].carbs   += m.carbs   || 0;
+    toArchive[m.date].fat     += m.fat     || 0;
+    toArchive[m.date].fiber   += m.fiber   || 0;
+    const name = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
+    if (name.includes('water')) toArchive[m.date].water += m.quantity||m.drinkVolume||0;
+  });
+
+  const newDates = Object.keys(toArchive);
+  if (!newDates.length) return;
+
+  newDates.forEach(d => {
+    if (archive[d]) {
+      archive[d].cal     += toArchive[d].cal;
+      archive[d].protein += toArchive[d].protein;
+      archive[d].carbs   += toArchive[d].carbs;
+      archive[d].fat     += toArchive[d].fat;
+      archive[d].fiber   += toArchive[d].fiber;
+      archive[d].water   += toArchive[d].water;
+    } else {
+      archive[d] = toArchive[d];
+    }
+  });
+
+  DB.set('daily_archive', archive);
+  DB.set('meals', toKeep);
+  console.log('Archived ' + newDates.length + ' days, pruned ' + (meals.length - toKeep.length) + ' entries');
+}
+
+function getDayTotals(dateStr) {
+  const meals = DB.get('meals') || [];
+  const dayMeals = meals.filter(m => m.date === dateStr);
+  if (dayMeals.length) {
+    return {
+      cal:     dayMeals.reduce((a,m)=>a+(m.cal||0),0),
+      protein: dayMeals.reduce((a,m)=>a+(m.protein||0),0),
+      carbs:   dayMeals.reduce((a,m)=>a+(m.carbs||0),0),
+      fat:     dayMeals.reduce((a,m)=>a+(m.fat||0),0),
+      fiber:   dayMeals.reduce((a,m)=>a+(m.fiber||0),0),
+      water:   dayMeals.filter(m=>(m.drinkName||(m.items?.[0]?.name)||'').toLowerCase().includes('water'))
+                       .reduce((a,m)=>a+(m.quantity||m.drinkVolume||0),0),
+    };
+  }
+  const archive = DB.get('daily_archive') || {};
+  return archive[dateStr] || {cal:0,protein:0,carbs:0,fat:0,fiber:0,water:0};
 }
 
 function initSettings() {
