@@ -24,6 +24,11 @@
       "date": "2026-07-31",
       "weight": 255.6,
       "notes": ""
+    },
+    {
+      "date": "2026-08-05",
+      "weight": 254.8,
+      "notes": ""
     }
   ],
   "meals": [
@@ -3401,6 +3406,755 @@
       "quantity": 71,
       "unit": "Grams",
       "ts": 1785696022016
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785860924544
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (24 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 24,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 24,
+      "ts": 1785860926959
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785860959537
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785860963737
+    },
+    {
+      "date": "2026-08-02",
+      "mealType": "dinner",
+      "type": "food",
+      "items": [
+        {
+          "name": "Pepperoni pizza (227 Grams)",
+          "cal": 676,
+          "protein": 27.2,
+          "fiber": 4.1,
+          "carbs": 69.2,
+          "fat": 32.2
+        }
+      ],
+      "cal": 676,
+      "protein": 27.2,
+      "fiber": 4.1,
+      "carbs": 69.2,
+      "fat": 32.2,
+      "quantity": 227,
+      "unit": "Grams",
+      "ts": 1785861070010
+    },
+    {
+      "date": "2026-08-02",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861076011
+    },
+    {
+      "date": "2026-08-02",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861076771
+    },
+    {
+      "date": "2026-08-02",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861121290
+    },
+    {
+      "date": "2026-08-02",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861123060
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861155236
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861156013
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861156729
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785861157451
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "dinner",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785861164085
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785861176046
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785861179495
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "lunch",
+      "type": "food",
+      "items": [
+        {
+          "name": "Trail Mix (71 Grams)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "quantity": 71,
+      "unit": "Grams",
+      "ts": 1785861184208
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785861190181
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "breakfast",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Coffee w/ Milk (237 Grams)",
+          "cal": 21,
+          "protein": 1.3,
+          "fiber": 0,
+          "carbs": 1.5,
+          "fat": 1.1
+        }
+      ],
+      "cal": 21,
+      "protein": 1.3,
+      "fiber": 0,
+      "carbs": 1.5,
+      "fat": 1.1,
+      "quantity": 237,
+      "unit": "Grams",
+      "drinkName": "Coffee w/ Milk",
+      "drinkVolume": 237,
+      "ts": 1785861194043
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "dinner",
+      "type": "food",
+      "quantity": 350,
+      "unit": "Grams",
+      "items": [
+        {
+          "name": "Saag Paneer (350Grams)",
+          "cal": 392,
+          "protein": 29.4,
+          "fiber": 5.6,
+          "carbs": 16.8,
+          "fat": 24.2
+        }
+      ],
+      "cal": 392,
+      "protein": 29.4,
+      "fiber": 5.6,
+      "carbs": 16.8,
+      "fat": 24.2,
+      "ts": 1785861257981
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "Saag Paneer (350 Grams)",
+          "cal": 312,
+          "protein": 46.9,
+          "fiber": 6.3,
+          "carbs": 14.7,
+          "fat": 9.1
+        }
+      ],
+      "cal": 312,
+      "protein": 46.9,
+      "fiber": 6.3,
+      "carbs": 14.7,
+      "fat": 9.1,
+      "quantity": 350,
+      "unit": "Grams",
+      "ts": 1785862297265
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785862359228
+    },
+    {
+      "date": "2026-08-03",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Baby carrots (150 Grams)",
+          "cal": 15,
+          "protein": 1.2,
+          "fiber": 4.1,
+          "carbs": 13.7,
+          "fat": 0.2
+        }
+      ],
+      "cal": 15,
+      "protein": 1.2,
+      "fiber": 4.1,
+      "carbs": 13.7,
+      "fat": 0.2,
+      "quantity": 150,
+      "unit": "Grams",
+      "ts": 1785870565017
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Trail Mix (71 Grams)",
+          "cal": 280,
+          "protein": 7,
+          "fiber": 3,
+          "carbs": 28,
+          "fat": 4.5
+        }
+      ],
+      "cal": 280,
+      "protein": 7,
+      "fiber": 3,
+      "carbs": 28,
+      "fat": 4.5,
+      "quantity": 71,
+      "unit": "Grams",
+      "ts": 1785870601314
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "snack",
+      "type": "food",
+      "items": [
+        {
+          "name": "Cheese Stick (28 Grams)",
+          "cal": 80,
+          "protein": 6,
+          "fiber": 0,
+          "carbs": 0,
+          "fat": 6
+        }
+      ],
+      "cal": 80,
+      "protein": 6,
+      "fiber": 0,
+      "carbs": 0,
+      "fat": 6,
+      "quantity": 28,
+      "unit": "Grams",
+      "ts": 1785870605601
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (24 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 24,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 24,
+      "ts": 1785888445648
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "dinner",
+      "type": "food",
+      "quantity": 400,
+      "unit": "Grams",
+      "items": [
+        {
+          "name": "Vegetarian Carne Asada Bowl (400Grams)",
+          "cal": 356,
+          "protein": 15.6,
+          "fiber": 15.6,
+          "carbs": 52.4,
+          "fat": 11.2
+        }
+      ],
+      "cal": 356,
+      "protein": 15.6,
+      "fiber": 15.6,
+      "carbs": 52.4,
+      "fat": 11.2,
+      "ts": 1785888487966
+    },
+    {
+      "date": "2026-08-04",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (12 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 12,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 12,
+      "ts": 1785888522925
+    },
+    {
+      "date": "2026-08-05",
+      "mealType": "breakfast",
+      "type": "food",
+      "items": [
+        {
+          "name": "SK Protein Shake (360 Grams)",
+          "cal": 400,
+          "protein": 31,
+          "fiber": 11.9,
+          "carbs": 46,
+          "fat": 13
+        }
+      ],
+      "cal": 400,
+      "protein": 31,
+      "fiber": 11.9,
+      "carbs": 46,
+      "fat": 13,
+      "quantity": 360,
+      "unit": "Grams",
+      "ts": 1785939126406
+    },
+    {
+      "date": "2026-08-05",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (24 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 24,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 24,
+      "ts": 1785939131640
+    },
+    {
+      "date": "2026-08-05",
+      "mealType": "drink",
+      "type": "drink",
+      "items": [
+        {
+          "name": "Water (30 OZ)",
+          "cal": 0,
+          "protein": 0,
+          "carbs": 0,
+          "fat": 0,
+          "fiber": 0
+        }
+      ],
+      "cal": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "quantity": 30,
+      "unit": "OZ",
+      "drinkName": "Water",
+      "drinkVolume": 30,
+      "ts": 1785939134029
     }
   ],
   "exercise": [
@@ -4136,10 +4890,10 @@
       "ts": 1754000011000,
       "totalWeight": 1250,
       "totalCal": 1400,
-      "totalProtein": 105.0,
-      "totalCarbs": 60.0,
+      "totalProtein": 105,
+      "totalCarbs": 60,
       "totalFat": 86.25,
-      "totalFiber": 20.0
+      "totalFiber": 20
     },
     {
       "id": "glp1-r12",
@@ -4346,7 +5100,7 @@
       "ts": 1754000013000,
       "totalWeight": 1750,
       "totalCal": 1803,
-      "totalProtein": 203.0,
+      "totalProtein": 203,
       "totalCarbs": 143.5,
       "totalFat": 50.75,
       "totalFiber": 33.25
@@ -5455,6 +6209,437 @@
       "tags": [
         "drink"
       ]
+    },
+    {
+      "id": "custom-r1",
+      "name": "Bean and Cheese Burritos",
+      "totalWeight": 1518,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 3475,
+      "totalProtein": 132.2,
+      "totalCarbs": 363.6,
+      "totalFat": 165.4,
+      "totalFiber": 47.5,
+      "servingBase": 6,
+      "tags": [
+        "mexican",
+        "vegetarian",
+        "high-fiber",
+        "beans",
+        "meal-prep"
+      ],
+      "ingredients": [
+        {
+          "name": "Safflower or canola oil",
+          "base": 4,
+          "unit": "tbsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Yellow onion, finely chopped",
+          "base": 75,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Green bell pepper, finely chopped",
+          "base": 75,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Garlic cloves, minced",
+          "base": 2,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Pinto beans (2 cans), drained, \u00bd cup liquid reserved",
+          "base": 480,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Pico de gallo or salsa",
+          "base": 120,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Smoked paprika",
+          "base": 0.25,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Flour tortillas (9\u201310 inch)",
+          "base": 6,
+          "unit": "count",
+          "cat": "pantry"
+        },
+        {
+          "name": "Sharp Cheddar, shredded",
+          "base": 226,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Salt and black pepper",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Heat 2 tbsp oil in a large nonstick skillet over medium. Add onion and bell pepper, season with salt and pepper, cook stirring occasionally until light golden and tender, about 8 minutes.",
+        "Stir in garlic until fragrant, 1 minute. Add pinto beans, pico de gallo, smoked paprika, reserved bean liquid, and \u00bd cup water. Bring to a simmer.",
+        "Cook, stirring and mashing occasionally with a potato masher, until liquid is absorbed and mixture is thick, about 8 minutes. Season with salt and pepper. Transfer to a bowl and wipe out skillet.",
+        "Spread \u00bd cup refried beans in the center of each tortilla. Top each with \u2153 cup cheese. Fold the short sides over the filling, fold the bottom up, and tightly roll.",
+        "Heat 1 tbsp oil over medium. Add 3 burritos seam side down and cook until golden, turning occasionally, 3\u20135 minutes. Repeat with remaining oil and burritos.",
+        "Serve warm with sour cream and hot sauce on the side (not included in macros)."
+      ],
+      "tips": "These freeze well \u2014 wrap individually and reheat in a dry skillet or oven. The refried bean base also works as a dip.",
+      "ts": 1754400000001
+    },
+    {
+      "id": "custom-r2",
+      "name": "Creamy Cottage Cheese Basil Pasta",
+      "totalWeight": 1391,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 2121,
+      "totalProtein": 109.7,
+      "totalCarbs": 265.9,
+      "totalFat": 67.3,
+      "totalFiber": 13.5,
+      "servingBase": 5,
+      "tags": [
+        "italian",
+        "vegetarian",
+        "high-protein",
+        "pasta",
+        "quick"
+      ],
+      "ingredients": [
+        {
+          "name": "Spaghetti or long pasta (dry)",
+          "base": 454,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Whole-milk cottage cheese",
+          "base": 226,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Parmesan, grated",
+          "base": 99,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Extra-virgin olive oil",
+          "base": 27,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garlic clove, smashed and peeled",
+          "base": 1,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Baby spinach",
+          "base": 85,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh basil leaves, torn",
+          "base": 71,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Lemon (zest and juice)",
+          "base": 1,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Salt",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Bring a large pot of salted water to a boil.",
+        "Zest and juice the lemon into a high-powered blender or food processor. Add cottage cheese, Parmesan, olive oil, garlic, spinach, and basil. Blend until very smooth \u2014 in a food processor this can take up to 5 minutes.",
+        "Cook pasta until al dente per package directions. Scoop out 1\u00bd cups pasta water, then drain.",
+        "With the blender running, pour \u00be cup pasta water into the cottage cheese mixture and blend until smooth.",
+        "Off the heat, add the cottage cheese sauce to the pasta. Toss vigorously until coated, adding more pasta water as needed until glossy.",
+        "Season with salt. Serve topped with a drizzle of olive oil and extra Parmesan."
+      ],
+      "tips": "Blending the sauce with hot pasta water is the key \u2014 it makes the cottage cheese completely smooth and silky. Room temperature cottage cheese blends more easily than cold.",
+      "ts": 1754400000002
+    },
+    {
+      "id": "custom-r3",
+      "name": "Egg and Cheese Quesadilla",
+      "totalWeight": 217,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 572,
+      "totalProtein": 29.8,
+      "totalCarbs": 31.9,
+      "totalFat": 35.9,
+      "totalFiber": 1.2,
+      "servingBase": 1,
+      "tags": [
+        "american",
+        "quick",
+        "high-protein",
+        "eggs",
+        "carnivore",
+        "breakfast"
+      ],
+      "ingredients": [
+        {
+          "name": "Large eggs",
+          "base": 2,
+          "unit": "count",
+          "cat": "dairy"
+        },
+        {
+          "name": "Unsalted butter",
+          "base": 7,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Cheddar or Mexican cheese blend, grated",
+          "base": 50,
+          "unit": "g",
+          "cat": "dairy"
+        },
+        {
+          "name": "Flour tortilla (8-inch)",
+          "base": 60,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Salt",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        }
+      ],
+      "steps": [
+        "Beat eggs and a pinch of salt with a fork until homogenous.",
+        "Melt butter in a medium nonstick skillet over medium heat. Add eggs and swirl to fill the pan.",
+        "Using a spatula, pull eggs toward the center then tilt the pan so egg runs to the empty skillet. Repeat until nearly set but still shiny, about 1 minute.",
+        "Sprinkle half the cheese evenly over the eggs. Top with the tortilla and press to adhere.",
+        "Place your hand in the center of the tortilla and flip the skillet so the tortilla lands on your hand egg-side up. Place the tortilla back in the skillet egg-side up.",
+        "Sprinkle remaining cheese on one half, including the edges. Cook over medium until tortilla is golden underneath, about 1 minute.",
+        "Fold in half, slide onto a plate, sprinkle with salt, and cut into wedges."
+      ],
+      "tips": "The flip trick sounds scary but nothing is loose \u2014 the egg and cheese are adhered to the tortilla. Grating the cheese finely helps it melt into the egg edges for a crispy lacy crust.",
+      "ts": 1754400000003
+    },
+    {
+      "id": "custom-r4",
+      "name": "Roasted White Bean and Tomato Pasta",
+      "totalWeight": 1857,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 3444,
+      "totalProtein": 74.0,
+      "totalCarbs": 345.0,
+      "totalFat": 200.3,
+      "totalFiber": 34.1,
+      "servingBase": 5,
+      "tags": [
+        "italian",
+        "vegetarian",
+        "high-fiber",
+        "beans",
+        "pasta",
+        "meal-prep"
+      ],
+      "ingredients": [
+        {
+          "name": "Extra-virgin olive oil",
+          "base": 193,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Large shallot, finely minced",
+          "base": 75,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Tomato paste",
+          "base": 30,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Garlic cloves, thinly sliced",
+          "base": 5,
+          "unit": "count",
+          "cat": "produce"
+        },
+        {
+          "name": "Fresh rosemary, finely chopped",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "produce"
+        },
+        {
+          "name": "Red-pepper flakes",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Granulated sugar",
+          "base": 0.5,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Cherry tomatoes, halved",
+          "base": 454,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "White beans (cannellini or navy), rinsed",
+          "base": 240,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Orecchiette or shaped pasta (dry)",
+          "base": 454,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Salt and black pepper",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        },
+        {
+          "name": "Parmesan or pecorino, for serving",
+          "base": 30,
+          "unit": "g",
+          "cat": "dairy"
+        }
+      ],
+      "steps": [
+        "Heat oven to 375\u00b0F. Bring a large pot of salted water to a boil.",
+        "In a small bowl, stir together \u00bc cup olive oil with shallot, tomato paste, garlic, rosemary, red-pepper flakes, and sugar.",
+        "On a large baking sheet, toss cherry tomatoes with the dressing. Season generously with salt and pepper, spread in an even layer.",
+        "On a second baking sheet, toss beans with 2 tbsp olive oil. Season generously with salt and pepper.",
+        "Roast tomatoes and beans, stirring halfway through, until tomatoes slump and beans crisp, about 25 minutes.",
+        "Cook pasta until al dente. Reserve 1 cup pasta water, then drain.",
+        "Transfer beans and tomatoes to the pot. Add \u00bc cup pasta water to each sheet pan, scrape up the browned bits, and add to the pot.",
+        "Add pasta and remaining \u00bd cup olive oil to the pot. Stir vigorously until saucy, adding pasta water as needed until glossy.",
+        "Season with salt and pepper. Serve in wide shallow bowls topped with grated cheese."
+      ],
+      "tips": "Never skip deglazing the sheet pans \u2014 those browned bits carry the deepest flavor in the whole dish. The beans crisp in the oven like croutons and add texture throughout.",
+      "ts": 1754400000004
+    },
+    {
+      "id": "custom-r5",
+      "name": "Fried Eggs and Potatoes",
+      "totalWeight": 809,
+      "weightUnit": "g",
+      "isBulk": true,
+      "totalCal": 1118,
+      "totalProtein": 35.2,
+      "totalCarbs": 83.2,
+      "totalFat": 73.6,
+      "totalFiber": 9.9,
+      "servingBase": 3,
+      "tags": [
+        "american",
+        "vegetarian",
+        "quick",
+        "eggs",
+        "breakfast"
+      ],
+      "ingredients": [
+        {
+          "name": "Extra-virgin olive oil",
+          "base": 54,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Large yellow onion, finely chopped",
+          "base": 200,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Ground turmeric",
+          "base": 0.25,
+          "unit": "tsp",
+          "cat": "pantry"
+        },
+        {
+          "name": "Tomato paste",
+          "base": 15,
+          "unit": "g",
+          "cat": "pantry"
+        },
+        {
+          "name": "Yukon Gold potato (about 12 oz), peeled and diced \u00bd-inch",
+          "base": 340,
+          "unit": "g",
+          "cat": "produce"
+        },
+        {
+          "name": "Large eggs",
+          "base": 4,
+          "unit": "count",
+          "cat": "dairy"
+        },
+        {
+          "name": "Kosher salt and black pepper",
+          "base": 1,
+          "unit": "count",
+          "cat": "pantry"
+        },
+        {
+          "name": "Fresh herbs for garnish (optional)",
+          "base": 1,
+          "unit": "count",
+          "cat": "produce"
+        }
+      ],
+      "steps": [
+        "Heat olive oil in a large 12-inch nonstick pan with a lid over medium. Add onion and cook stirring occasionally until golden, 7\u20139 minutes.",
+        "Season with salt, add turmeric and stir until fragrant, 30 seconds. Add tomato paste and cook 1 minute, stirring, until color deepens.",
+        "Add potatoes, season with \u00bd tsp salt and black pepper, stir. Cook 2 minutes until no longer raw.",
+        "Add \u00bc cup water, stir, and bring to a simmer. Cover, reduce to medium-low, and cook stirring occasionally until potatoes are just tender, 7\u20139 minutes. Add a tbsp of water if browning too much.",
+        "Make 4 wells in the potatoes and crack an egg into each. Gently poke the egg whites with a wooden spoon to spread them without disturbing the yolk.",
+        "Cover and check every 30\u201360 seconds until whites are set and yolk is to your liking, 3\u20135 minutes for a softer yolk.",
+        "Remove from heat, sprinkle with fresh herbs if using, and serve directly from the pan."
+      ],
+      "tips": "The turmeric gives the potatoes a beautiful golden color and anti-inflammatory properties \u2014 a GLP-1 friendly bonus. Poking the whites helps them cook faster without overcooking the yolk.",
+      "ts": 1754400000005
     }
   ],
   "drinkPresets": [
@@ -5493,5 +6678,6 @@
     "steps": 8000
   },
   "units": "imperial",
-  "exported": "2026-08-02T18:42:11.870Z"
+  "daily_archive": {},
+  "exported": "2026-08-05T14:13:38.538Z"
 }
