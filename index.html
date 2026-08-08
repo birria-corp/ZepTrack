@@ -1832,22 +1832,153 @@ async function lookupCustomItem() {
   if (!name) return;
   const preview  = document.getElementById('quick-nutrition-preview');
   const badge    = document.getElementById('lookup-source-badge');
-  document.getElementById('selected-item-display').textContent = `Looking up "${name}"…`;
+  const display  = document.getElementById('selected-item-display');
+  display.textContent = `Searching for "${name}"…`;
   preview.style.display = 'none';
   badge.style.display   = 'none';
-  const result = await resolveItemNutrition(name);
-  applyLookupResult(name, result);
+
+  const q = name.toLowerCase().trim();
+
+  // 1. Recipe Library — substring match only (query must appear in recipe name)
+  const recipes = DB.get('recipes') || [];
+  const recipeMatches = recipes
+    .filter(r => r.name.toLowerCase().includes(q))
+    .slice(0, 5)
+    .map(r => ({ label: r.name, type: 'recipe', data: r }));
+
+  // 2. Custom Items Library — substring match
+  const customItems = DB.get('customItems') || [];
+  const customMatches = customItems
+    .filter(ci => ci.name.toLowerCase().includes(q))
+    .slice(0, 5)
+    .map(c => ({ label: c.name, type: 'custom', data: c }));
+
+  // 3. USDA — top 5
+  let usdaMatches = [];
+  try {
+    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(name)}&dataType=Foundation,SR%20Legacy&pageSize=5&api_key=DEMO_KEY`;
+    const res  = await fetch(url);
+    const json = await res.json();
+    usdaMatches = (json.foods || []).slice(0, 5).map(f => ({
+      label: f.description,
+      type: 'usda',
+      data: { name: f.description, fdcId: f.fdcId, nutrients: f.foodNutrients || [] }
+    }));
+  } catch(e) {}
+
+  const allResults = [...recipeMatches, ...customMatches, ...usdaMatches];
+
+  if (!allResults.length) {
+    display.textContent = 'No results found — enter nutrition manually below';
+    document.getElementById('custom-nutrition-fields').style.display = 'block';
+    return;
+  }
+
+  showLookupResults(recipeMatches, customMatches, usdaMatches, name);
+}
+
+function showLookupResults(recipeMatches, customMatches, usdaMatches, query) {
+  const display = document.getElementById('selected-item-display');
+
+  // Combine for indexed selection
+  window._lookupResults = [...recipeMatches, ...customMatches, ...usdaMatches];
+
+  const sectionHeader = (label, count) =>
+    `<div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;padding:8px 0 4px">${label} (${count})</div>`;
+
+  const resultRow = (r, idx) =>
+    `<div onclick="selectLookupResult(${idx})"
+      style="padding:9px 10px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;margin-bottom:4px"
+      onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(108,138,255,0.08)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+      <div style="font-size:0.82rem;font-weight:500;line-height:1.3">${r.label}</div>
+    </div>`;
+
+  let html = `<div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:4px">Results for "<strong style="color:var(--text)">${query}</strong>" — tap to select</div>`;
+
+  let idx = 0;
+
+  if (recipeMatches.length || customMatches.length) {
+    const combined = [...recipeMatches, ...customMatches];
+    html += sectionHeader('Your Recipes', combined.length);
+    combined.forEach(r => { html += resultRow(r, idx++); });
+  }
+
+  if (usdaMatches.length) {
+    html += sectionHeader('USDA Database', usdaMatches.length);
+    usdaMatches.forEach(r => { html += resultRow(r, idx++); });
+  }
+
+  display.innerHTML = html;
+}
+
+async function selectLookupResult(idx) {
+  const result = window._lookupResults?.[idx];
+  if (!result) return;
+
+  let resolved;
+  if (result.type === 'recipe') {
+    const r = result.data;
+    const tw = r.totalWeight || 100;
+    resolved = {
+      source: 'recipe', sourceName: r.name,
+      per100: {
+        cal:     Math.round(r.totalCal/tw*100),
+        protein: Math.round(r.totalProtein/tw*100*10)/10,
+        fiber:   Math.round(r.totalFiber/tw*100*10)/10,
+        carbs:   Math.round(r.totalCarbs/tw*100*10)/10,
+        fat:     Math.round(r.totalFat/tw*100*10)/10,
+      }
+    };
+  } else if (result.type === 'custom') {
+    const c = result.data;
+    const sg = c.servingSize || 100;
+    resolved = {
+      source: 'custom', sourceName: c.name,
+      per100: {
+        cal:     Math.round(c.cal/sg*100),
+        protein: Math.round(c.protein/sg*100*10)/10,
+        fiber:   Math.round(c.fiber/sg*100*10)/10,
+        carbs:   Math.round(c.carbs/sg*100*10)/10,
+        fat:     Math.round(c.fat/sg*100*10)/10,
+      }
+    };
+  } else {
+    // USDA — parse nutrients from raw result
+    const n = result.data.nutrients;
+    const get = (ids) => {
+      for (const id of ids) {
+        const x = n.find(x => x.nutrientId===id || x.nutrientNumber===String(id) || x.nutrientName===id);
+        if (x?.value != null && x.value > 0) return x.value;
+      }
+      return 0;
+    };
+    resolved = {
+      source: 'usda', sourceName: result.data.name,
+      per100: {
+        cal:     Math.round(get([1008,'208','Energy']) || get([1062,'268'])/4.184 || 0),
+        protein: Math.round(get([1003,'203','Protein'])*10)/10,
+        fiber:   Math.round(get([1079,'291','Fiber, total dietary'])*10)/10,
+        carbs:   Math.round(get([1005,'205','Carbohydrate, by difference'])*10)/10,
+        fat:     Math.round(get([1004,'204','Total lipid (fat)'])*10)/10,
+      }
+    };
+  }
+
+  // Populate item name input with selected item
+  document.getElementById('custom-item-input').value = result.label;
+  applyLookupResult(result.label, resolved);
 }
 
 // ── Core lookup chain: Recipe Library → Custom Items → USDA → null ──
 async function resolveItemNutrition(name) {
   const q = name.toLowerCase().trim();
 
-  // 1. Recipe Library — fuzzy match
+  // 1. Recipe Library — substring match (query must appear in recipe name or vice versa)
   const recipes = DB.get('recipes') || [];
   const recipeMatch = recipes.find(r => {
     const rn = r.name.toLowerCase().replace(/\*\*/g, '');
-    return rn.includes(q) || q.includes(rn.split(' ')[0]);
+    return rn.includes(q) || q.includes(rn);
   });
   if (recipeMatch) {
     // recipes store total nutrition for totalWeight — return per-100g equivalent
@@ -1865,11 +1996,11 @@ async function resolveItemNutrition(name) {
     };
   }
 
-  // 2. Custom Items Library — fuzzy match
+  // 2. Custom Items Library — substring match
   const customItems = DB.get('customItems') || [];
   const customMatch = customItems.find(ci => {
     const cn = ci.name.toLowerCase().replace(/\*\*/g, '');
-    return cn.includes(q) || q.includes(cn.split(' ')[0]);
+    return cn.includes(q) || q.includes(cn);
   });
   if (customMatch) {
     const servingG = customMatch.servingSize || 100;
@@ -3839,11 +3970,17 @@ function renderRecipeCardContentNew(r, view='recipe') {
         </div>
       </div>
 
-      <!-- Cooked This button -->
-      <button onclick="renderRecipeCardContentNew((DB.get('recipes')||[]).find(x=>x.id==='${r.id}'),'log')"
-        style="width:100%;padding:14px;border-radius:var(--radius-sm);border:1px solid var(--success);background:rgba(52,211,153,0.1);color:var(--success);font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:16px;letter-spacing:0.02em">
-        &#127859; Cooked This — Log Portion
-      </button>
+      <!-- Cooked This + Log Portion as separate actions -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <button onclick="cookedThisRecipeCard('${r.id}')"
+          style="padding:12px 8px;border-radius:var(--radius-sm);border:1px solid var(--success);background:rgba(52,211,153,0.1);color:var(--success);font-size:0.85rem;font-weight:700;cursor:pointer;line-height:1.3">
+          &#127859; Cooked This
+        </button>
+        <button onclick="renderRecipeCardContentNew((DB.get('recipes')||[]).find(x=>x.id==='${r.id}'),'log')"
+          style="padding:12px 8px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.1);color:var(--accent);font-size:0.85rem;font-weight:700;cursor:pointer;line-height:1.3">
+          &#9999; Log Portion
+        </button>
+      </div>
 
       ${ingHtml}
       ${stepsHtml}
@@ -4023,6 +4160,21 @@ function setRecipeRatingNew(id, n) {
   DB.set('recipeRatings', ratings);
   const r = (DB.get('recipes')||[]).find(x=>x.id===id);
   if (r) renderRecipeCardContentNew(r);
+}
+
+function cookedThisRecipeCard(id) {
+  const cooks = DB.get('recipeCooks') || {};
+  cooks[id] = (cooks[id] || 0) + 1;
+  DB.set('recipeCooks', cooks);
+  const lastCooked = DB.get('recipeLastCooked') || {};
+  lastCooked[id] = Date.now();
+  DB.set('recipeLastCooked', lastCooked);
+  // Re-render card in place so cook count + last cooked date update immediately
+  const r = (DB.get('recipes')||[]).find(x=>x.id===id);
+  if (r) renderRecipeCardContentNew(r, 'recipe');
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+  showToast('Cooked! Count updated.');
 }
 
 function cookedThisRecipe(id) {
@@ -4323,7 +4475,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.6</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.7</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5500,7 +5652,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.6';
+      const localVersion  = '5.7';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';

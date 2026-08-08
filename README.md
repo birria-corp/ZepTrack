@@ -3,7 +3,7 @@
 > A personal health tracker built for Zepbound (tirzepatide) and GLP-1 medication users. Tracks weight, nutrition, water, exercise, injections, and wellness — installable as a mobile PWA, runs entirely in your browser with no server or account required.
 
 **Live app:** `https://spencer-thompson-2-vu.github.io/ZepTrack`  
-**Current version:** v5.6  
+**Current version:** v5.7  
 **Platform:** Android Chrome (PWA), any modern browser
 
 ---
