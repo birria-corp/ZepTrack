@@ -2529,8 +2529,8 @@ function getMacrosForRange(startDate, endDate) {
     fat     += m.fat     || 0;
     fiber   += m.fiber   || 0;
     const name = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-    if (name.includes('water')) water += m.drinkVolume||m.quantity||0;
-    else if (name.includes('iced tea')) water += (m.drinkVolume||m.quantity||0) * 0.9;
+    if (name.includes('water')) water += drinkToOz(m);
+    else if (name.includes('iced tea')) water += drinkToOz(m) * 0.9;
   });
   // Archived days in range
   Object.entries(archive).forEach(([d,v]) => {
@@ -4514,7 +4514,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.8</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.9</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4529,8 +4529,8 @@ function renderToday() {
   const water = meals
     .reduce((a,m) => {
       const wn2 = (m.drinkName||m.items?.[0]?.name||'').toLowerCase();
-      if (wn2.includes('water')) return a + (m.drinkVolume||m.quantity||0);
-      if (wn2.includes('iced tea')) return a + (m.drinkVolume||m.quantity||0) * 0.9;
+      if (wn2.includes('water')) return a + drinkToOz(m);
+      if (wn2.includes('iced tea')) return a + drinkToOz(m) * 0.9;
       return a;
     }, 0);
   const steps = exercise.filter(e=>e.type==='walking').reduce((a,e)=>a+(e.steps||0),0);
@@ -5592,8 +5592,8 @@ function updateWaterDisplay() {
     .reduce((a,m) => {
       if (m.date !== todayStr) return a;
       const wn = (m.drinkName||m.items?.[0]?.name||'').toLowerCase();
-      if (wn.includes('water')) return a + (m.drinkVolume||m.quantity||0);
-      if (wn.includes('iced tea')) return a + (m.drinkVolume||m.quantity||0) * 0.9;
+      if (wn.includes('water')) return a + drinkToOz(m);
+      if (wn.includes('iced tea')) return a + drinkToOz(m) * 0.9;
       return a;
     }, 0);
   const el = document.getElementById('water-today-val');
@@ -5664,8 +5664,8 @@ function archiveAndPruneMeals() {
     toArchive[m.date].fat     += m.fat     || 0;
     toArchive[m.date].fiber   += m.fiber   || 0;
     const nm2 = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-    if (nm2.includes('water')) toArchive[m.date].water += m.drinkVolume||m.quantity||0;
-    else if (nm2.includes('iced tea')) toArchive[m.date].water += (m.drinkVolume||m.quantity||0) * 0.9;
+    if (nm2.includes('water')) toArchive[m.date].water += drinkToOz(m);
+    else if (nm2.includes('iced tea')) toArchive[m.date].water += drinkToOz(m) * 0.9;
   });
 
   const newDates = Object.keys(toArchive);
@@ -5701,8 +5701,8 @@ function getDayTotals(dateStr) {
       fiber:   dayMeals.reduce((a,m)=>a+(m.fiber||0),0),
       water:   dayMeals.reduce((a,m) => {
         const nm = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-        if (nm.includes('water')) return a + (m.drinkVolume||m.quantity||0);
-        if (nm.includes('iced tea')) return a + (m.drinkVolume||m.quantity||0) * 0.9;
+        if (nm.includes('water')) return a + drinkToOz(m);
+        if (nm.includes('iced tea')) return a + drinkToOz(m) * 0.9;
         return a;
       }, 0),
     };
@@ -5736,7 +5736,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.8';
+      const localVersion  = '5.9';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6354,6 +6354,19 @@ function migrateRecipeWeights() {
 }
 
 // ── AUTO-BACKUP ───────────────────────────────────────────────────────────
+
+// Convert a drink entry's stored quantity to oz, unit-aware
+function drinkToOz(m) {
+  const vol = m.drinkVolume;  // drinkVolume is always oz when set
+  if (vol != null && vol > 0) return vol;
+  const qty  = m.quantity || 0;
+  const unit = (m.unit || 'OZ').toUpperCase();
+  if (unit === 'OZ') return qty;
+  if (unit === 'ML') return qty / 29.5735;
+  if (unit === 'GRAMS' || unit === 'G') return qty / 28.3495;
+  return qty; // fallback assume oz
+}
+
 function checkAutoBackup() {
   // Never auto-backup if there's no data to back up
   const meals = DB.get('meals') || [];
