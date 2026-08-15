@@ -1663,7 +1663,7 @@ function logWaterQuick(oz) {
 function logWater30() { logWaterQuick(30); }
 
 function getHardcodedNutrition(name) {
-  const key = name.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
+  const key = name.toLowerCase().replace(/[^a-z0-9 -]/g,'').trim();
   return HARDCODED_NUTRITION[key] || null;
 }
 
@@ -4534,7 +4534,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v6.0</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v6.1</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5756,7 +5756,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '6.0';
+      const localVersion  = '6.1';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
