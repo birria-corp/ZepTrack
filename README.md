@@ -37,6 +37,8 @@ CONTEXT.md      Session context for resuming in Claude
 ## Version History
 | Version | Changes |
 |---------|---------|
+| v7.2 | Full history cloud sync (35-day archive), Sync Now button in Settings |
+| v7.1 | Fix Google sign-in on Android PWA, fix Firebase module syntax error |
 | v7.0 | Firebase Firestore cloud sync, Google sign-in, offline-first merge |
 | v6.1 | Fix 7-Vanilla quick-pick hitting USDA (hyphen in key sanitizer) |
 | v6.0 | Quick pick ↑↓ ordering in Settings, migrateQuickPicks auto-sync |
