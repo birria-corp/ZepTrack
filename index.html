@@ -576,7 +576,7 @@
 <div id="auth-banner" style="display:flex;align-items:center;justify-content:space-between;
   background:#1a1f2e;border-bottom:1px solid #2e3450;padding:10px 16px;gap:12px;position:sticky;top:0;z-index:200">
   <span style="font-size:0.8rem;color:#7880a0">Sign in to sync your data across devices</span>
-  <button id="auth-btn" style="background:#6c8aff;color:#fff;border:none;border-radius:8px;
+  <button id="auth-btn" onclick="window._signIn && window._signIn()" style="background:#6c8aff;color:#fff;border:none;border-radius:8px;
     padding:7px 14px;font-size:0.8rem;cursor:pointer">Sign in with Google</button>
 </div>
 <div id="app">
@@ -1489,6 +1489,9 @@ const firebaseConfig = {
 const fbApp  = initializeApp(firebaseConfig);
 const fbAuth = getAuth(fbApp);
 const fbDb   = getFirestore(fbApp);
+
+window._signIn = () => signInWithRedirect(fbAuth, new GoogleAuthProvider());
+window._signOut = () => signOut(fbAuth);
 
 // Handle redirect result on app load
 getRedirectResult(fbAuth).catch(e => console.warn('redirectResult:', e));
@@ -4689,7 +4692,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v6.0</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.1</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5917,7 +5920,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '6.0';
+      const localVersion  = '7.1';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
