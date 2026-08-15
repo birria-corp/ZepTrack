@@ -1132,6 +1132,17 @@
       </div>
 
       <div class="card">
+        <div class="card-title">Cloud Sync</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Sync Now</div>
+            <div class="settings-sub" id="sync-status">Push all local data to Firestore</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="manualSync()" id="sync-btn">Sync</button>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-title">Data</div>
         <div class="settings-row">
           <div>
@@ -1571,6 +1582,21 @@ window.Cloud = {
       };
       merge('meals', cm); merge('exercise', ce);
       merge('injections', ci); merge('daily', cd); merge('weights', cw);
+      // Pull archive summaries
+      const archSnap = await getDocs(collection(fbDb, 'users', this.uid, 'archive'));
+      if (!archSnap.empty) {
+        const localArchive = window._DB_RAW('daily_archive') || {};
+        let changed = false;
+        archSnap.forEach(d => {
+          const dateStr = d.id;
+          if (!localArchive[dateStr]) {
+            const {date, updatedAt, ...summary} = d.data();
+            localArchive[dateStr] = summary;
+            changed = true;
+          }
+        });
+        if (changed) window._DB_SET('daily_archive', localArchive);
+      }
     } catch(e) { console.warn('Cloud.pullAndMerge:', e); }
   },
 
@@ -1581,11 +1607,24 @@ window.Cloud = {
     const injections = window._DB_RAW('injections') || [];
     const daily      = window._DB_RAW('daily')      || [];
     const weights    = window._DB_RAW('weights')    || [];
+    // Live days
     const days = new Set([
       ...meals.map(m=>m.date), ...exercise.map(e=>e.date),
       ...injections.map(i=>i.date), ...daily.map(d=>d.date), ...weights.map(w=>w.date)
     ]);
     for (const dateStr of days) { await this.pushDay(dateStr); }
+    // Archive days — stored as summaries, push as special archive docs
+    const archive = window._DB_RAW('daily_archive') || {};
+    const archiveDates = Object.keys(archive);
+    if (archiveDates.length) {
+      for (const dateStr of archiveDates) {
+        try {
+          await setDoc(doc(fbDb, 'users', this.uid, 'archive', dateStr), {
+            ...archive[dateStr], date: dateStr, updatedAt: Date.now()
+          });
+        } catch(e) { console.warn('pushArchive:', dateStr, e); }
+      }
+    }
     await this.pushProfile();
   }
 };
@@ -4702,7 +4741,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.1</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.2</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5917,6 +5956,27 @@ function initSettings() {
   initReminders();
 }
 
+async function manualSync() {
+  if (!window.Cloud || !window.Cloud.ready) {
+    document.getElementById('sync-status').textContent = 'Not signed in — sign in first';
+    return;
+  }
+  const btn = document.getElementById('sync-btn');
+  const status = document.getElementById('sync-status');
+  btn.disabled = true;
+  btn.textContent = 'Syncing…';
+  status.textContent = 'Pushing all data to Firestore…';
+  try {
+    await window.Cloud.pushAllDays();
+    status.textContent = 'Sync complete — ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    status.textContent = 'Sync failed — check connection';
+    console.warn('manualSync:', e);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Sync';
+}
+
 function checkForUpdate() {
   const status = document.getElementById('update-status');
   status.textContent = 'Checking…';
@@ -5930,7 +5990,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.1';
+      const localVersion  = '7.2';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
