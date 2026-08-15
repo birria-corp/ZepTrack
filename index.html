@@ -2477,9 +2477,18 @@ function renderQuickPickSettings() {
   const el = document.getElementById('quickpick-settings-list');
   if (!el) return;
   el.innerHTML = items.map((name, i) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:0.85rem">${name}</span>
-      <button onclick="removeQuickPickItem(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.9rem">×</button>
+    <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <button onclick="moveQuickPickItem(${i},-1)"
+          style="background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;font-size:0.65rem;padding:1px 5px;line-height:1.4;${i===0?'opacity:0.25;pointer-events:none':''}"
+          ${i===0?'disabled':''}>▲</button>
+        <button onclick="moveQuickPickItem(${i},1)"
+          style="background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;font-size:0.65rem;padding:1px 5px;line-height:1.4;${i===items.length-1?'opacity:0.25;pointer-events:none':''}"
+          ${i===items.length-1?'disabled':''}>▼</button>
+      </div>
+      <span style="font-size:0.85rem;flex:1">${name}</span>
+      <button onclick="removeQuickPickItem(${i})"
+        style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.9rem;padding:0 4px">×</button>
     </div>`).join('');
 }
 
@@ -2499,6 +2508,17 @@ function addQuickPickItem() {
 function removeQuickPickItem(idx) {
   const items = getQuickPicks();
   items.splice(idx, 1);
+  DB.set('quickPicks', items);
+  renderQuickPickSettings();
+  renderQuickPickGrid();
+}
+
+function moveQuickPickItem(idx, direction) {
+  const items = getQuickPicks();
+  const newIdx = idx + direction;
+  if (newIdx < 0 || newIdx >= items.length) return;
+  // Swap
+  [items[idx], items[newIdx]] = [items[newIdx], items[idx]];
   DB.set('quickPicks', items);
   renderQuickPickSettings();
   renderQuickPickGrid();
@@ -4514,7 +4534,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.9</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v6.0</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5736,7 +5756,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.9';
+      const localVersion  = '6.0';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
