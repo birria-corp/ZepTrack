@@ -2328,10 +2328,17 @@ function saveQuickLog() {
   const oz    = parseFloat(document.getElementById('item-qty-oz').value);
   if ((!grams || grams <= 0) && (!oz || oz <= 0)) { alert('Enter a portion size'); return; }
 
-  const portionG = grams > 0 ? grams : oz * 28.3495;
-  const portionOz = oz > 0 ? oz : grams / 28.3495;
-  const unit = grams > 0 ? 'Grams' : 'OZ';
-  const qty  = unit === 'Grams' ? grams : oz;
+  // For drink items, prefer OZ; for food items, prefer Grams
+  const isDrinkItem = selectedQuickItem?.source === 'hardcoded' &&
+    HARDCODED_NUTRITION[selectedQuickItem.name?.toLowerCase()]?.type === 'drink';
+  let portionG, portionOz, unit, qty;
+  if (isDrinkItem && oz > 0) {
+    portionOz = oz; portionG = oz * 28.3495; unit = 'OZ'; qty = oz;
+  } else if (grams > 0) {
+    portionG = grams; portionOz = grams / 28.3495; unit = 'Grams'; qty = grams;
+  } else {
+    portionOz = oz; portionG = oz * 28.3495; unit = 'OZ'; qty = oz;
+  }
 
   const mealType = 'intake';
   const mealDate = document.getElementById('meal-date').value || today();
@@ -2398,7 +2405,7 @@ function saveQuickLog() {
     carbs: nutrition.carbs, fat: nutrition.fat,
     quantity: qty, unit,
     drinkName: isdrink ? name : undefined,
-    drinkVolume: isdrink ? qty : undefined,
+    drinkVolume: isdrink ? portionOz : undefined,  // always store oz
     ts: Date.now()
   });
 
@@ -2522,8 +2529,8 @@ function getMacrosForRange(startDate, endDate) {
     fat     += m.fat     || 0;
     fiber   += m.fiber   || 0;
     const name = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-    if (name.includes('water')) water += m.quantity||m.drinkVolume||0;
-    else if (name.includes('iced tea')) water += (m.quantity||m.drinkVolume||0) * 0.9;
+    if (name.includes('water')) water += m.drinkVolume||m.quantity||0;
+    else if (name.includes('iced tea')) water += (m.drinkVolume||m.quantity||0) * 0.9;
   });
   // Archived days in range
   Object.entries(archive).forEach(([d,v]) => {
@@ -4522,8 +4529,8 @@ function renderToday() {
   const water = meals
     .reduce((a,m) => {
       const wn2 = (m.drinkName||m.items?.[0]?.name||'').toLowerCase();
-      if (wn2.includes('water')) return a + (m.quantity||m.drinkVolume||0);
-      if (wn2.includes('iced tea')) return a + (m.quantity||m.drinkVolume||0) * 0.9;
+      if (wn2.includes('water')) return a + (m.drinkVolume||m.quantity||0);
+      if (wn2.includes('iced tea')) return a + (m.drinkVolume||m.quantity||0) * 0.9;
       return a;
     }, 0);
   const steps = exercise.filter(e=>e.type==='walking').reduce((a,e)=>a+(e.steps||0),0);
@@ -4595,15 +4602,14 @@ function renderToday() {
     if (!allIntake.length) {
       is.innerHTML = `<div style="color:var(--muted);font-size:0.82rem">Nothing logged</div>`;
     } else {
-      const GROUPS = ['drink','breakfast','lunch','dinner','snack'];
-      const GROUP_LABELS = {drink:'Drinks',breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',snack:'Snacks'};
+      // Flat chronological list — meal type removed
+      const drinks = allIntake.filter(m => m.type === 'drink');
+      const food   = allIntake.filter(m => m.type !== 'drink');
       let html = '';
-      GROUPS.forEach(g => {
-        const items = allIntake.filter(m => m.mealType === g || (g==='drink' && m.type==='drink'));
-        if (!items.length) return;
+      if (drinks.length) {
         html += `<div style="margin-bottom:8px">
-          <div style="font-size:0.65rem;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">${GROUP_LABELS[g]}</div>`;
-        items.forEach(m => {
+          <div style="font-size:0.65rem;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Drinks</div>`;
+        drinks.forEach(m => {
           html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)">
             <div style="flex:1;min-width:0">
               <span style="font-size:0.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${entryName(m)}</span>
@@ -4612,7 +4618,20 @@ function renderToday() {
           </div>`;
         });
         html += `</div>`;
-      });
+      }
+      if (food.length) {
+        html += `<div style="margin-bottom:8px">
+          <div style="font-size:0.65rem;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Food</div>`;
+        food.forEach(m => {
+          html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)">
+            <div style="flex:1;min-width:0">
+              <span style="font-size:0.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${entryName(m)}</span>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:1px">${nutritionChips(m)}</div>
+            </div>
+          </div>`;
+        });
+        html += `</div>`;
+      }
       is.innerHTML = html;
     }
   }
@@ -5573,8 +5592,8 @@ function updateWaterDisplay() {
     .reduce((a,m) => {
       if (m.date !== todayStr) return a;
       const wn = (m.drinkName||m.items?.[0]?.name||'').toLowerCase();
-      if (wn.includes('water')) return a + (m.quantity||m.drinkVolume||0);
-      if (wn.includes('iced tea')) return a + (m.quantity||m.drinkVolume||0) * 0.9;
+      if (wn.includes('water')) return a + (m.drinkVolume||m.quantity||0);
+      if (wn.includes('iced tea')) return a + (m.drinkVolume||m.quantity||0) * 0.9;
       return a;
     }, 0);
   const el = document.getElementById('water-today-val');
@@ -5645,8 +5664,8 @@ function archiveAndPruneMeals() {
     toArchive[m.date].fat     += m.fat     || 0;
     toArchive[m.date].fiber   += m.fiber   || 0;
     const nm2 = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-    if (nm2.includes('water')) toArchive[m.date].water += m.quantity||m.drinkVolume||0;
-    else if (nm2.includes('iced tea')) toArchive[m.date].water += (m.quantity||m.drinkVolume||0) * 0.9;
+    if (nm2.includes('water')) toArchive[m.date].water += m.drinkVolume||m.quantity||0;
+    else if (nm2.includes('iced tea')) toArchive[m.date].water += (m.drinkVolume||m.quantity||0) * 0.9;
   });
 
   const newDates = Object.keys(toArchive);
@@ -5682,8 +5701,8 @@ function getDayTotals(dateStr) {
       fiber:   dayMeals.reduce((a,m)=>a+(m.fiber||0),0),
       water:   dayMeals.reduce((a,m) => {
         const nm = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-        if (nm.includes('water')) return a + (m.quantity||m.drinkVolume||0);
-        if (nm.includes('iced tea')) return a + (m.quantity||m.drinkVolume||0) * 0.9;
+        if (nm.includes('water')) return a + (m.drinkVolume||m.quantity||0);
+        if (nm.includes('iced tea')) return a + (m.drinkVolume||m.quantity||0) * 0.9;
         return a;
       }, 0),
     };
