@@ -6355,6 +6355,11 @@ function migrateRecipeWeights() {
 
 // ── AUTO-BACKUP ───────────────────────────────────────────────────────────
 function checkAutoBackup() {
+  // Never auto-backup if there's no data to back up
+  const meals = DB.get('meals') || [];
+  const weights = DB.get('weights') || [];
+  if (!meals.length && !weights.length) return;
+
   const lastBackup = DB.get('lastBackupDate');
   const todayStr = today();
   if (!lastBackup) {
