@@ -1472,7 +1472,7 @@
 <!-- Firebase SDKs -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged }
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
@@ -1490,7 +1490,17 @@ const fbApp  = initializeApp(firebaseConfig);
 const fbAuth = getAuth(fbApp);
 const fbDb   = getFirestore(fbApp);
 
-window._signIn = () => signInWithRedirect(fbAuth, new GoogleAuthProvider());
+window._signIn = () => {
+  signInWithPopup(fbAuth, new GoogleAuthProvider())
+    .catch(err => {
+      // Popup blocked (e.g. some PWA contexts) — fall back to redirect
+      if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
+        signInWithRedirect(fbAuth, new GoogleAuthProvider());
+      } else {
+        console.warn('signIn error:', err);
+      }
+    });
+};
 window._signOut = () => signOut(fbAuth);
 
 // Handle redirect result on app load
@@ -1604,7 +1614,7 @@ onAuthStateChanged(fbAuth, async user => {
     window.Cloud.uid   = null;
     window.Cloud.ready = false;
     const btn = document.getElementById('auth-btn');
-    if (btn) { btn.textContent = 'Sign in with Google'; btn.onclick = () => signInWithRedirect(fbAuth, new GoogleAuthProvider()); }
+    if (btn) { btn.textContent = 'Sign in with Google'; btn.onclick = window._signIn; }
     const userEl = document.getElementById('auth-user');
     if (userEl) userEl.textContent = '';
     document.getElementById('auth-banner').style.display = 'flex';
