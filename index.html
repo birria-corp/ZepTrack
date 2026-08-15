@@ -6321,6 +6321,21 @@ document.getElementById('meal-date').value = today();
 document.getElementById('ex-date').value = today();
 document.getElementById('daily-date').value = today();
 // Migrate existing water entries — zero out any nutrition USDA incorrectly assigned
+function migrateQuickPicks() {
+  // Add any DEFAULT_QUICK_PICKS items missing from the saved list
+  const saved = DB.get('quickPicks');
+  if (!saved) return; // no saved list — defaults will be used as-is
+  let changed = false;
+  DEFAULT_QUICK_PICKS.forEach(item => {
+    if (!saved.includes(item)) {
+      saved.unshift(item); // add to front
+      changed = true;
+      console.log('Quick picks: added missing item:', item);
+    }
+  });
+  if (changed) DB.set('quickPicks', saved);
+}
+
 function migrateWaterEntries() {
   let meals = DB.get('meals') || [];
   let changed = false;
@@ -6433,6 +6448,7 @@ initSettings();
 initReminders();
 migrateWaterEntries();
 migrateRecipeWeights();
+migrateQuickPicks();
 archiveAndPruneMeals();
 seedGLP1Recipes();
 renderQuickPickGrid();
