@@ -573,6 +573,12 @@
   </style>
 </head>
 <body>
+<div id="auth-banner" style="display:flex;align-items:center;justify-content:space-between;
+  background:#1a1f2e;border-bottom:1px solid #2e3450;padding:10px 16px;gap:12px;position:sticky;top:0;z-index:200">
+  <span style="font-size:0.8rem;color:#7880a0">Sign in to sync your data across devices</span>
+  <button id="auth-btn" style="background:#6c8aff;color:#fff;border:none;border-radius:8px;
+    padding:7px 14px;font-size:0.8rem;cursor:pointer">Sign in with Google</button>
+</div>
 <div id="app">
   <header>
     <div class="logo">ZEP<span>TRACK</span></div>
@@ -1463,6 +1469,143 @@
 
 <div id="toast">Saved!</div>
 
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCrTmJNohK-7_t2BHx70HA6AfLmZyryLUY",
+  authDomain: "zeptrack-f8720.firebaseapp.com",
+  projectId: "zeptrack-f8720",
+  storageBucket: "zeptrack-f8720.firebasestorage.app",
+  messagingSenderId: "791166858370",
+  appId: "1:791166858370:web:9ccf77cdad85cb3689b09b"
+};
+
+const fbApp  = initializeApp(firebaseConfig);
+const fbAuth = getAuth(fbApp);
+const fbDb   = getFirestore(fbApp);
+
+window.Cloud = {
+  uid: null,
+  ready: false,
+
+  async pushProfile() {
+    if (!this.uid) return;
+    const profile = {
+      goals:        window._DB_RAW('goals')        || {},
+      units:        window._DB_RAW('units')        || 'imperial',
+      recipes:      window._DB_RAW('recipes')      || [],
+      quickPicks:   window._DB_RAW('quickPicks')   || [],
+      customItems:  window._DB_RAW('customItems')  || [],
+      drinkPresets: window._DB_RAW('drinkPresets') || [],
+      updatedAt:    Date.now()
+    };
+    try {
+      await setDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'), profile, { merge: true });
+    } catch(e) { console.warn('Cloud.pushProfile:', e); }
+  },
+
+  async pushDay(dateStr) {
+    if (!this.uid) return;
+    const meals      = (window._DB_RAW('meals')      || []).filter(m => m.date === dateStr);
+    const exercise   = (window._DB_RAW('exercise')   || []).filter(e => e.date === dateStr);
+    const injections = (window._DB_RAW('injections') || []).filter(i => i.date === dateStr);
+    const daily      = (window._DB_RAW('daily')      || []).filter(d => d.date === dateStr);
+    const weights    = (window._DB_RAW('weights')    || []).filter(w => w.date === dateStr);
+    try {
+      await setDoc(doc(fbDb, 'users', this.uid, 'days', dateStr), {
+        meals, exercise, injections, daily, weights, updatedAt: Date.now()
+      }, { merge: false });
+    } catch(e) { console.warn('Cloud.pushDay:', e); }
+  },
+
+  async pullAndMerge() {
+    if (!this.uid) return;
+    try {
+      const profSnap = await getDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'));
+      if (profSnap.exists()) {
+        const p = profSnap.data();
+        if (p.goals)        window._DB_SET('goals',        p.goals);
+        if (p.units)        window._DB_SET('units',        p.units);
+        if (p.recipes && p.recipes.length)           window._DB_SET('recipes',      p.recipes);
+        if (p.quickPicks && p.quickPicks.length)     window._DB_SET('quickPicks',   p.quickPicks);
+        if (p.customItems && p.customItems.length)   window._DB_SET('customItems',  p.customItems);
+        if (p.drinkPresets && p.drinkPresets.length) window._DB_SET('drinkPresets', p.drinkPresets);
+      }
+      const daysSnap = await getDocs(collection(fbDb, 'users', this.uid, 'days'));
+      const cm = [], ce = [], ci = [], cd = [], cw = [];
+      daysSnap.forEach(d => {
+        const day = d.data();
+        if (day.meals)      cm.push(...day.meals);
+        if (day.exercise)   ce.push(...day.exercise);
+        if (day.injections) ci.push(...day.injections);
+        if (day.daily)      cd.push(...day.daily);
+        if (day.weights)    cw.push(...day.weights);
+      });
+      const merge = (localKey, cloudArr) => {
+        const local  = window._DB_RAW(localKey) || [];
+        const seen   = new Set(local.map(x => x.ts));
+        const merged = [...local, ...cloudArr.filter(x => x.ts && !seen.has(x.ts))];
+        if (merged.length > local.length) window._DB_SET(localKey, merged);
+      };
+      merge('meals', cm); merge('exercise', ce);
+      merge('injections', ci); merge('daily', cd); merge('weights', cw);
+    } catch(e) { console.warn('Cloud.pullAndMerge:', e); }
+  },
+
+  async pushAllDays() {
+    if (!this.uid) return;
+    const meals      = window._DB_RAW('meals')      || [];
+    const exercise   = window._DB_RAW('exercise')   || [];
+    const injections = window._DB_RAW('injections') || [];
+    const daily      = window._DB_RAW('daily')      || [];
+    const weights    = window._DB_RAW('weights')    || [];
+    const days = new Set([
+      ...meals.map(m=>m.date), ...exercise.map(e=>e.date),
+      ...injections.map(i=>i.date), ...daily.map(d=>d.date), ...weights.map(w=>w.date)
+    ]);
+    for (const dateStr of days) { await this.pushDay(dateStr); }
+    await this.pushProfile();
+  }
+};
+
+onAuthStateChanged(fbAuth, async user => {
+  if (user) {
+    window.Cloud.uid   = user.uid;
+    window.Cloud.ready = true;
+    const isFirstLogin = !localStorage.getItem('zep_cloud_uid');
+    localStorage.setItem('zep_cloud_uid', user.uid);
+    const btn = document.getElementById('auth-btn');
+    if (btn) { btn.textContent = 'Sign out'; btn.onclick = () => signOut(fbAuth); }
+    const userEl = document.getElementById('auth-user');
+    if (userEl) userEl.textContent = user.displayName || user.email || '';
+    document.getElementById('auth-banner').style.display = 'none';
+    if (isFirstLogin) {
+      if (typeof showToast === 'function') showToast('First login — syncing to cloud…');
+      await window.Cloud.pushAllDays();
+      if (typeof showToast === 'function') showToast('Sync complete!');
+    } else {
+      await window.Cloud.pullAndMerge();
+      if (typeof initSettings === 'function') initSettings();
+      if (typeof renderToday  === 'function') renderToday();
+    }
+  } else {
+    window.Cloud.uid   = null;
+    window.Cloud.ready = false;
+    const btn = document.getElementById('auth-btn');
+    if (btn) { btn.textContent = 'Sign in with Google'; btn.onclick = () => signInWithPopup(fbAuth, new GoogleAuthProvider()); }
+    const userEl = document.getElementById('auth-user');
+    if (userEl) userEl.textContent = '';
+    document.getElementById('auth-banner').style.display = 'flex';
+  }
+});
+<\/script>
+
 <script>
 // ═══════════════════════════════════════════════════════
 // STORAGE
@@ -1480,6 +1623,9 @@ const DB = {
     this.set(key, arr);
   }
 };
+// Raw accessors for Cloud layer (no prefix logic duplication)
+window._DB_RAW = key => DB.get(key);
+window._DB_SET = (key, val) => DB.set(key, val);
 
 // DEFAULTS
 const DEFAULT_GOALS = { calories: 1600, protein: 120, fiber: 25, water: 64, steps: 8000 };
@@ -1658,12 +1804,13 @@ function logWaterQuick(oz) {
   updateWaterDisplay();
   renderToday();
   showToast(`+${oz}oz water logged!`);
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(document.getElementById('meal-date')?.value || today());
 }
 
 function logWater30() { logWaterQuick(30); }
 
 function getHardcodedNutrition(name) {
-  const key = name.toLowerCase().replace(/[^a-z0-9 -]/g,'').trim();
+  const key = name.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
   return HARDCODED_NUTRITION[key] || null;
 }
 
@@ -2433,6 +2580,7 @@ function saveQuickLog() {
   showToast(`${name} logged!`);
   renderTodaysMealsLog();
   renderToday();
+  if (window.Cloud && window.Cloud.ready) { const _md = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_md); }
 }
 
 function convertToGrams(qty, unit) {
@@ -2995,6 +3143,7 @@ function saveRecipe() {
   const idx = recipes.findIndex(r=>r.id===recipe.id);
   if (idx>=0) recipes[idx]=recipe; else recipes.push(recipe);
   DB.set('recipes', recipes);
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
   closeRecipeModal();
   showToast('Recipe saved!');
   renderRecipesList();
@@ -4181,6 +4330,7 @@ function submitCookedPortion(recipeId) {
   DB.set('recipeLastCooked', lastCooked);
 
   showToast(`${recipe.name} logged!`);
+  if (window.Cloud && window.Cloud.ready) { const _rd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_rd); }
   renderToday();
   renderRecipeFeaturedGrid();
   renderRecipeTabList();
@@ -4306,6 +4456,7 @@ function logCardPortion(recipeId) {
   document.getElementById('card-portion-oz').value = '';
   document.getElementById('card-portion-preview').innerHTML = '';
   showToast(`${recipe.name} logged!`);
+  if (window.Cloud && window.Cloud.ready) { const _rd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_rd); }
   renderToday();
 }
 
@@ -4496,6 +4647,7 @@ function logRecipePortion() {
   document.getElementById('recipe-portion').value = '';
   document.getElementById('recipe-portion-nutrition').innerHTML = '';
   showToast(`${recipe.name} logged!`);
+  if (window.Cloud && window.Cloud.ready) { const _rd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_rd); }
   renderToday();
 }
 
@@ -4534,7 +4686,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v6.1</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v6.0</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4721,6 +4873,7 @@ function saveWeight() {
   if (!w || w < 1) { alert('Enter a valid weight'); return; }
   if (UNITS === 'metric') w = Math.round(w / 0.453592 * 10) / 10; // store as lbs
   DB.push('weights', { date: d, weight: w, notes: document.getElementById('wt-notes').value });
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(d);
   closeWeightModal();
   showToast('Weight saved!');
   renderToday();
@@ -4737,6 +4890,7 @@ function saveExercise() {
   if (!duration) { alert('Enter duration'); return; }
   const exDate = document.getElementById('ex-date').value || today();
   DB.push('exercise', { date: exDate, type, duration, steps, notes, ts: Date.now() });
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(exDate);
   document.getElementById('ex-duration').value = 30;
   document.getElementById('ex-steps').value = '';
   document.getElementById('ex-notes').value = '';
@@ -4772,6 +4926,7 @@ function saveDailyCheckin() {
   const rec  = { date: dailyDate, water, energy, mood, sideEffects, notes, ts: Date.now() };
   if (idx >= 0) dailys[idx] = rec; else dailys.push(rec);
   DB.set('daily', dailys);
+  if (window.Cloud && window.Cloud.ready) { const dd = document.getElementById('daily-date')?.value || today(); window.Cloud.pushDay(dd); }
   updateWaterDisplay();
   renderToday();
   showToast('Check-in saved!');
@@ -4879,6 +5034,7 @@ function saveInjection() {
   const site  = document.getElementById('inj-site-val').value || 'abd-ul';
   const notes = document.getElementById('inj-notes').value;
   DB.push('injections', { date, dose, site, notes, ts: Date.now() });
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(date);
   document.getElementById('inj-notes').value = '';
   // refresh diagram
   const injections = DB.get('injections') || [];
@@ -5637,6 +5793,7 @@ function updateWaterDisplay() {
 function setUnits(u) {
   UNITS = u;
   DB.set('units', u);
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
   document.getElementById('unit-imperial').className = u === 'imperial' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
   document.getElementById('unit-metric').className   = u === 'metric'   ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
   document.getElementById('unit-display-desc').textContent = u === 'metric' ? 'kg · ml · km' : 'lbs · oz · miles';
@@ -5655,6 +5812,7 @@ function saveGoals() {
   GOALS.water    = parseInt(document.getElementById('goal-water').value) || 64;
   GOALS.steps    = parseInt(document.getElementById('goal-steps').value) || 8000;
   DB.set('goals', GOALS);
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
   showToast('Goals saved!');
 }
 
@@ -5756,7 +5914,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '6.1';
+      const localVersion  = '6.0';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6309,6 +6467,7 @@ function addScannedItem() {
   showToast('Added to log!');
   renderTodaysMealsLog();
   renderToday();
+  if (window.Cloud && window.Cloud.ready) { const _bd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_bd); }
 }
 
 // Pill toggles — single-select groups
