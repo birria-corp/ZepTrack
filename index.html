@@ -643,17 +643,7 @@
               <input type="date" id="meal-date" style="flex:1" />
             </div>
           </div>
-          <div class="field-group">
-            <label>Meal Type</label>
-            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
-              <button class="meal-type-btn" data-val="drink" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Drink</button>
-              <button class="meal-type-btn active" data-val="breakfast" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:rgba(108,138,255,0.15);color:var(--accent);font-size:0.72rem;cursor:pointer">Breakfast</button>
-              <button class="meal-type-btn" data-val="lunch" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Lunch</button>
-              <button class="meal-type-btn" data-val="dinner" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Dinner</button>
-              <button class="meal-type-btn" data-val="snack" onclick="selectMealType(this)" style="padding:8px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:0.72rem;cursor:pointer">Snack</button>
-            </div>
-            <input type="hidden" id="meal-type" value="breakfast" />
-          </div>
+
           <div class="field-group">
             <label>Item</label>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">
@@ -1560,7 +1550,7 @@ function showIntakeSubtab(sub) {
 // QUICK-PICK LIST
 // ═══════════════════════════════════════════════════════
 const DEFAULT_QUICK_PICKS = [
-  'Coffee','Iced Tea','Hard Boiled Egg','Cheese Stick',
+  '7-Vanilla','Coffee','Iced Tea','Hard Boiled Egg','Cheese Stick',
   'Nuts','Trail Mix','SK Protein Shake','Banana','Apple','Yogurt','Other'
 ];
 
@@ -1643,6 +1633,13 @@ const HARDCODED_NUTRITION = {
     defaultQtyOz: 6, defaultQtyG: 170,
     cal: 100, protein: 17, carbs: 6, fat: 0, fiber: 0,
     type: 'food'
+  },
+  '7-vanilla': {
+    label: '7-Vanilla',
+    servingG: 946,     // 32 oz large
+    defaultQtyOz: 32, defaultQtyG: 946,
+    cal: 225, protein: 6, carbs: 15, fat: 10, fiber: 0,
+    type: 'drink'
   },
 };
 
@@ -2208,17 +2205,7 @@ function setMealDateToday() {
   document.getElementById('meal-date').value = today();
 }
 
-function selectMealType(btn) {
-  document.querySelectorAll('.meal-type-btn').forEach(b => {
-    b.style.borderColor = 'var(--border)';
-    b.style.background  = 'var(--surface2)';
-    b.style.color       = 'var(--muted)';
-  });
-  btn.style.borderColor = 'var(--accent)';
-  btn.style.background  = 'rgba(108,138,255,0.15)';
-  btn.style.color       = 'var(--accent)';
-  document.getElementById('meal-type').value = btn.dataset.val;
-}
+
 
 function parseRecipePaste() {
   const raw = document.getElementById('recipe-paste-input')?.value || '';
@@ -2346,7 +2333,7 @@ function saveQuickLog() {
   const unit = grams > 0 ? 'Grams' : 'OZ';
   const qty  = unit === 'Grams' ? grams : oz;
 
-  const mealType = document.getElementById('meal-type').value;
+  const mealType = 'intake';
   const mealDate = document.getElementById('meal-date').value || today();
 
   let name = selectedQuickItem.name;
@@ -2536,6 +2523,7 @@ function getMacrosForRange(startDate, endDate) {
     fiber   += m.fiber   || 0;
     const name = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
     if (name.includes('water')) water += m.quantity||m.drinkVolume||0;
+    else if (name.includes('iced tea')) water += (m.quantity||m.drinkVolume||0) * 0.9;
   });
   // Archived days in range
   Object.entries(archive).forEach(([d,v]) => {
@@ -3377,6 +3365,59 @@ const GLP1_SEED_RECIPES = [
       'Remove from heat, sprinkle with fresh herbs, and serve directly from the pan.',
     ],
     tips:'Turmeric gives the potatoes a gorgeous golden color. Poking the whites helps them cook faster without overcooking the yolk.'
+  },
+  {
+    id: 'custom-r6', name: 'Eggs in Purgatory',
+    totalWeight:1650, weightUnit:'g', isBulk:true, servingBase:4,
+    totalCal:2208, totalProtein:84, totalCarbs:140, totalFat:148, totalFiber:24,
+    tags:['italian','vegetarian','eggs','breakfast','glp1-friendly','quick'],
+    ingredients:[
+      {name:'Rustic Italian bread, thick slices',base:8,unit:'count',cat:'pantry'},
+      {name:'Extra-virgin olive oil',base:105,unit:'ml',cat:'pantry'},
+      {name:'Whole peeled tomatoes (28oz can)',base:794,unit:'g',cat:'pantry'},
+      {name:'Yellow onion, finely chopped',base:85,unit:'g',cat:'produce'},
+      {name:'Garlic cloves, minced',base:4,unit:'count',cat:'produce'},
+      {name:'Tomato paste',base:45,unit:'ml',cat:'pantry'},
+      {name:'Fresh oregano, minced or 3/4 tsp dried',base:2,unit:'tsp',cat:'produce'},
+      {name:'Red pepper flakes',base:1,unit:'tsp',cat:'pantry'},
+      {name:'Fresh basil leaves',base:30,unit:'g',cat:'produce'},
+      {name:'Large eggs',base:8,unit:'count',cat:'dairy'},
+      {name:'Parmigiano-Reggiano, grated',base:25,unit:'g',cat:'dairy'},
+    ],
+    steps:[
+      'Arrange bread slices on a baking sheet and drizzle both sides with 4 tbsp olive oil total. Broil until deep golden brown, about 3 minutes per side. Set aside.',
+      'Crush canned tomatoes by hand until pieces are no larger than half an inch. Set aside.',
+      'Heat remaining 3 tbsp oil in a 12-inch skillet over medium. Add onion and cook until softened, 3-5 minutes. Add garlic and cook until fragrant, 30 seconds.',
+      'Add tomato paste, oregano, salt, and red pepper flakes. Cook stirring until rust-colored, about 2 minutes. Add basil and cook until wilted, 30 seconds.',
+      'Stir in crushed tomatoes and bring to a gentle simmer. Cook until slightly thickened, 5-10 minutes.',
+      'Remove from heat and rest 2 minutes. Crack each egg into a small bowl first, clear a well in the sauce, and pour in. Space 7 around the perimeter and 1 in the center.',
+      'Season eggs with salt and pepper. Bring to a simmer, cover, and cook until yolks film over, 4-5 minutes. Continue until whites are just set, 1-4 minutes more.',
+      'Off heat, sprinkle with Parmesan and torn basil. Drizzle with olive oil. Serve immediately with toasted bread.',
+    ],
+    tips:'The sauce can be made up to 3 days ahead. Adjust red pepper flakes for spice level. The toasted bread is essential for scooping up the sauce.'
+  },
+  {
+    id: 'custom-r7', name: 'Edamame Corn Chicken Salad',
+    totalWeight:1316, weightUnit:'g', isBulk:true, servingBase:2,
+    totalCal:2084, totalProtein:156.1, totalCarbs:156.3, totalFat:96.6, totalFiber:41.6,
+    tags:['american','high-protein','glp1-friendly','no-cook','quick','chicken','carnivore','edamame'],
+    ingredients:[
+      {name:'Chickpeas, drained',base:281,unit:'g',cat:'pantry'},
+      {name:'Red bell pepper, diced',base:127,unit:'g',cat:'produce'},
+      {name:'Shelled edamame',base:264,unit:'g',cat:'pantry'},
+      {name:'Grilled chicken breast, shredded',base:250,unit:'g',cat:'meat'},
+      {name:'Corn kernels',base:189,unit:'g',cat:'pantry'},
+      {name:"Duke's mayonnaise",base:80,unit:'g',cat:'pantry'},
+      {name:'Whole milk Greek yogurt',base:90,unit:'g',cat:'dairy'},
+      {name:'Seasoned rice vinegar',base:35,unit:'g',cat:'pantry'},
+    ],
+    steps:[
+      'Make the dressing: whisk together mayo, Greek yogurt, seasoned rice vinegar, salt, and pepper until smooth.',
+      'Chop remaining ingredients as needed. Combine chickpeas, bell pepper, edamame, chicken, and corn in a large bowl.',
+      'Pour dressing over the salad and toss until evenly coated. Taste and adjust seasoning.',
+      'Serve immediately or refrigerate up to 3 days.',
+    ],
+    tips:'High protein and high fiber. A 300g portion delivers about 35g protein. Greek yogurt lightens the dressing without sacrificing creaminess.'
   }
 
 ];
@@ -4015,15 +4056,7 @@ Fiber: ${per(r.totalFiber)}g</div>
       <h2 style="font-size:1.05rem;font-weight:700;margin:0 0 4px">${r.name}</h2>
       <div style="font-size:0.75rem;color:var(--muted);font-family:var(--mono);margin-bottom:14px">${tw}g total recipe &nbsp;&#183;&nbsp; ${per(r.totalCal)} cal/100g &nbsp;&#183;&nbsp; ${per(r.totalProtein)}g pro/100g</div>
 
-      <!-- Meal type -->
-      <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Meal Type</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px">
-        ${['Breakfast','Lunch','Dinner','Snack'].map((t,i) =>
-          `<button class="card-mealtype-btn" data-val="${t.toLowerCase()}"
-            onclick="selectCardMealType(this)"
-            style="padding:9px 4px;border-radius:var(--radius-sm);border:1px solid ${i===2?'var(--accent)':'var(--border)'};background:${i===2?'rgba(108,138,255,0.15)':'var(--surface2)'};color:${i===2?'var(--accent)':'var(--muted)'};font-size:0.75rem;cursor:pointer">${t}</button>`
-        ).join('')}
-      </div>
+
 
       <!-- Portion weight -->
       <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Portion Weight</div>
@@ -4090,8 +4123,7 @@ function submitCookedPortion(recipeId) {
   else if (oz > 0)   { portionG = oz * 28.3495; portionDisplay = oz; displayUnit = 'OZ'; }
   else               { alert('Enter a portion weight'); return; }
 
-  const mealTypeBtn = document.querySelector('.card-mealtype-btn[style*="var(--accent)"]');
-  const mealType = mealTypeBtn ? mealTypeBtn.dataset.val : 'dinner';
+  const mealType = 'intake';
   const logDate = document.getElementById('card-log-date').value || today();
   const factor = portionG / recipe.totalWeight;
 
@@ -4226,7 +4258,7 @@ function logCardPortion(recipeId) {
   if (grams > 0) { portionG = grams; portionDisplay = grams; displayUnit = 'Grams'; }
   else if (oz > 0) { portionG = oz * 28.3495; portionDisplay = oz; displayUnit = 'OZ'; }
   else { alert('Enter a portion size'); return; }
-  const mealType = document.getElementById('card-meal-type').value;
+  const mealType = 'intake';
   const factor = portionG / recipe.totalWeight;
   DB.push('meals', {
     date: today(), mealType, type: 'food',
@@ -4475,7 +4507,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v5.7</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v5.8</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -4488,8 +4520,12 @@ function renderToday() {
 
   // water = sum of all water drink entries for today
   const water = meals
-    .filter(m => (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
+    .reduce((a,m) => {
+      const wn2 = (m.drinkName||m.items?.[0]?.name||'').toLowerCase();
+      if (wn2.includes('water')) return a + (m.quantity||m.drinkVolume||0);
+      if (wn2.includes('iced tea')) return a + (m.quantity||m.drinkVolume||0) * 0.9;
+      return a;
+    }, 0);
   const steps = exercise.filter(e=>e.type==='walking').reduce((a,e)=>a+(e.steps||0),0);
 
   // update summary table
@@ -5101,7 +5137,7 @@ function renderWeightStats() {
 }
 
 function renderNutritionProgress() {
-  const last7  = getLastNDays(7);
+  const last7  = getLastNDays(7, true);  // exclude today — only fully completed days
   const last30 = getLastNDays(30);
 
   // Use getDayTotals which reads live meals + archive seamlessly
@@ -5268,7 +5304,7 @@ function renderHistory(filter) {
       header = `${x.date} · Weight`;
       body = `<strong style="color:${METRIC_COLORS.cal}">${displayWeight(x.weight)}</strong>${x.notes?` <span style="color:var(--muted);font-size:0.72rem">· ${x.notes}</span>`:''}`;
     } else if (x._type === 'meal') {
-      header = `${x.date} · Meal · ${cap(x.mealType)}`;
+      header = `${x.date} · Intake`;
       body = `<span style="font-weight:500">${entryName(x)}</span>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:3px">${nutritionChips(x)}</div>`;
     } else if (x._type === 'exercise') {
@@ -5332,9 +5368,7 @@ function openEntryEdit(type, idx) {
     const entryOz = entry.unit==='OZ'    ? entry.quantity||'' : entry.quantity ? Math.round(entry.quantity/28.3495*100)/100 : '';
     f.innerHTML = `
       <div class="field-group"><label>Date</label><input type="date" id="ee-date" value="${entry.date}" /></div>
-      <div class="field-group"><label>Meal Type</label><select id="ee-mealtype">
-        ${['breakfast','lunch','dinner','snack','drink'].map(t=>`<option value="${t}"${entry.mealType===t?' selected':''}>${cap(t)}</option>`).join('')}
-      </select></div>
+
       <div class="field-group"><label>Item Name</label><input type="text" id="ee-name" value="${name}" /></div>
       <div class="field-group">
         <label>Volume / Portion</label>
@@ -5417,7 +5451,6 @@ function saveEntryEdit() {
     const qty  = qtyG > 0 ? qtyG : qtyOz > 0 ? qtyOz : entry.quantity;
     const unit = qtyG > 0 ? 'Grams' : qtyOz > 0 ? 'OZ' : (entry.unit || 'Grams');
     entry.date = document.getElementById('ee-date').value;
-    entry.mealType = document.getElementById('ee-mealtype').value;
     entry.quantity = qty; entry.unit = unit;
     entry.cal = cal; entry.protein = pro; entry.fiber = fib; entry.carbs = carb; entry.fat = fat;
     entry.items = [{name, cal, protein:pro, fiber:fib, carbs:carb, fat}];
@@ -5478,11 +5511,16 @@ function avg(arr) {
   return valid.length ? valid.reduce((a,b)=>a+b,0)/valid.length : 0;
 }
 
-function getLastNDays(n) {
+function getLastNDays(n, excludeToday=false) {
   const days = [];
-  for (let i = n-1; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    days.push(d.toISOString().split('T')[0]);
+  const startOffset = excludeToday ? 1 : 0;
+  for (let i = n + startOffset - 1; i >= startOffset; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    // Use local date (not UTC) to match how meals are stored
+    days.push(d.getFullYear() + '-' +
+      String(d.getMonth()+1).padStart(2,'0') + '-' +
+      String(d.getDate()).padStart(2,'0'));
   }
   return days;
 }
@@ -5532,8 +5570,13 @@ function updateWaterDisplay() {
   const meals    = DB.get('meals') || [];
   const todayStr = today();
   const oz = meals
-    .filter(m => m.date===todayStr && (m.drinkName||m.items?.[0]?.name||'').toLowerCase().includes('water'))
-    .reduce((a,m) => a + (m.quantity||m.drinkVolume||0), 0);
+    .reduce((a,m) => {
+      if (m.date !== todayStr) return a;
+      const wn = (m.drinkName||m.items?.[0]?.name||'').toLowerCase();
+      if (wn.includes('water')) return a + (m.quantity||m.drinkVolume||0);
+      if (wn.includes('iced tea')) return a + (m.quantity||m.drinkVolume||0) * 0.9;
+      return a;
+    }, 0);
   const el = document.getElementById('water-today-val');
   const ring = document.getElementById('water-ring');
   const lbl = document.getElementById('water-goal-label');
@@ -5601,8 +5644,9 @@ function archiveAndPruneMeals() {
     toArchive[m.date].carbs   += m.carbs   || 0;
     toArchive[m.date].fat     += m.fat     || 0;
     toArchive[m.date].fiber   += m.fiber   || 0;
-    const name = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
-    if (name.includes('water')) toArchive[m.date].water += m.quantity||m.drinkVolume||0;
+    const nm2 = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
+    if (nm2.includes('water')) toArchive[m.date].water += m.quantity||m.drinkVolume||0;
+    else if (nm2.includes('iced tea')) toArchive[m.date].water += (m.quantity||m.drinkVolume||0) * 0.9;
   });
 
   const newDates = Object.keys(toArchive);
@@ -5636,8 +5680,12 @@ function getDayTotals(dateStr) {
       carbs:   dayMeals.reduce((a,m)=>a+(m.carbs||0),0),
       fat:     dayMeals.reduce((a,m)=>a+(m.fat||0),0),
       fiber:   dayMeals.reduce((a,m)=>a+(m.fiber||0),0),
-      water:   dayMeals.filter(m=>(m.drinkName||(m.items?.[0]?.name)||'').toLowerCase().includes('water'))
-                       .reduce((a,m)=>a+(m.quantity||m.drinkVolume||0),0),
+      water:   dayMeals.reduce((a,m) => {
+        const nm = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
+        if (nm.includes('water')) return a + (m.quantity||m.drinkVolume||0);
+        if (nm.includes('iced tea')) return a + (m.quantity||m.drinkVolume||0) * 0.9;
+        return a;
+      }, 0),
     };
   }
   const archive = DB.get('daily_archive') || {};
@@ -5669,7 +5717,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '5.7';
+      const localVersion  = '5.8';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
