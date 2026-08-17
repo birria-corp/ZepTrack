@@ -37,6 +37,7 @@ CONTEXT.md      Session context for resuming in Claude
 ## Version History
 | Version | Changes |
 |---------|---------|
+| v7.4 | Dose-change injection markers on weight chart |
 | v7.3 | Fix quick-pick removals persisting; time-scaled weight chart with 35d/1yr toggle |
 | v7.2 | Full history cloud sync (35-day archive), Sync Now button in Settings |
 | v7.1 | Fix Google sign-in on Android PWA, fix Firebase module syntax error |

@@ -4745,7 +4745,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.3</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.4</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5384,7 +5384,7 @@ function drawWeightChart() {
   const W = canvas.width, H = canvas.height;
   ctx.clearRect(0,0,W,H);
 
-  const pad = { t:16, r:12, b:28, l:44 };
+  const pad = { t:22, r:12, b:28, l:44 };
   const cW = W - pad.l - pad.r;
   const cH = H - pad.t - pad.b;
 
@@ -5443,6 +5443,43 @@ function drawWeightChart() {
   const avgPts  = weights.map((w,i) => [toFrac(w.date), avgArr[i]]);
   drawDataset(pts,    '#6c8aff', false);
   drawDataset(avgPts, '#fbbf24', true);
+
+  // Dose-change injection markers
+  const allInjections = (DB.get('injections') || [])
+    .slice().sort((a,b) => a.date < b.date ? -1 : 1);
+  // Find dose-change events (first injection always included)
+  const doseChanges = [];
+  let lastDose = null;
+  allInjections.forEach(inj => {
+    const dose = parseFloat(inj.dose);
+    if (dose !== lastDose) {
+      doseChanges.push({ date: inj.date, dose: inj.dose });
+      lastDose = dose;
+    }
+  });
+  // Draw only changes within the current date range
+  doseChanges.forEach(dc => {
+    if (dc.date < cutoffStr) return;
+    const frac = toFrac(dc.date);
+    if (frac < 0 || frac > 1) return;
+    const x = xPos(frac);
+    // Dashed vertical line
+    ctx.save();
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x, pad.t);
+    ctx.lineTo(x, pad.t + cH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Dose label at top
+    ctx.fillStyle = '#34d399';
+    ctx.font = 'bold 9px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(dc.dose + 'mg', x, pad.t + 9);
+    ctx.restore();
+  });
 
   renderWeightStats();
 }
@@ -6094,7 +6131,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.3';
+      const localVersion  = '7.4';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
