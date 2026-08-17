@@ -976,6 +976,10 @@
             <span style="display:flex;align-items:center;gap:5px"><span style="width:16px;height:2px;background:#6c8aff;display:inline-block;border-radius:1px"></span>Actual</span>
             <span style="display:flex;align-items:center;gap:5px"><span style="width:16px;height:2px;background:#fbbf24;display:inline-block;border-radius:1px;border-top:2px dashed #fbbf24"></span>7-day avg</span>
           </div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button class="btn btn-ghost btn-sm wt-range-btn active" onclick="setWeightRange(35,this)">35 Days</button>
+            <button class="btn btn-ghost btn-sm wt-range-btn" onclick="setWeightRange(365,this)">1 Year</button>
+          </div>
           <div class="chart-wrap"><canvas id="weight-chart" height="200"></canvas></div>
         </div>
         <div class="card">
@@ -4741,7 +4745,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.2</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.3</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5317,29 +5321,129 @@ function rollingAvg(data, window) {
   });
 }
 
+let weightRangeDays = 35;
+function setWeightRange(days, btn) {
+  weightRangeDays = days;
+  document.querySelectorAll('.wt-range-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  drawWeightChart();
+}
+
 function drawWeightChart() {
-  const weights = (DB.get('weights') || []).slice(-60);
+  const allWeights = (DB.get('weights') || []).sort((a,b) => a.date < b.date ? -1 : 1);
+  const canvas = document.getElementById('weight-chart');
+  if (!canvas) return;
+
+  // Filter to range
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - weightRangeDays);
+  const cutoffStr = cutoff.toISOString().slice(0,10);
+  const weights = allWeights.filter(w => w.date >= cutoffStr);
+
   if (weights.length < 2) {
-    const c = document.getElementById('weight-chart');
-    if (c) {
-      const ctx = c.getContext('2d');
-      c.width = c.parentElement.offsetWidth || 320;
-      ctx.clearRect(0,0,c.width,c.height);
-      ctx.fillStyle = '#7880a0';
-      ctx.font = '13px Inter';
-      ctx.textAlign = 'center';
-      ctx.fillText('Log at least 2 weights to see chart', c.width/2, c.height/2);
-    }
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement.offsetWidth || 320;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#7880a0';
+    ctx.font = '13px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText('Not enough data for this range', canvas.width/2, canvas.height/2);
     renderWeightStats();
     return;
   }
-  const labels  = weights.map(w => w.date.slice(5));
+
+  // Build time-scaled date axis across the full range
+  const startDate = new Date(cutoffStr);
+  const endDate   = new Date();
+  const totalMs   = endDate - startDate;
+  const totalDays = totalMs / 86400000;
+
+  // Build a lookup of date -> weight
+  const weightByDate = {};
+  weights.forEach(w => { weightByDate[w.date] = w.weight; });
+
+  // Determine x-axis tick positions (calendar-spaced)
+  const tickCount = weightRangeDays <= 35 ? 6 : 12;
+  const tickInterval = totalDays / tickCount;
+  const xTicks = [];
+  for (let i = 0; i <= tickCount; i++) {
+    const d = new Date(startDate.getTime() + i * tickInterval * 86400000);
+    const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    const label = weightRangeDays <= 35
+      ? ds.slice(5)   // MM-DD
+      : d.toLocaleString('default',{month:'short'});
+    xTicks.push({ ds, label, frac: i / tickCount });
+  }
+
+  // Map each weight entry to its fractional x position
+  const toFrac = dateStr => (new Date(dateStr) - startDate) / totalMs;
+
+  // Draw manually (bypass drawLineChart — need fractional x positioning)
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.offsetWidth || 320;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  const pad = { t:16, r:12, b:28, l:44 };
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+
   const actual  = weights.map(w => w.weight);
-  const avgLine = rollingAvg(actual, 7);
-  drawLineChart('weight-chart', labels, [
-    { data: actual,  color: '#6c8aff' },
-    { data: avgLine, color: '#fbbf24', dashed: true }
-  ]);
+  const avgArr  = rollingAvg(actual, 7);
+  let minV = Math.min(...actual), maxV = Math.max(...actual);
+  if (minV === maxV) { minV -= 1; maxV += 1; }
+  const range = maxV - minV;
+  const minY = minV - range * 0.1;
+  const maxY = maxV + range * 0.1;
+
+  const xPos  = frac => pad.l + frac * cW;
+  const yPos  = v    => pad.t + cH - ((v - minY) / (maxY - minY)) * cH;
+
+  // grid lines
+  ctx.strokeStyle = '#2e3450'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (cH / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    const val = maxY - ((maxY - minY) / 4) * i;
+    ctx.fillStyle = '#7880a0'; ctx.font = '9px DM Mono, monospace'; ctx.textAlign = 'right';
+    ctx.fillText(Math.round(val * 10) / 10, pad.l - 4, y + 3);
+  }
+
+  // x-axis ticks
+  ctx.fillStyle = '#7880a0'; ctx.font = '9px DM Mono, monospace'; ctx.textAlign = 'center';
+  const seenLabels = new Set();
+  xTicks.forEach(t => {
+    if (seenLabels.has(t.label)) return;
+    seenLabels.add(t.label);
+    ctx.fillText(t.label, xPos(t.frac), H - 4);
+  });
+
+  // draw datasets
+  const drawDataset = (pts, color, dashed) => {
+    ctx.strokeStyle = color; ctx.lineWidth = dashed ? 1.5 : 2;
+    ctx.setLineDash(dashed ? [4,3] : []);
+    ctx.beginPath();
+    let started = false;
+    pts.forEach(([frac, v]) => {
+      if (v == null) { started = false; return; }
+      const x = xPos(frac), y = yPos(v);
+      if (!started) { ctx.moveTo(x,y); started = true; } else ctx.lineTo(x,y);
+    });
+    ctx.stroke(); ctx.setLineDash([]);
+    if (!dashed) {
+      pts.forEach(([frac, v]) => {
+        if (v == null) return;
+        ctx.fillStyle = color; ctx.beginPath();
+        ctx.arc(xPos(frac), yPos(v), 3, 0, Math.PI*2); ctx.fill();
+      });
+    }
+  };
+
+  const pts     = weights.map((w,i) => [toFrac(w.date), w.weight]);
+  const avgPts  = weights.map((w,i) => [toFrac(w.date), avgArr[i]]);
+  drawDataset(pts,    '#6c8aff', false);
+  drawDataset(avgPts, '#fbbf24', true);
+
   renderWeightStats();
 }
 
@@ -5990,7 +6094,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.2';
+      const localVersion  = '7.3';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6577,18 +6681,27 @@ document.getElementById('ex-date').value = today();
 document.getElementById('daily-date').value = today();
 // Migrate existing water entries — zero out any nutrition USDA incorrectly assigned
 function migrateQuickPicks() {
-  // Add any DEFAULT_QUICK_PICKS items missing from the saved list
+  // Track which defaults have ever been offered — only add NEW defaults, not removed ones
   const saved = DB.get('quickPicks');
   if (!saved) return; // no saved list — defaults will be used as-is
+  const seeded = DB.get('quickPicksSeeded') || [];
   let changed = false;
+  let seededChanged = false;
   DEFAULT_QUICK_PICKS.forEach(item => {
-    if (!saved.includes(item)) {
-      saved.unshift(item); // add to front
-      changed = true;
-      console.log('Quick picks: added missing item:', item);
+    if (!seeded.includes(item)) {
+      // New default never seen before — add it
+      if (!saved.includes(item)) {
+        saved.unshift(item);
+        changed = true;
+        console.log('Quick picks: added new default:', item);
+      }
+      seeded.push(item);
+      seededChanged = true;
     }
+    // If already seeded but missing from saved — user removed it intentionally, do not re-add
   });
   if (changed) DB.set('quickPicks', saved);
+  if (seededChanged) DB.set('quickPicksSeeded', seeded);
 }
 
 function migrateWaterEntries() {
