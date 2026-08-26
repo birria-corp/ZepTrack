@@ -1647,6 +1647,7 @@ onAuthStateChanged(fbAuth, async user => {
     if (isFirstLogin) {
       if (typeof showToast === 'function') showToast('First login — syncing to cloud…');
       await window.Cloud.pushAllDays();
+      DB.set('lastSyncDate', today());
       if (typeof showToast === 'function') showToast('Sync complete!');
     } else {
       await window.Cloud.pullAndMerge();
@@ -4745,7 +4746,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.4</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.5</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -6109,6 +6110,7 @@ async function manualSync() {
   status.textContent = 'Pushing all data to Firestore…';
   try {
     await window.Cloud.pushAllDays();
+    DB.set('lastSyncDate', today());
     status.textContent = 'Sync complete — ' + new Date().toLocaleTimeString();
   } catch(e) {
     status.textContent = 'Sync failed — check connection';
@@ -6131,7 +6133,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.4';
+      const localVersion  = '7.5';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6537,7 +6539,7 @@ function addFoodFromSearch() {
   const qty = parseFloat(document.getElementById('food-qty').value) || 1;
   const portion = foodSearchSelected.portions[portionIdx];
   const label = qty === 1 ? `${foodSearchSelected.name} (${portion.label})` : `${foodSearchSelected.name} ×${qty} (${portion.label})`;
-  const mealType = document.getElementById('meal-type').value;
+  const mealType = document.getElementById('meal-type')?.value || 'intake';
   const mealDate = document.getElementById('meal-date').value || today();
   DB.push('meals', {
     date: mealDate, mealType, type: 'food',
@@ -6849,6 +6851,28 @@ function triggerAutoBackup() {
   showToast('Auto-backup saved!');
 }
 
+async function checkAutoSync() {
+  if (!window.Cloud || !window.Cloud.ready) return;
+  const meals   = DB.get('meals')   || [];
+  const weights = DB.get('weights') || [];
+  if (!meals.length && !weights.length) return;
+  const lastSync = DB.get('lastSyncDate');
+  const todayStr = today();
+  if (!lastSync) {
+    DB.set('lastSyncDate', todayStr);
+    return;
+  }
+  const daysSince = Math.floor((new Date(todayStr) - new Date(lastSync)) / 86400000);
+  if (daysSince >= 3) {
+    console.log('Auto-sync: ' + daysSince + 'd since last sync — pushing…');
+    try {
+      await window.Cloud.pushAllDays();
+      DB.set('lastSyncDate', todayStr);
+      console.log('Auto-sync complete');
+    } catch(e) { console.warn('Auto-sync failed:', e); }
+  }
+}
+
 initSettings();
 initReminders();
 migrateWaterEntries();
@@ -6859,6 +6883,7 @@ seedGLP1Recipes();
 renderQuickPickGrid();
 renderToday();
 checkAutoBackup();
+checkAutoSync();
 
 // SW for PWA
 if ('serviceWorker' in navigator) {
