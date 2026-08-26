@@ -4746,7 +4746,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.5</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.6</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -6133,7 +6133,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.5';
+      const localVersion  = '7.6';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6668,12 +6668,15 @@ function updateScanTotals() {
 }
 
 function addScannedItem() {
-  if (!scannedProduct) return;
+  console.log('addScannedItem called, scannedProduct:', scannedProduct);
+  if (!scannedProduct) { showToast('Error: no product data'); return; }
   const s = parseFloat(document.getElementById('scan-servings').value) || 1;
   const p = scannedProduct;
   const label = p.name + (s !== 1 ? ` (×${s})` : '');
   const mealType = document.getElementById('meal-type')?.value || 'intake';
   const mealDate = document.getElementById('meal-date')?.value || today();
+  console.log('Logging meal:', label, mealDate, mealType);
+  try {
   DB.push('meals', {
     date: mealDate, mealType, type: 'food',
     items: [{ name: label, cal: Math.round(p.cal*s), protein: Math.round(p.protein*s*10)/10,
@@ -6682,6 +6685,7 @@ function addScannedItem() {
     fiber: Math.round(p.fiber*s*10)/10, carbs: 0, fat: 0,
     ts: Date.now()
   });
+  } catch(err) { console.error('addScannedItem error:', err); showToast('Error logging item'); return; }
   closeBarcodeScanner();
   showToast('Added to log!');
   renderTodaysMealsLog();
