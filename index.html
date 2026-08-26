@@ -6672,8 +6672,8 @@ function addScannedItem() {
   const s = parseFloat(document.getElementById('scan-servings').value) || 1;
   const p = scannedProduct;
   const label = p.name + (s !== 1 ? ` (×${s})` : '');
-  const mealType = document.getElementById('meal-type').value;
-  const mealDate = document.getElementById('meal-date').value || today();
+  const mealType = document.getElementById('meal-type')?.value || 'intake';
+  const mealDate = document.getElementById('meal-date')?.value || today();
   DB.push('meals', {
     date: mealDate, mealType, type: 'food',
     items: [{ name: label, cal: Math.round(p.cal*s), protein: Math.round(p.protein*s*10)/10,
