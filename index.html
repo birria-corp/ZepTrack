@@ -1870,7 +1870,7 @@ function logWaterQuick(oz) {
 function logWater30() { logWaterQuick(30); }
 
 function getHardcodedNutrition(name) {
-  const key = name.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
+  const key = name.toLowerCase().replace(/[^a-z0-9 -]/g,'').trim();
   return HARDCODED_NUTRITION[key] || null;
 }
 
