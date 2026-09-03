@@ -7,7 +7,7 @@
 - **App:** ZepTrack — GLP-1 / Zepbound personal health tracker PWA
 - **Live:** `https://birria-corp.github.io/ZepTrack`
 - **Repo:** `birria-corp/ZepTrack`
-- **Current version:** v7.6
+- **Current version:** v7.7
 - **Platform:** Android Chrome PWA (primary) + desktop Chrome
 - **User:** Grandmaster (Spencer Thompson) · **Assistant:** Fez
 - **GitHub account:** `birria-corp` (org) / `spencer-thompson-2-vu` (personal)
@@ -15,7 +15,7 @@
 ---
 
 ## Stack
-Single-file PWA — `index.html` (all CSS + JS inline), `manifest.json`, `sw.js` (cache `zeptrack-v7.6`), `version.json`, `icon-192.png`, `icon-512.png`. No framework, no build step. GitHub Pages hosted. localStorage with `zep_` prefix + Firebase Firestore cloud sync.
+Single-file PWA — `index.html` (all CSS + JS inline), `manifest.json`, `sw.js` (cache `zeptrack-v7.7`), `version.json`, `icon-192.png`, `icon-512.png`. No framework, no build step. GitHub Pages hosted. localStorage with `zep_` prefix + Firebase Firestore cloud sync.
 
 ---
 
@@ -171,6 +171,7 @@ Paste into Recipe bulk paste field. Log at total weight in grams.
 ## Version History
 | Version | Changes |
 |---------|---------|
+| v7.7 | Recipe subcollection sync — individual Firestore docs per recipe, merge-only pull |
 | v7.6 | Fix 7-Vanilla key lookup (hyphen sanitizer); local items in food search; barcode fix; auto-sync |
 | v7.5 | Fix barcode Add to Meal button; auto cloud sync every 3 days |
 | v7.4 | Dose-change injection markers on weight chart |

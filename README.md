@@ -38,6 +38,7 @@ CONTEXT.md      Session context for resuming in Claude
 ## Version History
 | Version | Changes |
 |---------|---------|
+| v7.7 | Recipe subcollection sync — individual Firestore docs per recipe, merge-only pull |
 | v7.6 | Fix 7-Vanilla quick-pick lookup (hyphen stripped from key); food search returns local recipes + quick-picks; barcode Add to Meal fix; auto cloud sync every 3 days |
 | v7.5 | Fix barcode Add to Meal button; auto cloud sync every 3 days |
 | v7.4 | Dose-change injection markers on weight chart |
