@@ -1627,11 +1627,38 @@ window.Cloud = {
       const profSnap = await getDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'));
       if (profSnap.exists()) {
         const p = profSnap.data();
-        if (p.goals)        window._DB_SET('goals',        p.goals);
-        if (p.units)        window._DB_SET('units',        p.units);
-        if (p.quickPicks && p.quickPicks.length)     window._DB_SET('quickPicks',   p.quickPicks);
-        if (p.customItems && p.customItems.length)   window._DB_SET('customItems',  p.customItems);
-        if (p.drinkPresets && p.drinkPresets.length) window._DB_SET('drinkPresets', p.drinkPresets);
+        // goals: merge field-by-field, local wins per key
+        if (p.goals) {
+          const localGoals = window._DB_RAW('goals') || {};
+          window._DB_SET('goals', Object.assign({}, p.goals, localGoals));
+        }
+        // units: local wins if already set
+        if (p.units && !window._DB_RAW('units')) {
+          window._DB_SET('units', p.units);
+        }
+        // quickPicks: union by value, local order first, cloud-only items appended
+        if (p.quickPicks && p.quickPicks.length) {
+          const local = window._DB_RAW('quickPicks') || [];
+          const localSet = new Set(local);
+          const merged = [...local, ...p.quickPicks.filter(x => !localSet.has(x))];
+          window._DB_SET('quickPicks', merged);
+        }
+        // customItems: merge by id, local wins on conflict
+        if (p.customItems && p.customItems.length) {
+          const local = window._DB_RAW('customItems') || [];
+          const localById = {};
+          local.forEach(x => { if (x.id) localById[x.id] = x; });
+          p.customItems.forEach(x => { if (x.id && !localById[x.id]) localById[x.id] = x; });
+          window._DB_SET('customItems', Object.values(localById));
+        }
+        // drinkPresets: merge by id, local wins on conflict
+        if (p.drinkPresets && p.drinkPresets.length) {
+          const local = window._DB_RAW('drinkPresets') || [];
+          const localById = {};
+          local.forEach(x => { if (x.id) localById[x.id] = x; });
+          p.drinkPresets.forEach(x => { if (x.id && !localById[x.id]) localById[x.id] = x; });
+          window._DB_SET('drinkPresets', Object.values(localById));
+        }
       }
       // Recipes pulled separately from subcollection — merge only, never overwrite
       await this.pullRecipes();
