@@ -1139,8 +1139,15 @@
         <div class="card-title">Cloud Sync</div>
         <div class="settings-row">
           <div>
+            <div class="settings-label" id="auth-user">Not signed in</div>
+            <div class="settings-sub">Google account for cloud sync</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="settings-auth-btn" style="display:none" onclick="window._signOut && window._signOut()">Sign out</button>
+        </div>
+        <div class="settings-row">
+          <div>
             <div class="settings-label">Sync Now</div>
-            <div class="settings-sub" id="sync-status">Push all local data to Firestore</div>
+            <div class="settings-sub" id="sync-status">Pull + push all data with Firestore</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="manualSync()" id="sync-btn">Sync</button>
         </div>
@@ -1530,7 +1537,6 @@ window.Cloud = {
     const profile = {
       goals:        window._DB_RAW('goals')        || {},
       units:        window._DB_RAW('units')        || 'imperial',
-      recipes:      window._DB_RAW('recipes')      || [],
       quickPicks:   window._DB_RAW('quickPicks')   || [],
       customItems:  window._DB_RAW('customItems')  || [],
       drinkPresets: window._DB_RAW('drinkPresets') || [],
@@ -1539,6 +1545,66 @@ window.Cloud = {
     try {
       await setDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'), profile, { merge: true });
     } catch(e) { console.warn('Cloud.pushProfile:', e); }
+  },
+
+  // Push all recipes to subcollection — one doc per recipe, never batch-overwrite
+  async pushRecipes() {
+    if (!this.uid) return;
+    const recipes = window._DB_RAW('recipes') || [];
+    if (!recipes.length) return;
+    try {
+      for (const r of recipes) {
+        if (!r.id) continue;
+        await setDoc(doc(fbDb, 'users', this.uid, 'recipes', String(r.id)), {
+          ...r, syncedAt: Date.now()
+        });
+      }
+    } catch(e) { console.warn('Cloud.pushRecipes:', e); }
+  },
+
+  // Push a single recipe (on save/update)
+  async pushRecipe(recipe) {
+    if (!this.uid || !recipe || !recipe.id) return;
+    try {
+      await setDoc(doc(fbDb, 'users', this.uid, 'recipes', String(recipe.id)), {
+        ...recipe, syncedAt: Date.now()
+      });
+    } catch(e) { console.warn('Cloud.pushRecipe:', e); }
+  },
+
+  // Delete a single recipe from subcollection
+  async deleteRecipe(id) {
+    if (!this.uid || !id) return;
+    try {
+      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      await deleteDoc(doc(fbDb, 'users', this.uid, 'recipes', String(id)));
+    } catch(e) { console.warn('Cloud.deleteRecipe:', e); }
+  },
+
+  // Pull all recipes from subcollection and merge into local (never overwrites, only adds/updates)
+  async pullRecipes() {
+    if (!this.uid) return;
+    try {
+      const snap = await getDocs(collection(fbDb, 'users', this.uid, 'recipes'));
+      if (snap.empty) return;
+      const local = window._DB_RAW('recipes') || [];
+      const localById = {};
+      local.forEach(r => { if (r.id) localById[String(r.id)] = r; });
+      let changed = false;
+      snap.forEach(d => {
+        const r = d.data();
+        const key = String(r.id || d.id);
+        // Only update if cloud version is newer or not present locally
+        if (!localById[key] || (r.ts && r.ts > (localById[key].ts || 0))) {
+          localById[key] = r;
+          changed = true;
+        }
+      });
+      if (changed) {
+        window._DB_SET('recipes', Object.values(localById));
+        console.log('pullRecipes: merged', snap.size, 'cloud recipes');
+      }
+    } catch(e) { console.warn('Cloud.pullRecipes:', e); }
   },
 
   async pushDay(dateStr) {
@@ -1563,11 +1629,12 @@ window.Cloud = {
         const p = profSnap.data();
         if (p.goals)        window._DB_SET('goals',        p.goals);
         if (p.units)        window._DB_SET('units',        p.units);
-        if (p.recipes && p.recipes.length)           window._DB_SET('recipes',      p.recipes);
         if (p.quickPicks && p.quickPicks.length)     window._DB_SET('quickPicks',   p.quickPicks);
         if (p.customItems && p.customItems.length)   window._DB_SET('customItems',  p.customItems);
         if (p.drinkPresets && p.drinkPresets.length) window._DB_SET('drinkPresets', p.drinkPresets);
       }
+      // Recipes pulled separately from subcollection — merge only, never overwrite
+      await this.pullRecipes();
       const daysSnap = await getDocs(collection(fbDb, 'users', this.uid, 'days'));
       const cm = [], ce = [], ci = [], cd = [], cw = [];
       daysSnap.forEach(d => {
@@ -1630,6 +1697,7 @@ window.Cloud = {
       }
     }
     await this.pushProfile();
+    await this.pushRecipes();
   }
 };
 
@@ -1637,22 +1705,22 @@ onAuthStateChanged(fbAuth, async user => {
   if (user) {
     window.Cloud.uid   = user.uid;
     window.Cloud.ready = true;
-    const isFirstLogin = !localStorage.getItem('zep_cloud_uid');
     localStorage.setItem('zep_cloud_uid', user.uid);
     const btn = document.getElementById('auth-btn');
     if (btn) { btn.textContent = 'Sign out'; btn.onclick = () => signOut(fbAuth); }
     const userEl = document.getElementById('auth-user');
     if (userEl) userEl.textContent = user.displayName || user.email || '';
+    const settingsBtn = document.getElementById('settings-auth-btn');
+    if (settingsBtn) settingsBtn.style.display = '';
     document.getElementById('auth-banner').style.display = 'none';
-    if (isFirstLogin) {
-      if (typeof showToast === 'function') showToast('First login — syncing to cloud…');
+    // Always pull from cloud first — covers new device, reinstall, and returning user
+    await window.Cloud.pullAndMerge();
+    if (typeof initSettings === 'function') initSettings();
+    if (typeof renderToday  === 'function') renderToday();
+    // If this device has never pushed before, also push local data up
+    if (!DB.get('lastSyncDate')) {
       await window.Cloud.pushAllDays();
       DB.set('lastSyncDate', today());
-      if (typeof showToast === 'function') showToast('Sync complete!');
-    } else {
-      await window.Cloud.pullAndMerge();
-      if (typeof initSettings === 'function') initSettings();
-      if (typeof renderToday  === 'function') renderToday();
     }
   } else {
     window.Cloud.uid   = null;
@@ -1660,7 +1728,9 @@ onAuthStateChanged(fbAuth, async user => {
     const btn = document.getElementById('auth-btn');
     if (btn) { btn.textContent = 'Sign in with Google'; btn.onclick = window._signIn; }
     const userEl = document.getElementById('auth-user');
-    if (userEl) userEl.textContent = '';
+    if (userEl) userEl.textContent = 'Not signed in';
+    const settingsBtn = document.getElementById('settings-auth-btn');
+    if (settingsBtn) settingsBtn.style.display = 'none';
     document.getElementById('auth-banner').style.display = 'flex';
   }
 });
@@ -3203,7 +3273,7 @@ function saveRecipe() {
   const idx = recipes.findIndex(r=>r.id===recipe.id);
   if (idx>=0) recipes[idx]=recipe; else recipes.push(recipe);
   DB.set('recipes', recipes);
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushRecipe(recipe);
   closeRecipeModal();
   showToast('Recipe saved!');
   renderRecipesList();
@@ -3213,6 +3283,7 @@ function saveRecipe() {
 function deleteRecipe(id) {
   if (!confirm('Delete this recipe?')) return;
   DB.set('recipes', (DB.get('recipes')||[]).filter(r=>r.id!==id));
+  if (window.Cloud && window.Cloud.ready) window.Cloud.deleteRecipe(id);
   renderRecipesList();
   renderRecipeSelect();
 }
@@ -4746,7 +4817,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.6</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.8</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -6107,10 +6178,13 @@ async function manualSync() {
   const status = document.getElementById('sync-status');
   btn.disabled = true;
   btn.textContent = 'Syncing…';
-  status.textContent = 'Pushing all data to Firestore…';
+  status.textContent = 'Syncing with Firestore…';
   try {
+    await window.Cloud.pullAndMerge();
     await window.Cloud.pushAllDays();
     DB.set('lastSyncDate', today());
+    if (typeof initSettings === 'function') initSettings();
+    if (typeof renderToday  === 'function') renderToday();
     status.textContent = 'Sync complete — ' + new Date().toLocaleTimeString();
   } catch(e) {
     status.textContent = 'Sync failed — check connection';
@@ -6133,7 +6207,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.6';
+      const localVersion  = '7.8';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
