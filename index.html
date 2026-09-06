@@ -2808,6 +2808,7 @@ function addQuickPickItem() {
   renderQuickPickSettings();
   renderQuickPickGrid();
   showToast('Item added!');
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
 }
 
 function removeQuickPickItem(idx) {
@@ -2816,6 +2817,7 @@ function removeQuickPickItem(idx) {
   DB.set('quickPicks', items);
   renderQuickPickSettings();
   renderQuickPickGrid();
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
 }
 
 function moveQuickPickItem(idx, direction) {
@@ -2827,6 +2829,7 @@ function moveQuickPickItem(idx, direction) {
   DB.set('quickPicks', items);
   renderQuickPickSettings();
   renderQuickPickGrid();
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3300,7 +3303,7 @@ function saveRecipe() {
   const idx = recipes.findIndex(r=>r.id===recipe.id);
   if (idx>=0) recipes[idx]=recipe; else recipes.push(recipe);
   DB.set('recipes', recipes);
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushRecipe(recipe);
+  if (window.Cloud && window.Cloud.ready) window.Cloud.pushRecipes();
   closeRecipeModal();
   showToast('Recipe saved!');
   renderRecipesList();
@@ -3794,6 +3797,52 @@ function seedGLP1Recipes(force=false) {
     renderRecipeSelect();
   }
   return added + updated;
+}
+
+// ── QUICK PICK SEED RECIPES ───────────────────────────────────────────────
+// One recipe per non-water quick pick item so users can edit default volumes.
+// Uses stable IDs (qp-*) — same seeding pattern as GLP-1 recipes.
+const QP_SEED_RECIPES = [
+  { id:'qp-vanilla',  name:'7-Vanilla',       totalWeight:946,  weightUnit:'g', isBulk:true,
+    totalCal:225, totalProtein:6,    totalCarbs:15,   totalFat:10,   totalFiber:0,    ingredients:[] },
+  { id:'qp-coffee',   name:'Coffee',           totalWeight:237,  weightUnit:'g', isBulk:true,
+    totalCal:2,   totalProtein:0.28, totalCarbs:0,    totalFat:0.05, totalFiber:0,    ingredients:[] },
+  { id:'qp-iced-tea', name:'Iced Tea',         totalWeight:355,  weightUnit:'g', isBulk:true,
+    totalCal:0,   totalProtein:0,    totalCarbs:0,    totalFat:0,    totalFiber:0,    ingredients:[] },
+  { id:'qp-shake',    name:'SK Protein Shake', totalWeight:360,  weightUnit:'g', isBulk:true,
+    totalCal:400, totalProtein:31,   totalCarbs:46,   totalFat:13,   totalFiber:11.9, ingredients:[] },
+  { id:'qp-egg',      name:'Hard Boiled Egg',  totalWeight:79,   weightUnit:'g', isBulk:true,
+    totalCal:122, totalProtein:9.95, totalCarbs:0.88, totalFat:8.37, totalFiber:0,    ingredients:[] },
+  { id:'qp-cheese',   name:'Cheese Stick',     totalWeight:28,   weightUnit:'g', isBulk:true,
+    totalCal:80,  totalProtein:6,    totalCarbs:0,    totalFat:6,    totalFiber:0,    ingredients:[] },
+  { id:'qp-nuts',     name:'Nuts',             totalWeight:71,   weightUnit:'g', isBulk:true,
+    totalCal:422, totalProtein:12.3, totalCarbs:18,   totalFat:36.5, totalFiber:5,    ingredients:[] },
+  { id:'qp-trail',    name:'Trail Mix',        totalWeight:71,   weightUnit:'g', isBulk:true,
+    totalCal:280, totalProtein:7,    totalCarbs:28,   totalFat:4.5,  totalFiber:3,    ingredients:[] },
+  { id:'qp-banana',   name:'Banana',           totalWeight:118,  weightUnit:'g', isBulk:true,
+    totalCal:105, totalProtein:1.3,  totalCarbs:27,   totalFat:0.4,  totalFiber:3.1,  ingredients:[] },
+  { id:'qp-apple',    name:'Apple',            totalWeight:172,  weightUnit:'g', isBulk:true,
+    totalCal:98,  totalProtein:0.43, totalCarbs:23.5, totalFat:0,    totalFiber:4,    ingredients:[] },
+  { id:'qp-yogurt',   name:'Yogurt',           totalWeight:170,  weightUnit:'g', isBulk:true,
+    totalCal:100, totalProtein:17,   totalCarbs:6,    totalFat:0,    totalFiber:0,    ingredients:[] },
+];
+
+function seedQuickPickRecipes() {
+  let recipes = DB.get('recipes') || [];
+  let added = 0;
+  QP_SEED_RECIPES.forEach(seed => {
+    if (!recipes.find(r => r.id === seed.id)) {
+      recipes.push({ ...seed, ts: Date.now() });
+      added++;
+    }
+  });
+  if (added > 0) {
+    DB.set('recipes', recipes);
+    console.log(`Quick pick recipes: seeded ${added} new`);
+    renderRecipesList('');
+    renderRecipeSelect();
+  }
+  return added;
 }
 
 function restoreDefaultRecipes() {
@@ -4844,7 +4893,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.8</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.9</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -6234,7 +6283,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.8';
+      const localVersion  = '7.9';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6985,6 +7034,7 @@ migrateRecipeWeights();
 migrateQuickPicks();
 archiveAndPruneMeals();
 seedGLP1Recipes();
+seedQuickPickRecipes();
 renderQuickPickGrid();
 renderToday();
 checkAutoBackup();
