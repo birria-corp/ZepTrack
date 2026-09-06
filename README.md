@@ -5,7 +5,7 @@ GLP-1 / Zepbound personal health tracker PWA with cloud sync.
 
 ## Features
 - Daily intake logging (meals, drinks, water) with quick-pick grid
-- Recipe library (42 seeds + user recipes) with portion logging
+- Recipe library (42 GLP-1 seeds + 11 quick-pick seeds + user recipes) with portion logging
 - Food search: local recipes + quick-picks first, then USDA
 - Injection site tracker with anatomical diagram and LRU rotation
 - Weight, exercise, and daily wellness check-in logging
@@ -13,6 +13,7 @@ GLP-1 / Zepbound personal health tracker PWA with cloud sync.
 - Dose-change injection markers on weight chart
 - Barcode scanner (Open Food Facts)
 - **Google sign-in with Firestore cloud sync** — data syncs across devices
+- Quick pick edits (add/remove/reorder) sync to cloud immediately
 - Auto cloud sync every 3 days (mirrors auto-backup cadence)
 - Offline-first PWA — works without signal, syncs when back online
 - Auto-backup (local JSON export every 3 days)
@@ -22,7 +23,7 @@ GLP-1 / Zepbound personal health tracker PWA with cloud sync.
 index.html      Single-file app — all CSS + JS inline
 sw.js           Service worker (network-first for index/version, cache-first otherwise)
 manifest.json   PWA manifest
-version.json    { "version": "7.6" }
+version.json    { "version": "7.9" }
 icon-192.png    PWA icon
 icon-512.png    PWA icon
 README.md       This file
@@ -38,6 +39,8 @@ CONTEXT.md      Session context for resuming in Claude
 ## Version History
 | Version | Changes |
 |---------|---------|
+| v7.9 | Fix recipe save wiping other recipes (push all on save); fix quick pick edits reverting after sign-out (push profile on mutate); seed 11 quick pick item recipes for volume editing |
+| v7.8 | Fix recipe sync loss (3 Firestore bugs); fix profile merge clobbering goals/quickPicks/customItems/drinkPresets on pull; add Settings sign-out button; bidirectional Sync Now |
 | v7.6 | Fix 7-Vanilla quick-pick lookup (hyphen stripped from key); food search returns local recipes + quick-picks; barcode Add to Meal fix; auto cloud sync every 3 days |
 | v7.5 | Fix barcode Add to Meal button; auto cloud sync every 3 days |
 | v7.4 | Dose-change injection markers on weight chart |
