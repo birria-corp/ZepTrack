@@ -2516,6 +2516,37 @@ function parseRecipePaste() {
   const status = document.getElementById('recipe-paste-status');
   if (!raw.trim()) { if (status) status.textContent = ''; return; }
 
+  // ── JSON blob fast-path ──
+  try {
+    const j = JSON.parse(raw.trim());
+    if (j && (j.totalCal != null || j.totalWeight != null)) {
+      const applied = [];
+      const nameEl = document.getElementById('recipe-name');
+      if (j.name && nameEl && !nameEl.value) { nameEl.value = j.name; applied.push('name'); }
+      if (j.totalWeight != null) {
+        const twEl = document.getElementById('recipe-total-weight');
+        if (twEl) { twEl.value = j.totalWeight; applied.push('weight'); }
+        const wuEl = document.getElementById('recipe-weight-unit');
+        if (wuEl && j.weightUnit) wuEl.value = j.weightUnit;
+      }
+      const setField = (id, val, label) => {
+        if (val != null) { const el = document.getElementById(id); if (el) { el.value = Math.round(val * 10) / 10; applied.push(label); } }
+      };
+      setField('bulk-cal',  j.totalCal,     'cal');
+      setField('bulk-pro',  j.totalProtein, 'protein');
+      setField('bulk-carb', j.totalCarbs,   'carbs');
+      setField('bulk-fat',  j.totalFat,     'fat');
+      setField('bulk-fib',  j.totalFiber,   'fiber');
+      if (applied.length) {
+        if (status) { status.textContent = `✓ JSON: ${applied.join(' · ')}`; status.style.color = 'var(--success)'; }
+        updateBulkTotals();
+      } else {
+        if (status) { status.textContent = '⚠ JSON parsed but no recognized fields'; status.style.color = 'var(--warn)'; }
+      }
+      return;
+    }
+  } catch(e) { /* not JSON — fall through to text parser */ }
+
   // Normalize: lowercase for matching, keep original for name
   const text = raw;
   const lower = raw.toLowerCase().replace(/\s+/g, ' ');
@@ -4893,7 +4924,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v7.9</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v7.10</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -6283,7 +6314,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '7.9';
+      const localVersion  = '7.10';
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
