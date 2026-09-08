@@ -4,15 +4,15 @@
 - **Name:** ZepTrack
 - **Repo:** https://github.com/birria-corp/ZepTrack
 - **Live:** https://birria-corp.github.io/ZepTrack
-- **Version:** 7.9
+- **Version:** 8.0
 - **Stack:** Single-file HTML PWA (all CSS + JS inline), Firebase Firestore cloud sync, Google sign-in, GitHub Pages
 
 ## File Structure
 ```
-index.html      Single-file app — all CSS + JS inline (~7000 lines)
+index.html      Single-file app — all CSS + JS inline (~7000+ lines)
 sw.js           Service worker; CACHE_VERSION must match APP_VERSION
 manifest.json   PWA manifest
-version.json    {"version":"7.9"}
+version.json    {"version":"8.0"}
 icon-192.png    PWA icon
 icon-512.png    PWA icon
 ```
@@ -51,6 +51,12 @@ users/{uid}/archive/{date}    — archived day docs
 - Seeding: `seedGLP1Recipes()` and `seedQuickPickRecipes()` — add-if-absent by ID, called on startup
 - User recipes get timestamp-based IDs
 
+### Recipe Bulk Mode
+- Toggle: `recipe-bulk-mode` checkbox → shows `recipe-bulk-fields`, hides ingredient section
+- Paste parser: `parseRecipePaste()` — first tries `JSON.parse()` (ZepTrack JSON blob), falls through to text-pattern matching
+- JSON blob keys recognized: `name`, `totalWeight`, `weightUnit`, `totalCal`, `totalProtein`, `totalCarbs`, `totalFat`, `totalFiber`
+- Populates: `recipe-name`, `recipe-total-weight`, `recipe-weight-unit`, `bulk-cal/pro/carb/fat/fib`
+
 ## Active Features (complete)
 - Daily intake logging (meals, drinks, water) with quick-pick grid
 - Recipe library with portion logging and per-serving macros
@@ -61,28 +67,28 @@ users/{uid}/archive/{date}    — archived day docs
 - Dose-change injection markers on weight chart
 - Barcode scanner (Open Food Facts)
 - Google sign-in with Firestore cloud sync (bidirectional Sync Now in Settings)
+- JSON blob paste in recipe bulk mode
 - Auto cloud sync every 3 days
 - Offline-first PWA with service worker cache
 - Auto-backup (local JSON export every 3 days)
-- Settings sign-out button (`settings-auth-btn`) — separate from auth-banner
+- Settings sign-out button (`settings-auth-btn`)
 
 ## Key Technical Decisions
 - Single-file app; no build step; deploy via GitHub API (mobile-friendly)
 - `pushRecipes()` (all) on save — prevents Firestore from having partial recipe set
-- Profile merge: local-wins union (not cloud-overwrite) — safe across devices
+- Profile merge: local-wins union — safe across devices
 - No `isFirstLogin` heuristic — always pull on auth state change
-- QP seed recipes use `qp-*` stable IDs, re-seeded on startup if deleted (same as GLP-1)
+- QP seed recipes use `qp-*` stable IDs, re-seeded on startup if deleted
 
 ## Version History
 | Version | Changes |
 |---------|---------|
-| v7.9 | Fix recipe save wiping others (push all); fix quickpick revert (push profile on mutate); seed 11 QP recipes |
+| v8.0 | JSON blob paste in recipe bulk mode |
+| v7.9 | Fix recipe save wiping others; fix quickpick revert; seed 11 QP recipes |
 | v7.8 | Fix recipe sync loss; fix profile merge clobber; Settings sign-out; bidirectional Sync Now |
-| v7.7 | (baseline for this work) |
 
 ## Deploy Workflow (mobile / no GitHub Desktop)
 ```bash
-# Push any file via GitHub API (--noproxy required)
 python3 - << PYEOF
 import json, base64, subprocess
 TOKEN = '<token>'
