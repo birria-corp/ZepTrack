@@ -1379,6 +1379,7 @@
       <textarea id="recipe-notes" placeholder="Cooking instructions, tips, etc." style="min-height:56px"></textarea>
     </div>
     <button class="btn btn-primary" onclick="saveRecipe()" style="margin-bottom:8px">Save Recipe</button>
+    <button class="btn btn-danger btn-sm" id="recipe-delete-btn" onclick="deleteRecipeFromModal()" style="margin-bottom:8px;display:none">Delete Recipe</button>
     <button class="btn btn-ghost" onclick="closeRecipeModal()">Cancel</button>
   </div>
 </div>
@@ -2519,7 +2520,7 @@ function parseRecipePaste() {
   // ── JSON blob fast-path ──
   try {
     const j = JSON.parse(raw.trim());
-    if (j && (j.totalCal != null || j.totalWeight != null)) {
+    if (j && (j.totalCal != null || j.totalWeight != null || j.ingredients != null)) {
       const applied = [];
       const nameEl = document.getElementById('recipe-name');
       if (j.name && nameEl && !nameEl.value) { nameEl.value = j.name; applied.push('name'); }
@@ -2529,17 +2530,54 @@ function parseRecipePaste() {
         const wuEl = document.getElementById('recipe-weight-unit');
         if (wuEl && j.weightUnit) wuEl.value = j.weightUnit;
       }
-      const setField = (id, val, label) => {
-        if (val != null) { const el = document.getElementById(id); if (el) { el.value = Math.round(val * 10) / 10; applied.push(label); } }
-      };
-      setField('bulk-cal',  j.totalCal,     'cal');
-      setField('bulk-pro',  j.totalProtein, 'protein');
-      setField('bulk-carb', j.totalCarbs,   'carbs');
-      setField('bulk-fat',  j.totalFat,     'fat');
-      setField('bulk-fib',  j.totalFiber,   'fiber');
+
+      // ── Ingredients array ──
+      if (Array.isArray(j.ingredients) && j.ingredients.length) {
+        // switch to ingredient mode (off bulk)
+        const bulkCb = document.getElementById('recipe-bulk-mode');
+        if (bulkCb && bulkCb.checked) { bulkCb.checked = false; toggleRecipeBulkMode(false); }
+        // clear existing rows
+        document.getElementById('recipe-ingredient-rows').innerHTML = '';
+        recipeIngRows = [];
+        j.ingredients.forEach(ing => {
+          addRecipeIngredientRow(
+            ing.name  || '',
+            ing.qty   != null ? ing.qty   : '',
+            ing.unit  || 'Grams',
+            ing.cal   != null ? Math.round(ing.cal     * 10) / 10 : '',
+            ing.protein != null ? Math.round(ing.protein * 10) / 10 : '',
+            ing.fiber != null ? Math.round(ing.fiber   * 10) / 10 : '',
+            ing.carbs != null ? Math.round(ing.carbs   * 10) / 10 : '',
+            ing.fat   != null ? Math.round(ing.fat     * 10) / 10 : '',
+            true  // useCustom — macros come from JSON, no USDA lookup needed
+          );
+        });
+        applied.push(`${j.ingredients.length} ingredients`);
+        updateRecipeNutritionPer100();
+      } else {
+        // No ingredients — populate bulk macro fields
+        const setField = (id, val, label) => {
+          if (val != null) { const el = document.getElementById(id); if (el) { el.value = Math.round(val * 10) / 10; applied.push(label); } }
+        };
+        setField('bulk-cal',  j.totalCal,     'cal');
+        setField('bulk-pro',  j.totalProtein, 'protein');
+        setField('bulk-carb', j.totalCarbs,   'carbs');
+        setField('bulk-fat',  j.totalFat,     'fat');
+        setField('bulk-fib',  j.totalFiber,   'fiber');
+        updateBulkTotals();
+      }
+
+      // ── Steps / notes ──
+      if (Array.isArray(j.steps) && j.steps.length) {
+        const notesEl = document.getElementById('recipe-notes');
+        if (notesEl) {
+          notesEl.value = j.steps.map((s, i) => `${i+1}. ${s}`).join('\n');
+          applied.push('steps');
+        }
+      }
+
       if (applied.length) {
         if (status) { status.textContent = `✓ JSON: ${applied.join(' · ')}`; status.style.color = 'var(--success)'; }
-        updateBulkTotals();
       } else {
         if (status) { status.textContent = '⚠ JSON parsed but no recognized fields'; status.style.color = 'var(--warn)'; }
       }
@@ -3131,11 +3169,21 @@ function openRecipeModal(id=null) {
   }
   updateRecipeNutritionPer100();
   document.querySelectorAll('.recipe-wt-unit').forEach(el => el.textContent = UNITS==='metric'?'g':'oz');
+  // show delete button only when editing an existing recipe
+  const delBtn = document.getElementById('recipe-delete-btn');
+  if (delBtn) delBtn.style.display = id ? 'block' : 'none';
   document.getElementById('recipe-modal').classList.add('open');
 }
 
 function closeRecipeModal() {
   document.getElementById('recipe-modal').classList.remove('open');
+}
+
+function deleteRecipeFromModal() {
+  const id = document.getElementById('recipe-edit-id').value;
+  if (!id) return;
+  deleteRecipe(id);
+  closeRecipeModal();
 }
 
 function addRecipeIngredientRow(name='', qty='', unit='Grams', cal='', protein='', fiber='', carbs='', fat='', useCustom=false) {
@@ -4924,7 +4972,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v8.0</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v8.1</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
