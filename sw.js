@@ -1,4 +1,4 @@
-const CACHE = 'zeptrack-v8.0';
+const CACHE = 'zeptrack-v8.1';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -21,24 +21,16 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  if (filename === 'index.html' || url.pathname.endsWith('/')) {
+  if (filename === 'index.html') {
     e.respondWith(
-      fetch(e.request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(e.request))
+      fetch(e.request).then(r => {
+        const clone = r.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+        return r;
+      }).catch(() => caches.match(e.request))
     );
     return;
   }
 
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
-  );
-});
-
-self.addEventListener('message', e => {
-  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+  e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request)));
 });
