@@ -2084,7 +2084,38 @@ async function selectQuickItem(name, btn) {
   customFields.style.display = 'none';
   if (badge) badge.style.display = 'none';
 
-  // 1. Check hardcoded table
+  // 0. Recipe library — checked FIRST so user-edited recipes override hardcoded defaults
+  {
+    const q = name.toLowerCase().trim();
+    const recipeMatch = (DB.get('recipes') || []).find(r => {
+      const rn = r.name.toLowerCase().replace(/\*\*/g, '');
+      return rn.includes(q) || q.includes(rn);
+    });
+    if (recipeMatch) {
+      const tw    = recipeMatch.totalWeight || 100;
+      const ozVal = Math.round(tw / 28.3495 * 10) / 10;
+      selectedQuickItem = {
+        name, servingG: tw, source: 'recipe',
+        nutrition: {
+          cal:     recipeMatch.totalCal     || 0,
+          protein: recipeMatch.totalProtein || 0,
+          fiber:   recipeMatch.totalFiber   || 0,
+          carbs:   recipeMatch.totalCarbs   || 0,
+          fat:     recipeMatch.totalFat     || 0,
+        }
+      };
+      document.getElementById('selected-item-display').textContent = recipeMatch.name;
+      document.getElementById('item-qty-grams').value = tw;
+      document.getElementById('item-qty-oz').value    = ozVal;
+      document.getElementById('item-quantity').value  = tw;
+      document.getElementById('item-unit').value      = 'Grams';
+      if (name.toLowerCase() === 'coffee' && milkOption) milkOption.style.display = 'block';
+      updateQuickNutritionPreview();
+      return;
+    }
+  }
+
+  // 1. Check hardcoded table (fallback when no recipe found)
   const hardcoded = getHardcodedNutrition(name);
   if (hardcoded) {
     selectedQuickItem = {
@@ -4972,7 +5003,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v8.1</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v8.2</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
