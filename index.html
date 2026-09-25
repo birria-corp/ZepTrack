@@ -1100,8 +1100,8 @@
         <div class="card-title">Recipe Library</div>
         <div class="settings-row">
           <div>
-            <div class="settings-label">Restore Default Recipes</div>
-            <div class="settings-sub">Re-adds all 16 built-in GLP-1 recipes. Your custom recipes are unaffected.</div>
+            <div class="settings-label">Reset Built-in Recipes</div>
+            <div class="settings-sub">Resets built-in recipes to defaults (discards your edits to them). Your own recipes are unaffected.</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="restoreDefaultRecipes()">Restore</button>
         </div>
@@ -1158,7 +1158,7 @@
         <div class="settings-row">
           <div>
             <div class="settings-label">Restore Seed Recipes</div>
-            <div class="settings-sub">Re-adds any missing built-in recipes</div>
+            <div class="settings-sub">Re-adds any built-in recipes you deleted</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="forceSeedRecipes()">Restore</button>
         </div>
@@ -1345,7 +1345,7 @@
         <div id="recipe-paste-status" style="font-size:0.72rem;font-family:var(--mono);color:var(--muted);min-height:16px"></div>
       </div>
       <div class="divider" style="margin:8px 0"></div>
-      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Total Recipe Nutrition (per 100g)</div>
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Total Nutrition — Whole Recipe (not per 100g)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div><label>Calories</label><input type="number" id="bulk-cal"  placeholder="0" min="0" oninput="updateBulkTotals()" /></div>
         <div><label>Protein (g)</label><input type="number" id="bulk-pro"  placeholder="0" min="0" step="0.1" oninput="updateBulkTotals()" /></div>
@@ -1375,8 +1375,8 @@
 
     <div id="recipe-total-nutrition" style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);background:var(--surface2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px"></div>
     <div class="field-group">
-      <label>Notes (optional)</label>
-      <textarea id="recipe-notes" placeholder="Cooking instructions, tips, etc." style="min-height:56px"></textarea>
+      <label>Steps / Notes (optional)</label>
+      <textarea id="recipe-notes" placeholder="1. First step&#10;2. Second step&#10;&#10;Other notes go on un-numbered lines" style="min-height:72px"></textarea>
     </div>
     <button class="btn btn-primary" onclick="saveRecipe()" style="margin-bottom:8px">Save Recipe</button>
     <button class="btn btn-danger btn-sm" id="recipe-delete-btn" onclick="deleteRecipeFromModal()" style="margin-bottom:8px;display:none">Delete Recipe</button>
@@ -1497,7 +1497,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -1529,203 +1529,152 @@ window._signOut = () => signOut(fbAuth);
 // Handle redirect result on app load
 getRedirectResult(fbAuth).catch(e => console.warn('redirectResult:', e));
 
+// Cloud sync layer. Merge rules live in the classic script (buildDayPayload,
+// applyCloudDays, recipe tombstones) so they can be tested without Firestore.
+// Every method throws on failure so flushSync() can keep the item queued.
 window.Cloud = {
   uid: null,
   ready: false,
 
   async pushProfile() {
     if (!this.uid) return;
+    let at = window._DB_RAW('profileUpdatedAt');
+    if (!at) { at = Date.now(); window._DB_SET('profileUpdatedAt', at); }
     const profile = {
-      goals:        window._DB_RAW('goals')        || {},
-      units:        window._DB_RAW('units')        || 'imperial',
-      quickPicks:   window._DB_RAW('quickPicks')   || [],
-      customItems:  window._DB_RAW('customItems')  || [],
-      drinkPresets: window._DB_RAW('drinkPresets') || [],
-      updatedAt:    Date.now()
+      goals:          window._DB_RAW('goals')        || {},
+      units:          window._DB_RAW('units')        || 'imperial',
+      quickPicks:     getQuickPicks(),
+      customItems:    window._DB_RAW('customItems')  || [],
+      drinkPresets:   window._DB_RAW('drinkPresets') || [],
+      deletedRecipes: window._DB_RAW('recipeTombstones') || {},
+      updatedAt:      at
     };
-    try {
-      await setDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'), profile, { merge: true });
-    } catch(e) { console.warn('Cloud.pushProfile:', e); }
+    // merge:true deep-merges the deletedRecipes map, so tombstones from every
+    // push accumulate instead of replacing each other.
+    await setDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'), profile, { merge: true });
   },
 
-  // Push all recipes to subcollection — one doc per recipe, never batch-overwrite
+  // Push every recipe (full sync only). Single saves use pushRecipe().
   async pushRecipes() {
     if (!this.uid) return;
     const recipes = window._DB_RAW('recipes') || [];
-    if (!recipes.length) return;
-    try {
-      for (const r of recipes) {
-        if (!r.id) continue;
-        await setDoc(doc(fbDb, 'users', this.uid, 'recipes', String(r.id)), {
-          ...r, syncedAt: Date.now()
-        });
-      }
-    } catch(e) { console.warn('Cloud.pushRecipes:', e); }
+    for (const r of recipes) {
+      if (!r.id) continue;
+      await setDoc(doc(fbDb, 'users', this.uid, 'recipes', String(r.id)), { ...r, syncedAt: Date.now() });
+    }
   },
 
-  // Push a single recipe (on save/update)
   async pushRecipe(recipe) {
     if (!this.uid || !recipe || !recipe.id) return;
-    try {
-      await setDoc(doc(fbDb, 'users', this.uid, 'recipes', String(recipe.id)), {
-        ...recipe, syncedAt: Date.now()
-      });
-    } catch(e) { console.warn('Cloud.pushRecipe:', e); }
+    await setDoc(doc(fbDb, 'users', this.uid, 'recipes', String(recipe.id)), { ...recipe, syncedAt: Date.now() });
   },
 
-  // Delete a single recipe from subcollection
   async deleteRecipe(id) {
     if (!this.uid || !id) return;
-    try {
-      const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
-      await deleteDoc(doc(fbDb, 'users', this.uid, 'recipes', String(id)));
-    } catch(e) { console.warn('Cloud.deleteRecipe:', e); }
+    await deleteDoc(doc(fbDb, 'users', this.uid, 'recipes', String(id)));
   },
 
-  // Pull all recipes from subcollection and merge into local (never overwrites, only adds/updates)
+  // Merge cloud recipes into local. A recipe is alive only while its ts is
+  // newer than its tombstone, so a restore (new ts) beats an old delete.
   async pullRecipes() {
     if (!this.uid) return;
-    try {
-      const snap = await getDocs(collection(fbDb, 'users', this.uid, 'recipes'));
-      if (snap.empty) return;
-      const local = window._DB_RAW('recipes') || [];
-      const localById = {};
-      local.forEach(r => { if (r.id) localById[String(r.id)] = r; });
-      let changed = false;
-      snap.forEach(d => {
-        const r = d.data();
-        const key = String(r.id || d.id);
-        // Only update if cloud version is newer or not present locally
-        if (!localById[key] || (r.ts && r.ts > (localById[key].ts || 0))) {
-          localById[key] = r;
-          changed = true;
-        }
-      });
-      if (changed) {
-        window._DB_SET('recipes', Object.values(localById));
-        console.log('pullRecipes: merged', snap.size, 'cloud recipes');
-      }
-    } catch(e) { console.warn('Cloud.pullRecipes:', e); }
+    const snap = await getDocs(collection(fbDb, 'users', this.uid, 'recipes'));
+    const tombs = window._DB_RAW('recipeTombstones') || {};
+    const local = window._DB_RAW('recipes') || [];
+    const byId = {};
+    const noId = [];
+    local.forEach(r => { if (r.id) byId[String(r.id)] = r; else noId.push(r); });
+    let changed = false;
+    snap.forEach(d => {
+      const { syncedAt, ...r } = d.data();
+      const key = String(r.id || d.id);
+      if (!recipeAlive(r, tombs[key])) return;
+      const cur = byId[key];
+      if (!cur || (r.ts || 0) > (cur.ts || 0)) { byId[key] = { ...r, id: key }; changed = true; }
+    });
+    Object.keys(byId).forEach(id => {
+      if (!recipeAlive(byId[id], tombs[id])) { delete byId[id]; changed = true; }
+    });
+    if (changed) window._DB_SET('recipes', [...Object.values(byId), ...noId]);
   },
 
+  // Read-merge-write: union local and cloud entries by id, drop tombstoned
+  // ones. Never blindly overwrites the cloud day.
   async pushDay(dateStr) {
-    if (!this.uid) return;
-    const meals      = (window._DB_RAW('meals')      || []).filter(m => m.date === dateStr);
-    const exercise   = (window._DB_RAW('exercise')   || []).filter(e => e.date === dateStr);
-    const injections = (window._DB_RAW('injections') || []).filter(i => i.date === dateStr);
-    const daily      = (window._DB_RAW('daily')      || []).filter(d => d.date === dateStr);
-    const weights    = (window._DB_RAW('weights')    || []).filter(w => w.date === dateStr);
-    try {
-      await setDoc(doc(fbDb, 'users', this.uid, 'days', dateStr), {
-        meals, exercise, injections, daily, weights, updatedAt: Date.now()
-      }, { merge: false });
-    } catch(e) { console.warn('Cloud.pushDay:', e); }
+    if (!this.uid || !dateStr) return;
+    const ref  = doc(fbDb, 'users', this.uid, 'days', dateStr);
+    const snap = await getDoc(ref);
+    await setDoc(ref, buildDayPayload(dateStr, snap.exists() ? snap.data() : null));
   },
 
+  // Returns true when the profile read succeeded (safe to push afterwards).
   async pullAndMerge() {
-    if (!this.uid) return;
-    try {
-      const profSnap = await getDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'));
-      if (profSnap.exists()) {
-        const p = profSnap.data();
-        // goals: merge field-by-field, local wins per key
-        if (p.goals) {
-          const localGoals = window._DB_RAW('goals') || {};
-          window._DB_SET('goals', Object.assign({}, p.goals, localGoals));
-        }
-        // units: local wins if already set
-        if (p.units && !window._DB_RAW('units')) {
-          window._DB_SET('units', p.units);
-        }
-        // quickPicks: union by value, local order first, cloud-only items appended
-        if (p.quickPicks && p.quickPicks.length) {
-          const local = window._DB_RAW('quickPicks') || [];
-          const localSet = new Set(local);
-          const merged = [...local, ...p.quickPicks.filter(x => !localSet.has(x))];
-          window._DB_SET('quickPicks', merged);
-        }
-        // customItems: merge by id, local wins on conflict
-        if (p.customItems && p.customItems.length) {
-          const local = window._DB_RAW('customItems') || [];
-          const localById = {};
-          local.forEach(x => { if (x.id) localById[x.id] = x; });
-          p.customItems.forEach(x => { if (x.id && !localById[x.id]) localById[x.id] = x; });
-          window._DB_SET('customItems', Object.values(localById));
-        }
-        // drinkPresets: merge by id, local wins on conflict
-        if (p.drinkPresets && p.drinkPresets.length) {
-          const local = window._DB_RAW('drinkPresets') || [];
-          const localById = {};
-          local.forEach(x => { if (x.id) localById[x.id] = x; });
-          p.drinkPresets.forEach(x => { if (x.id && !localById[x.id]) localById[x.id] = x; });
-          window._DB_SET('drinkPresets', Object.values(localById));
-        }
+    if (!this.uid) return false;
+    // Profile: last-writer-wins on the whole profile, keyed by updatedAt.
+    const profSnap = await getDoc(doc(fbDb, 'users', this.uid, 'data', 'profile'));
+    if (profSnap.exists()) {
+      const p = profSnap.data();
+      if (p.deletedRecipes) {
+        window._DB_SET('recipeTombstones',
+          Object.assign({}, p.deletedRecipes, window._DB_RAW('recipeTombstones') || {}));
       }
-      // Recipes pulled separately from subcollection — merge only, never overwrite
-      await this.pullRecipes();
-      const daysSnap = await getDocs(collection(fbDb, 'users', this.uid, 'days'));
-      const cm = [], ce = [], ci = [], cd = [], cw = [];
-      daysSnap.forEach(d => {
-        const day = d.data();
-        if (day.meals)      cm.push(...day.meals);
-        if (day.exercise)   ce.push(...day.exercise);
-        if (day.injections) ci.push(...day.injections);
-        if (day.daily)      cd.push(...day.daily);
-        if (day.weights)    cw.push(...day.weights);
-      });
-      const merge = (localKey, cloudArr) => {
-        const local  = window._DB_RAW(localKey) || [];
-        const seen   = new Set(local.map(x => x.ts));
-        const merged = [...local, ...cloudArr.filter(x => x.ts && !seen.has(x.ts))];
-        if (merged.length > local.length) window._DB_SET(localKey, merged);
-      };
-      merge('meals', cm); merge('exercise', ce);
-      merge('injections', ci); merge('daily', cd); merge('weights', cw);
-      // Pull archive summaries
+      const localAt = window._DB_RAW('profileUpdatedAt') || 0;
+      const cloudAt = p.updatedAt || 0;
+      if (cloudAt > localAt) {
+        if (p.goals && Object.keys(p.goals).length) window._DB_SET('goals', p.goals);
+        if (p.units) window._DB_SET('units', p.units);
+        if (Array.isArray(p.quickPicks) && p.quickPicks.length) window._DB_SET('quickPicks', p.quickPicks);
+        if (Array.isArray(p.customItems))  window._DB_SET('customItems', p.customItems);
+        if (Array.isArray(p.drinkPresets)) window._DB_SET('drinkPresets', p.drinkPresets);
+        window._DB_SET('profileUpdatedAt', cloudAt);
+      } else if (localAt > cloudAt) {
+        markProfileDirty();
+      }
+    }
+    try { await this.pullRecipes(); } catch (e) { console.warn('Cloud.pullRecipes:', e); }
+    // Archive summaries first, then day docs (day docs repair archive totals).
+    try {
       const archSnap = await getDocs(collection(fbDb, 'users', this.uid, 'archive'));
       if (!archSnap.empty) {
         const localArchive = window._DB_RAW('daily_archive') || {};
         let changed = false;
         archSnap.forEach(d => {
-          const dateStr = d.id;
-          if (!localArchive[dateStr]) {
-            const {date, updatedAt, ...summary} = d.data();
-            localArchive[dateStr] = summary;
+          if (!localArchive[d.id]) {
+            const { date, updatedAt, ...summary } = d.data();
+            localArchive[d.id] = summary;
             changed = true;
           }
         });
         if (changed) window._DB_SET('daily_archive', localArchive);
       }
-    } catch(e) { console.warn('Cloud.pullAndMerge:', e); }
+    } catch (e) { console.warn('Cloud.pullArchive:', e); }
+    const daysSnap = await getDocs(collection(fbDb, 'users', this.uid, 'days'));
+    const days = [];
+    daysSnap.forEach(d => days.push({ date: d.id, data: d.data() }));
+    applyCloudDays(days);
+    return true;
   },
 
+  // Full push. Collects failures and throws once at the end.
   async pushAllDays() {
     if (!this.uid) return;
-    const meals      = window._DB_RAW('meals')      || [];
-    const exercise   = window._DB_RAW('exercise')   || [];
-    const injections = window._DB_RAW('injections') || [];
-    const daily      = window._DB_RAW('daily')      || [];
-    const weights    = window._DB_RAW('weights')    || [];
-    // Live days
-    const days = new Set([
-      ...meals.map(m=>m.date), ...exercise.map(e=>e.date),
-      ...injections.map(i=>i.date), ...daily.map(d=>d.date), ...weights.map(w=>w.date)
-    ]);
-    for (const dateStr of days) { await this.pushDay(dateStr); }
-    // Archive days — stored as summaries, push as special archive docs
-    const archive = window._DB_RAW('daily_archive') || {};
-    const archiveDates = Object.keys(archive);
-    if (archiveDates.length) {
-      for (const dateStr of archiveDates) {
-        try {
-          await setDoc(doc(fbDb, 'users', this.uid, 'archive', dateStr), {
-            ...archive[dateStr], date: dateStr, updatedAt: Date.now()
-          });
-        } catch(e) { console.warn('pushArchive:', dateStr, e); }
-      }
+    const dates = new Set();
+    ENTRY_KEYS.forEach(k => (window._DB_RAW(k) || []).forEach(e => { if (e.date) dates.add(e.date); }));
+    Object.keys(getTombs()).forEach(k => dates.add(k.split('@')[1]));
+    let failures = 0;
+    for (const dateStr of dates) {
+      try { await this.pushDay(dateStr); } catch (e) { failures++; console.warn('pushDay', dateStr, e); }
     }
-    await this.pushProfile();
-    await this.pushRecipes();
+    const archive = window._DB_RAW('daily_archive') || {};
+    for (const dateStr of Object.keys(archive)) {
+      try {
+        await setDoc(doc(fbDb, 'users', this.uid, 'archive', dateStr),
+          { ...archive[dateStr], date: dateStr, updatedAt: Date.now() });
+      } catch (e) { failures++; console.warn('pushArchive:', dateStr, e); }
+    }
+    try { await this.pushProfile(); } catch (e) { failures++; console.warn('pushProfile', e); }
+    try { await this.pushRecipes(); } catch (e) { failures++; console.warn('pushRecipes', e); }
+    if (failures) throw new Error(failures + ' sync writes failed');
   }
 };
 
@@ -1741,15 +1690,19 @@ onAuthStateChanged(fbAuth, async user => {
     const settingsBtn = document.getElementById('settings-auth-btn');
     if (settingsBtn) settingsBtn.style.display = '';
     document.getElementById('auth-banner').style.display = 'none';
-    // Always pull from cloud first — covers new device, reinstall, and returning user
-    await window.Cloud.pullAndMerge();
-    if (typeof initSettings === 'function') initSettings();
-    if (typeof renderToday  === 'function') renderToday();
-    // If this device has never pushed before, also push local data up
-    if (!DB.get('lastSyncDate')) {
-      await window.Cloud.pushAllDays();
-      DB.set('lastSyncDate', today());
+    // Pull first so a new device or reinstall adopts cloud data before pushing.
+    let pulled = false;
+    try { pulled = await window.Cloud.pullAndMerge(); }
+    catch (e) { console.warn('Cloud.pullAndMerge:', e); }
+    afterCloudPull();
+    // Full push when never synced or 3+ days since the last full sync.
+    const last = DB.get('lastSyncDate');
+    const stale = !last || Math.floor((new Date(today()) - new Date(last)) / 86400000) >= 3;
+    if (pulled && stale) {
+      try { await window.Cloud.pushAllDays(); DB.set('lastSyncDate', today()); }
+      catch (e) { console.warn('Auto full sync:', e); }
     }
+    flushSync();
   } else {
     window.Cloud.uid   = null;
     window.Cloud.ready = false;
@@ -1777,6 +1730,10 @@ const DB = {
   },
   push(key, item) {
     const arr = this.get(key) || [];
+    if (ENTRY_KEYS.includes(key) && item && typeof item === 'object') {
+      if (!item.ts) item.ts = Date.now();
+      if (!item.id) item.id = newId();
+    }
     arr.push(item);
     this.set(key, arr);
   }
@@ -1784,6 +1741,226 @@ const DB = {
 // Raw accessors for Cloud layer (no prefix logic duplication)
 window._DB_RAW = key => DB.get(key);
 window._DB_SET = (key, val) => DB.set(key, val);
+
+const APP_VERSION = '9.0';
+
+// ═══════════════════════════════════════════════════════
+// SYNC PRIMITIVES — entry ids, tombstones, dirty queue
+// ═══════════════════════════════════════════════════════
+// Log entries (meals, exercise, …) carry a stable `id`. Edits set `updatedAt`
+// and keep the id. Deletes leave a tombstone keyed `collection:id@date` so a
+// pull or merge can never resurrect them.
+const ENTRY_KEYS = ['meals', 'exercise', 'injections', 'daily', 'weights'];
+const TOMBSTONE_TTL_DAYS = 120;
+
+function newId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function entryStamp(e) { return (e && (e.updatedAt || e.ts)) || 0; }
+
+// Assigns a deterministic id to legacy entries so local and cloud copies of
+// the same entry get the same id. Mutates and returns the entry.
+function normalizeEntry(key, e) {
+  if (!e || typeof e !== 'object') return e;
+  if (!e.id) {
+    if (e.ts) e.id = 't' + e.ts;
+    else if (key === 'weights') e.id = 'w-' + e.date + '-' + e.weight;
+    else e.id = newId();
+  }
+  if (!e.ts) e.ts = e.date ? new Date(e.date + 'T12:00:00').getTime() : Date.now();
+  return e;
+}
+
+function ensureEntryIds() {
+  ENTRY_KEYS.forEach(k => {
+    const arr = DB.get(k);
+    if (!Array.isArray(arr)) return;
+    let changed = false;
+    arr.forEach(e => { if (e && (!e.id || !e.ts)) { normalizeEntry(k, e); changed = true; } });
+    if (changed) DB.set(k, arr);
+  });
+}
+
+function getTombs() { return DB.get('tombstones') || {}; }
+function tombKey(key, id, date) { return key + ':' + id + '@' + date; }
+
+function addTombstone(key, entry, date) {
+  if (!entry) return;
+  normalizeEntry(key, entry);
+  const t = getTombs();
+  t[tombKey(key, entry.id, date || entry.date)] = Date.now();
+  DB.set('tombstones', t);
+}
+
+function tombsForDate(date) {
+  const t = getTombs(), out = {};
+  Object.keys(t).forEach(k => { if (k.endsWith('@' + date)) out[k] = t[k]; });
+  return out;
+}
+
+function pruneTombstones() {
+  const t = getTombs();
+  const cutoff = Date.now() - TOMBSTONE_TTL_DAYS * 86400000;
+  let changed = false;
+  Object.keys(t).forEach(k => { if (t[k] < cutoff) { delete t[k]; changed = true; } });
+  if (changed) DB.set('tombstones', t);
+}
+
+// Recipes: alive only while ts is newer than the tombstone (restore beats delete).
+function recipeAlive(recipe, tombAt) {
+  return !tombAt || (recipe && (recipe.ts || 0) > tombAt);
+}
+
+// Union two entry lists by id; newer stamp wins; tombstoned ids dropped.
+function mergeEntryLists(key, date, localArr, cloudArr, tombs) {
+  const byId = new Map();
+  localArr.forEach(e => byId.set(e.id, e));
+  (cloudArr || []).forEach(raw => {
+    const e = normalizeEntry(key, { ...raw });
+    const cur = byId.get(e.id);
+    if (!cur || entryStamp(e) > entryStamp(cur)) byId.set(e.id, e);
+  });
+  return [...byId.values()]
+    .filter(e => !tombs[tombKey(key, e.id, date)])
+    .sort((a, b) => (a.ts || 0) - (b.ts || 0));
+}
+
+// Payload for users/{uid}/days/{date}: local ∪ cloud, minus tombstones.
+function freshTombs(map) {
+  const cutoff = Date.now() - TOMBSTONE_TTL_DAYS * 86400000, out = {};
+  Object.entries(map || {}).forEach(([k, at]) => { if (at >= cutoff) out[k] = at; });
+  return out;
+}
+
+function buildDayPayload(date, cloud) {
+  const tombs = freshTombs(Object.assign({}, (cloud && cloud.deleted) || {}, tombsForDate(date)));
+  const out = { deleted: tombs, updatedAt: Date.now() };
+  ENTRY_KEYS.forEach(k => {
+    const local = (DB.get(k) || []).filter(e => e.date === date).map(e => normalizeEntry(k, e));
+    out[k] = mergeEntryLists(k, date, local, (cloud && cloud[k]) || [], tombs);
+  });
+  return JSON.parse(JSON.stringify(out)); // strip undefined — Firestore rejects it
+}
+
+// Merge pulled day docs into local storage. Meals older than the archive
+// window are never re-added to the live list; the cloud day (the complete
+// record for that date) recomputes the archive summary instead.
+function applyCloudDays(days) {
+  const cutoff = archiveCutoffStr();
+  const dirty = getDirty().days;
+  const localTombs = getTombs();
+  let tombChanged = false;
+  const data = {};
+  ENTRY_KEYS.forEach(k => { data[k] = (DB.get(k) || []).map(e => normalizeEntry(k, e)); });
+  const archive = DB.get('daily_archive') || {};
+  let archChanged = false;
+
+  days.forEach(({ date, data: day }) => {
+    Object.entries(freshTombs(day.deleted)).forEach(([k, at]) => {
+      if (!localTombs[k]) { localTombs[k] = at; tombChanged = true; }
+    });
+    ENTRY_KEYS.forEach(k => {
+      const cloudArr = (day[k] || [])
+        .map(e => normalizeEntry(k, { ...e }))
+        .filter(e => !localTombs[tombKey(k, e.id, date)]);
+      if (k === 'meals' && date < cutoff) {
+        // Skip repair while local changes for this date are still unpushed.
+        if (cloudArr.length && !dirty[date]) { archive[date] = summarizeMeals(cloudArr); archChanged = true; }
+        return;
+      }
+      data[k] = data[k].filter(e => !(e.date === date && localTombs[tombKey(k, e.id, date)]));
+      const idx = new Map(data[k].map((e, i) => [e.id, i]));
+      cloudArr.forEach(e => {
+        if (!idx.has(e.id)) { data[k].push(e); idx.set(e.id, data[k].length - 1); }
+        else {
+          const i = idx.get(e.id);
+          if (entryStamp(e) > entryStamp(data[k][i])) data[k][i] = e;
+        }
+      });
+    });
+  });
+
+  ENTRY_KEYS.forEach(k => DB.set(k, data[k]));
+  if (tombChanged) DB.set('tombstones', localTombs);
+  if (archChanged) DB.set('daily_archive', archive);
+}
+
+// ── Dirty queue ─────────────────────────────────────────
+// Every local write marks what changed. flushSync() pushes it and clears the
+// mark only if nothing changed again mid-push. Survives offline and restarts.
+function getDirty() {
+  return Object.assign({ days: {}, profile: 0, recipes: {}, recipeDeletes: {} }, DB.get('syncDirty') || {});
+}
+function setDirty(d) { DB.set('syncDirty', d); }
+
+function syncDay(...dates) {
+  const d = getDirty();
+  dates.filter(Boolean).forEach(x => { d.days[x] = (d.days[x] || 0) + 1; });
+  setDirty(d);
+  flushSync();
+}
+function markProfileDirty() { const d = getDirty(); d.profile = (d.profile || 0) + 1; setDirty(d); }
+function touchProfile() { DB.set('profileUpdatedAt', Date.now()); markProfileDirty(); flushSync(); }
+function syncRecipe(id) {
+  const d = getDirty(); d.recipes[id] = (d.recipes[id] || 0) + 1; delete d.recipeDeletes[id];
+  setDirty(d); flushSync();
+}
+function syncRecipeDelete(id) {
+  const d = getDirty(); d.recipeDeletes[id] = 1; delete d.recipes[id];
+  d.profile = (d.profile || 0) + 1; // carries the tombstone to the cloud
+  setDirty(d); flushSync();
+}
+
+let _flushing = false, _flushAgain = false;
+async function flushSync() {
+  if (!window.Cloud || !window.Cloud.ready) return;
+  if (_flushing) { _flushAgain = true; return; }
+  _flushing = true;
+  try {
+    do {
+      _flushAgain = false;
+      const snap = getDirty();
+      const clear = (field, key, stamp) => {
+        const cur = getDirty();
+        if (key == null) { if (cur[field] === stamp) cur[field] = 0; }
+        else if (cur[field][key] === stamp) delete cur[field][key];
+        setDirty(cur);
+      };
+      for (const [date, stamp] of Object.entries(snap.days)) {
+        try { await window.Cloud.pushDay(date); clear('days', date, stamp); }
+        catch (e) { console.warn('sync day', date, e); }
+      }
+      for (const [id, stamp] of Object.entries(snap.recipes)) {
+        const r = (DB.get('recipes') || []).find(x => String(x.id) === id);
+        try { if (r) await window.Cloud.pushRecipe(r); clear('recipes', id, stamp); }
+        catch (e) { console.warn('sync recipe', id, e); }
+      }
+      for (const [id, stamp] of Object.entries(snap.recipeDeletes)) {
+        try { await window.Cloud.deleteRecipe(id); clear('recipeDeletes', id, stamp); }
+        catch (e) { console.warn('sync recipe delete', id, e); }
+      }
+      if (snap.profile) {
+        try { await window.Cloud.pushProfile(); clear('profile', null, snap.profile); }
+        catch (e) { console.warn('sync profile', e); }
+      }
+    } while (_flushAgain);
+  } finally { _flushing = false; }
+}
+window.addEventListener('online', () => flushSync());
+document.addEventListener('visibilitychange', () => { if (!document.hidden) flushSync(); });
+
+// Re-read globals and re-render after a cloud pull changed local storage.
+function afterCloudPull() {
+  GOALS = Object.assign({}, DEFAULT_GOALS, DB.get('goals') || {});
+  UNITS = DB.get('units') || 'imperial';
+  seedGLP1Recipes();
+  seedQuickPickRecipes();
+  initSettings();
+  renderQuickPickGrid();
+  renderToday();
+  if (document.getElementById('tab-recipes')?.style.display === 'block') renderRecipesTab();
+}
 
 // DEFAULTS
 const DEFAULT_GOALS = { calories: 1600, protein: 120, fiber: 25, water: 64, steps: 8000 };
@@ -1962,7 +2139,7 @@ function logWaterQuick(oz) {
   updateWaterDisplay();
   renderToday();
   showToast(`+${oz}oz water logged!`);
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(document.getElementById('meal-date')?.value || today());
+  syncDay(document.getElementById('meal-date')?.value || today());
 }
 
 function logWater30() { logWaterQuick(30); }
@@ -2087,10 +2264,11 @@ async function selectQuickItem(name, btn) {
   // 0. Recipe library — checked FIRST so user-edited recipes override hardcoded defaults
   {
     const q = name.toLowerCase().trim();
-    const recipeMatch = (DB.get('recipes') || []).find(r => {
-      const rn = r.name.toLowerCase().replace(/\*\*/g, '');
-      return rn.includes(q) || q.includes(rn);
-    });
+    const all = DB.get('recipes') || [];
+    const clean = r => (r.name || '').toLowerCase().replace(/\*\*/g, '').trim();
+    const recipeMatch = all.find(r => clean(r) === q)
+      || all.find(r => String(r.id).startsWith('qp-') && (clean(r).includes(q) || q.includes(clean(r))))
+      || all.find(r => clean(r).includes(q) || q.includes(clean(r)));
     if (recipeMatch) {
       const tw    = recipeMatch.totalWeight || 100;
       const ozVal = Math.round(tw / 28.3495 * 10) / 10;
@@ -2458,6 +2636,7 @@ function saveCustomItemFromModal() {
   const idx = items.findIndex(c => c.id === item.id);
   if (idx >= 0) items[idx] = item; else items.push(item);
   DB.set('customItems', items);
+  touchProfile();
   closeCustomItemModal();
   showToast('Custom item saved!');
   renderCustomItemsSettings();
@@ -2480,6 +2659,7 @@ function saveAsCustomItem() {
 function deleteCustomItem(id) {
   if (!confirm('Delete this custom item?')) return;
   DB.set('customItems', (DB.get('customItems')||[]).filter(c=>c.id!==id));
+  touchProfile();
   renderCustomItemsSettings();
 }
 
@@ -2598,11 +2778,16 @@ function parseRecipePaste() {
         updateBulkTotals();
       }
 
+      pendingRecipeExtras = {};
+      if (j.tips) pendingRecipeExtras.tips = j.tips;
+      if (Array.isArray(j.tags)) pendingRecipeExtras.tags = j.tags;
+      if (j.servingBase) pendingRecipeExtras.servingBase = j.servingBase;
+
       // ── Steps / notes ──
       if (Array.isArray(j.steps) && j.steps.length) {
         const notesEl = document.getElementById('recipe-notes');
         if (notesEl) {
-          notesEl.value = j.steps.map((s, i) => `${i+1}. ${s}`).join('\n');
+          notesEl.value = composeStepsNotes({ steps: j.steps, notes: j.notes });
           applied.push('steps');
         }
       }
@@ -2837,7 +3022,7 @@ function saveQuickLog() {
   showToast(`${name} logged!`);
   renderTodaysMealsLog();
   renderToday();
-  if (window.Cloud && window.Cloud.ready) { const _md = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_md); }
+  syncDay(mealDate);
 }
 
 function convertToGrams(qty, unit) {
@@ -2871,7 +3056,9 @@ function deleteMealEntry(idx) {
   if (!entry || !confirm(`Delete "${entry.items?.[0]?.name || 'this entry'}"?`)) return;
   const globalIdx = meals.indexOf(entry);
   if (globalIdx >= 0) meals.splice(globalIdx, 1);
+  addTombstone('meals', entry);
   DB.set('meals', meals);
+  syncDay(entry.date);
   renderTodaysMealsLog();
   renderToday();
 }
@@ -2908,7 +3095,7 @@ function addQuickPickItem() {
   renderQuickPickSettings();
   renderQuickPickGrid();
   showToast('Item added!');
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
+  touchProfile();
 }
 
 function removeQuickPickItem(idx) {
@@ -2917,7 +3104,7 @@ function removeQuickPickItem(idx) {
   DB.set('quickPicks', items);
   renderQuickPickSettings();
   renderQuickPickGrid();
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
+  touchProfile();
 }
 
 function moveQuickPickItem(idx, direction) {
@@ -2929,7 +3116,7 @@ function moveQuickPickItem(idx, direction) {
   DB.set('quickPicks', items);
   renderQuickPickSettings();
   renderQuickPickGrid();
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
+  touchProfile();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3093,6 +3280,7 @@ function saveDrinkPreset() {
   const idx = presets.findIndex(p => p.id === preset.id);
   if (idx >= 0) presets[idx] = preset; else presets.push(preset);
   DB.set('drinkPresets', presets);
+  touchProfile();
   closeDrinkPresetModal();
   showToast('Drink saved!');
   renderDrinkPresets();
@@ -3102,6 +3290,7 @@ function deleteDrinkPreset(id) {
   if (!confirm('Delete this drink preset?')) return;
   let presets = (DB.get('drinkPresets')||[]).filter(p=>p.id!==id);
   DB.set('drinkPresets', presets);
+  touchProfile();
   renderDrinkPresets();
 }
 
@@ -3120,6 +3309,7 @@ function logDrink(id) {
   });
   // if counts as water, add to water
   if (preset.countsAsWater) addWater(preset.volume);
+  syncDay(today());
   showToast(`${preset.name} logged!`);
   renderTodaysDrinksLog();
   renderToday();
@@ -3170,7 +3360,8 @@ function openRecipeModal(id=null) {
   document.getElementById('recipe-edit-id').value = id || '';
   document.getElementById('recipe-name').value = recipe?.name || '';
   document.getElementById('recipe-total-weight').value = recipe?.totalWeight || '';
-  document.getElementById('recipe-notes').value = recipe?.notes || '';
+  document.getElementById('recipe-notes').value = composeStepsNotes(recipe);
+  pendingRecipeExtras = {};
   const pasteEl = document.getElementById('recipe-paste-input');
   if (pasteEl) pasteEl.value = '';
   const pasteStatus = document.getElementById('recipe-paste-status');
@@ -3190,11 +3381,12 @@ function openRecipeModal(id=null) {
   }
   // set weight unit
   const wuEl = document.getElementById('recipe-weight-unit');
-  if (wuEl) wuEl.value = recipe?.weightUnit || 'g';
+  if (wuEl) wuEl.value = 'g'; // totalWeight is always stored in grams
   document.getElementById('recipe-ingredient-rows').innerHTML = '';
   recipeIngRows = [];
   if (recipe?.ingredients?.length) {
-    recipe.ingredients.forEach(i => addRecipeIngredientRow(i.name, i.qty||'', i.unit||'Grams', i.cal, i.protein, i.fiber, i.carbs, i.fat, i.useCustom||false));
+    const UNIT_MAP = { g:'Grams', oz:'OZ', ml:'ML', count:'Count' };
+    recipe.ingredients.forEach(i => addRecipeIngredientRow(i.name, i.qty ?? i.base ?? '', UNIT_MAP[i.unit] || i.unit || 'Grams', i.cal ?? '', i.protein ?? '', i.fiber ?? '', i.carbs ?? '', i.fat ?? '', i.useCustom||false));
   } else {
     addRecipeIngredientRow();
   }
@@ -3356,41 +3548,43 @@ function updateRecipeNutritionPer100() {
   el.innerHTML = `Total: ${tot.cal} cal · ${tot.protein}g pro<br>Per 100${unit}: ${per(tot.cal)} cal · ${per(tot.protein)}g pro · ${per(tot.fiber)}g fib · ${per(tot.carbs)}g carb · ${per(tot.fat)}g fat`;
 }
 
+// Steps/Notes textarea round-trip: numbered lines are steps, the rest notes.
+function composeStepsNotes(r) {
+  const steps = (r?.steps || []).map((x, i) => `${i+1}. ${x}`).join('\n');
+  const notes = r?.notes || '';
+  return steps && notes ? steps + '\n\n' + notes : steps || notes;
+}
+
+function parseStepsNotes(text) {
+  const steps = [], notes = [];
+  (text || '').split('\n').forEach(line => {
+    const m = line.match(/^\s*\d+[.)]\s+(.*\S)\s*$/);
+    if (m) steps.push(m[1]);
+    else if (line.trim() || notes.length) notes.push(line);
+  });
+  return { steps, notes: notes.join('\n').trim() };
+}
+
+// Extra JSON fields (tips, tags, servingBase) held until the modal saves.
+let pendingRecipeExtras = {};
+
 function saveRecipe() {
   const name = document.getElementById('recipe-name').value.trim();
   if (!name) { alert('Enter a recipe name'); return; }
   const tw = parseFloat(document.getElementById('recipe-total-weight').value)||0;
   if (!tw) { alert('Enter total recipe weight'); return; }
   const editId = document.getElementById('recipe-edit-id').value;
-  const ingredients = [];
-  document.querySelectorAll('#recipe-ingredient-rows > div').forEach(row => {
-    const n = row.querySelector('.rir-name')?.value.trim();
-    if (!n) return;
-    const isCustom = row.querySelector('.rir-custom')?.checked;
-    const qty = parseFloat(row.querySelector('.rir-qty')?.value) || 0;
-    const unit = row.querySelector('.rir-unit')?.value || 'Grams';
-    let cal, protein, fiber, carbs, fat;
-    if (isCustom) {
-      cal     = parseFloat(row.querySelector('.rir-cal')?.value)||0;
-      protein = parseFloat(row.querySelector('.rir-pro')?.value)||0;
-      fiber   = parseFloat(row.querySelector('.rir-fib')?.value)||0;
-      carbs   = parseFloat(row.querySelector('.rir-crb')?.value)||0;
-      fat     = parseFloat(row.querySelector('.rir-fat')?.value)||0;
-    } else if (row._scaledNutrition) {
-      ({cal, protein, fiber, carbs, fat} = row._scaledNutrition);
-    } else {
-      cal=protein=fiber=carbs=fat=0;
-    }
-    ingredients.push({ name:n, qty, unit, cal, protein, fiber, carbs, fat, useCustom:isCustom });
-  });
-  const tot = getRecipeTotals();
-  const isBulk = document.getElementById('recipe-bulk-mode')?.checked;
+  const recipes = DB.get('recipes')||[];
+  const existing = editId ? recipes.find(r => r.id === editId) : null;
+  const isBulk = !!document.getElementById('recipe-bulk-mode')?.checked;
   const weightUnit = document.getElementById('recipe-weight-unit')?.value || 'g';
-  // normalize weight to grams for storage
-  const twG = weightUnit === 'oz' ? tw * 28.3495 : weightUnit === 'ml' ? tw : tw;
+  // Store grams only; the unit picker is an input convenience, never persisted.
+  const twG = weightUnit === 'oz' ? tw * 28.3495 : tw;
 
-  let finalTot = tot;
+  let ingredients, finalTot;
   if (isBulk) {
+    // Ingredient rows are hidden in bulk mode — keep whatever list exists.
+    ingredients = existing?.ingredients || [];
     finalTot = {
       cal:     parseFloat(document.getElementById('bulk-cal')?.value)  || 0,
       protein: parseFloat(document.getElementById('bulk-pro')?.value)  || 0,
@@ -3398,34 +3592,73 @@ function saveRecipe() {
       carbs:   parseFloat(document.getElementById('bulk-carb')?.value) || 0,
       fat:     parseFloat(document.getElementById('bulk-fat')?.value)  || 0,
     };
+  } else {
+    ingredients = [];
+    document.querySelectorAll('#recipe-ingredient-rows > div').forEach(row => {
+      const n = row.querySelector('.rir-name')?.value.trim();
+      if (!n) return;
+      const isCustom = row.querySelector('.rir-custom')?.checked;
+      const qty = parseFloat(row.querySelector('.rir-qty')?.value) || 0;
+      const unit = row.querySelector('.rir-unit')?.value || 'Grams';
+      let cal, protein, fiber, carbs, fat;
+      if (isCustom) {
+        cal     = parseFloat(row.querySelector('.rir-cal')?.value)||0;
+        protein = parseFloat(row.querySelector('.rir-pro')?.value)||0;
+        fiber   = parseFloat(row.querySelector('.rir-fib')?.value)||0;
+        carbs   = parseFloat(row.querySelector('.rir-crb')?.value)||0;
+        fat     = parseFloat(row.querySelector('.rir-fat')?.value)||0;
+      } else if (row._scaledNutrition) {
+        ({cal, protein, fiber, carbs, fat} = row._scaledNutrition);
+      } else {
+        cal=protein=fiber=carbs=fat=0;
+      }
+      ingredients.push({ name:n, qty, unit, cal, protein, fiber, carbs, fat, useCustom:isCustom });
+    });
+    finalTot = getRecipeTotals();
   }
 
+  const { steps, notes } = parseStepsNotes(document.getElementById('recipe-notes').value);
+  // Spread existing first so seed fields (tags, tips, servingBase) survive edits.
   const recipe = {
+    ...(existing || {}),
+    ...pendingRecipeExtras,
     id: editId || (Date.now()+''),
-    name, totalWeight: Math.round(twG), weightUnit, ingredients,
-    notes: document.getElementById('recipe-notes').value,
+    name, totalWeight: Math.round(twG), weightUnit: 'g', ingredients, steps, notes,
     totalCal:     finalTot.cal,     totalProtein: finalTot.protein,
     totalFiber:   finalTot.fiber,   totalCarbs:   finalTot.carbs,
     totalFat:     finalTot.fat,     isBulk,
     ts: Date.now()
   };
-  let recipes = DB.get('recipes')||[];
+  pendingRecipeExtras = {};
   const idx = recipes.findIndex(r=>r.id===recipe.id);
   if (idx>=0) recipes[idx]=recipe; else recipes.push(recipe);
   DB.set('recipes', recipes);
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushRecipes();
+  syncRecipe(recipe.id);
   closeRecipeModal();
   showToast('Recipe saved!');
-  renderRecipesList();
-  renderRecipeSelect();
+  refreshRecipeViews(recipe.id);
+}
+
+// Re-render the Recipes tab; reopen the card if it was showing this recipe.
+function refreshRecipeViews(openId) {
+  const cardOpen = document.getElementById('recipe-card-view')?.style.display === 'block';
+  renderRecipeFeaturedGrid();
+  renderRecipeTabList();
+  if (cardOpen) {
+    const r = openId && (DB.get('recipes')||[]).find(x => x.id === openId);
+    if (r) renderRecipeCardContentNew(r); else closeRecipeCard();
+  }
 }
 
 function deleteRecipe(id) {
   if (!confirm('Delete this recipe?')) return;
   DB.set('recipes', (DB.get('recipes')||[]).filter(r=>r.id!==id));
-  if (window.Cloud && window.Cloud.ready) window.Cloud.deleteRecipe(id);
-  renderRecipesList();
-  renderRecipeSelect();
+  // Tombstone blocks re-seeding and cloud resurrection.
+  const tombs = DB.get('recipeTombstones') || {};
+  tombs[id] = Date.now();
+  DB.set('recipeTombstones', tombs);
+  syncRecipeDelete(id);
+  refreshRecipeViews(null);
 }
 
 // ── GLP-1 SEED RECIPES (imported from ZepTrack Recipes app) ──────────────
@@ -3501,18 +3734,6 @@ const GLP1_SEED_RECIPES = [
       'Sauté onion and garlic in the same pan until softened.',
       'Add chickpeas, diced tomatoes, and chicken broth. Stir to combine.',
       'Return chicken to pan. Simmer 15–20 min until cooked through.',
-      'Finish with fresh cilantro and a squeeze of lemon.'
-    ],
-    tips:'Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.',
-    id: 'glp1-r5', name: 'Spiced Chickpea + Chicken Thigh Skillet',
-    totalWeight:580, weightUnit:'g', isBulk:true, totalCal:574, totalProtein:45.8,
-    totalCarbs:30.7, totalFat:29.0, totalFiber:7.5, ingredients:[],
-    steps:[
-      'Season chicken thighs with cumin, smoked paprika, coriander, salt, and pepper.',
-      'Sear chicken in olive oil 4\u20135 min per side. Remove from pan.',
-      'Sa\u00fct\u00e9 onion and garlic in the same pan until softened.',
-      'Add chickpeas, diced tomatoes, and chicken broth. Stir to combine.',
-      'Return chicken to pan. Simmer 15\u201320 min until cooked through.',
       'Finish with fresh cilantro and a squeeze of lemon.'
     ],
     tips:'Chicken thighs stay moist even when appetite is suppressed. One-pan cleanup.',
@@ -3873,14 +4094,17 @@ const GLP1_SEED_RECIPES = [
 function forceSeedRecipes() {
   let recipes = DB.get('recipes') || [];
   const before = recipes.length;
-  GLP1_SEED_RECIPES.forEach(seed => {
+  [...GLP1_SEED_RECIPES, ...QP_SEED_RECIPES].forEach(seed => {
     if (!recipes.find(r => r.id === seed.id)) {
+      // fresh ts beats any tombstone, so the restore survives the next pull
       recipes.push({ ...seed, ts: Date.now() });
     }
   });
   DB.set('recipes', recipes);
+  // Queue after DB.set so the flush finds the restored recipes.
+  recipes.slice(before).forEach(r => syncRecipe(r.id));
   const added = recipes.length - before;
-  renderRecipesList('');
+  renderRecipesTab();
   renderRecipeSelect();
   showToast(added > 0 ? `Restored ${added} recipes!` : 'All seed recipes already present ✓');
 }
@@ -3888,20 +4112,26 @@ function forceSeedRecipes() {
 function seedGLP1Recipes(force=false) {
   let recipes = DB.get('recipes') || [];
   let added = 0, updated = 0;
+  const tombs = DB.get('recipeTombstones') || {};
+  const toSync = [];
   GLP1_SEED_RECIPES.forEach(seed => {
     const idx = recipes.findIndex(r => r.id === seed.id);
     if (idx === -1) {
-      // Not found — add it
-      recipes.push({ ...seed, ts: Date.now() });
+      if (tombs[seed.id] && !force) return; // user deleted it
+      // ts 0: any cloud copy (edited or not) wins over a fresh seed
+      recipes.push({ ...seed, ts: force ? Date.now() : 0 });
+      if (force) toSync.push(seed.id);
       added++;
     } else if (force || !recipes[idx].name || recipes[idx].totalCal === 0) {
       // Found but broken (no name or zero calories) — overwrite
       recipes[idx] = { ...seed, ts: Date.now() };
+      if (force) toSync.push(seed.id);
       updated++;
     }
   });
   if (added > 0 || updated > 0) {
     DB.set('recipes', recipes);
+    toSync.forEach(id => syncRecipe(id));
     console.log(`Recipes: seeded ${added} new, updated ${updated} broken`);
     renderRecipesList('');
     renderRecipeSelect();
@@ -3940,9 +4170,10 @@ const QP_SEED_RECIPES = [
 function seedQuickPickRecipes() {
   let recipes = DB.get('recipes') || [];
   let added = 0;
+  const tombs = DB.get('recipeTombstones') || {};
   QP_SEED_RECIPES.forEach(seed => {
-    if (!recipes.find(r => r.id === seed.id)) {
-      recipes.push({ ...seed, ts: Date.now() });
+    if (!recipes.find(r => r.id === seed.id) && !tombs[seed.id]) {
+      recipes.push({ ...seed, ts: 0 });
       added++;
     }
   });
@@ -3956,7 +4187,7 @@ function seedQuickPickRecipes() {
 }
 
 function restoreDefaultRecipes() {
-  if (!confirm('This will restore all 16 default GLP-1 recipes. Your own custom recipes will not be affected. Continue?')) return;
+  if (!confirm(`This resets all ${GLP1_SEED_RECIPES.length} built-in recipes to their defaults, discarding your edits to them. Your own recipes are not affected. Continue?`)) return;
   let recipes = DB.get('recipes') || [];
   const seedIds = new Set(GLP1_SEED_RECIPES.map(r => r.id));
   // Remove existing seed entries so they fully re-add
@@ -3964,7 +4195,7 @@ function restoreDefaultRecipes() {
   DB.set('recipes', recipes);
   const count = seedGLP1Recipes(true);
   showToast(`Restored ${count} default recipes!`);
-  renderRecipesList('');
+  renderRecipesTab();
   renderRecipeSelect();
 }
 
@@ -4427,9 +4658,7 @@ function renderRecipeCardContentNew(r, view='recipe') {
           <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Ingredients</div>
           ${r.ingredients.map((ing,i) => {
             const checked = `ing-${r.id}-${i}`;
-            const qty = UNITS==='metric'
-              ? `${ing.base}${ing.unit==='oz'?'g':ing.unit}`
-              : ing.unit==='g' ? `${Math.round(ing.base/28.3495*10)/10}oz` : `${ing.base}${ing.unit}`;
+            const qty = fmtIngQty(ing);
             return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
               <input type="checkbox" id="${checked}" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0" />
               <label for="${checked}" style="font-size:0.85rem;flex:1;cursor:pointer">${ing.name}</label>
@@ -4455,6 +4684,13 @@ function renderRecipeCardContentNew(r, view='recipe') {
               <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div>
               <div style="font-size:0.85rem;line-height:1.55">${s}</div>
             </div>`).join('')}
+        </div>` : '';
+
+    // Notes (free text from the Steps / Notes field)
+    const notesHtml = r.notes
+      ? `<div style="margin-top:14px;padding:12px;background:var(--surface2);border-radius:var(--radius-sm)">
+          <div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Notes</div>
+          <div style="font-size:0.85rem;line-height:1.5;white-space:pre-wrap">${r.notes.replace(/</g,'&lt;')}</div>
         </div>` : '';
 
     // Tips
@@ -4518,6 +4754,7 @@ function renderRecipeCardContentNew(r, view='recipe') {
 
       ${ingHtml}
       ${stepsHtml}
+      ${notesHtml}
       ${tipHtml}
 
       <!-- ZepTrack macro block -->
@@ -4647,7 +4884,7 @@ function submitCookedPortion(recipeId) {
   DB.set('recipeLastCooked', lastCooked);
 
   showToast(`${recipe.name} logged!`);
-  if (window.Cloud && window.Cloud.ready) { const _rd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_rd); }
+  syncDay(logDate);
   renderToday();
   renderRecipeFeaturedGrid();
   renderRecipeTabList();
@@ -4656,16 +4893,25 @@ function submitCookedPortion(recipeId) {
   renderRecipeCardContentNew(recipe, 'recipe');
 }
 
+// Seed ingredients use {base, unit:'g'|'tbsp'…}; user/imported ones use
+// {qty, unit:'Grams'|'OZ'|'ML'|'Count'}. Normalize both for display.
+function fmtIngQty(ing) {
+  const q = ing.base ?? ing.qty;
+  if (q == null || q === '') return '';
+  const u = { Grams:'g', OZ:'oz', ML:'ml', Count:'' }[ing.unit] ?? (ing.unit || '');
+  if (u === 'g' && UNITS !== 'metric') return `${Math.round(q/28.3495*10)/10}oz`;
+  if (u === 'oz' && UNITS === 'metric') return `${Math.round(q*28.3495)}g`;
+  return `${q}${u}`;
+}
+
 function copyCheckedIngredients(recipeId) {
   const recipe = (DB.get('recipes')||[]).find(r=>r.id===recipeId);
   if (!recipe || !recipe.ingredients?.length) return;
   const lines = recipe.ingredients.map((ing, i) => {
     const cb = document.getElementById(`ing-${recipeId}-${i}`);
     if (!cb || !cb.checked) return null;
-    const qty = UNITS==='metric'
-      ? `${ing.base}${ing.unit==='oz'?'g':ing.unit}`
-      : ing.unit==='g' ? `${Math.round(ing.base/28.3495*10)/10}oz` : `${ing.base}${ing.unit}`;
-    return `${ing.name} — ${qty}`;
+    const qty = fmtIngQty(ing);
+    return qty ? `${ing.name} — ${qty}` : ing.name;
   }).filter(Boolean);
   if (!lines.length) { showToast('Check items first'); return; }
   const copyStr = lines.join('\n');
@@ -4773,7 +5019,7 @@ function logCardPortion(recipeId) {
   document.getElementById('card-portion-oz').value = '';
   document.getElementById('card-portion-preview').innerHTML = '';
   showToast(`${recipe.name} logged!`);
-  if (window.Cloud && window.Cloud.ready) { const _rd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_rd); }
+  syncDay(today());
   renderToday();
 }
 
@@ -4964,7 +5210,7 @@ function logRecipePortion() {
   document.getElementById('recipe-portion').value = '';
   document.getElementById('recipe-portion-nutrition').innerHTML = '';
   showToast(`${recipe.name} logged!`);
-  if (window.Cloud && window.Cloud.ready) { const _rd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_rd); }
+  syncDay(document.getElementById('meal-date')?.value || today());
   renderToday();
 }
 
@@ -5003,7 +5249,7 @@ function renderToday() {
   document.getElementById('hdrDate').innerHTML =
     d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
     ' <span style="color:var(--border);margin:0 4px">·</span>' +
-    '<span style="color:var(--muted);font-size:0.65rem">v8.2</span>';
+    '<span style="color:var(--muted);font-size:0.65rem">v' + APP_VERSION + '</span>';
 
   const todayStr = today();
   const meals    = (DB.get('meals') || []).filter(m => m.date === todayStr);
@@ -5190,7 +5436,7 @@ function saveWeight() {
   if (!w || w < 1) { alert('Enter a valid weight'); return; }
   if (UNITS === 'metric') w = Math.round(w / 0.453592 * 10) / 10; // store as lbs
   DB.push('weights', { date: d, weight: w, notes: document.getElementById('wt-notes').value });
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(d);
+  syncDay(d);
   closeWeightModal();
   showToast('Weight saved!');
   renderToday();
@@ -5207,7 +5453,7 @@ function saveExercise() {
   if (!duration) { alert('Enter duration'); return; }
   const exDate = document.getElementById('ex-date').value || today();
   DB.push('exercise', { date: exDate, type, duration, steps, notes, ts: Date.now() });
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(exDate);
+  syncDay(exDate);
   document.getElementById('ex-duration').value = 30;
   document.getElementById('ex-steps').value = '';
   document.getElementById('ex-notes').value = '';
@@ -5240,10 +5486,12 @@ function saveDailyCheckin() {
   // upsert selected date
   let dailys = DB.get('daily') || [];
   const idx  = dailys.findIndex(d => d.date === dailyDate);
-  const rec  = { date: dailyDate, water, energy, mood, sideEffects, notes, ts: Date.now() };
+  const rec  = idx >= 0
+    ? { ...dailys[idx], water, energy, mood, sideEffects, notes, updatedAt: Date.now() }
+    : { id: newId(), date: dailyDate, water, energy, mood, sideEffects, notes, ts: Date.now() };
   if (idx >= 0) dailys[idx] = rec; else dailys.push(rec);
   DB.set('daily', dailys);
-  if (window.Cloud && window.Cloud.ready) { const dd = document.getElementById('daily-date')?.value || today(); window.Cloud.pushDay(dd); }
+  syncDay(dailyDate);
   updateWaterDisplay();
   renderToday();
   showToast('Check-in saved!');
@@ -5351,7 +5599,7 @@ function saveInjection() {
   const site  = document.getElementById('inj-site-val').value || 'abd-ul';
   const notes = document.getElementById('inj-notes').value;
   DB.push('injections', { date, dose, site, notes, ts: Date.now() });
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushDay(date);
+  syncDay(date);
   document.getElementById('inj-notes').value = '';
   // refresh diagram
   const injections = DB.get('injections') || [];
@@ -6127,9 +6375,14 @@ function saveEntryEdit() {
     entry.notes  = document.getElementById('ee-notes').value;
   }
 
-  entry.ts = Date.now();
+  // Keep id and ts; updatedAt makes this version win merges.
+  normalizeEntry(dbKey, entry);
+  entry.updatedAt = Date.now();
+  const oldDate = data[idx].date;
+  if (oldDate !== entry.date) addTombstone(dbKey, entry, oldDate); // moved: remove from old day
   data[idx] = entry;
   DB.set(dbKey, data);
+  syncDay(oldDate, entry.date);
   closeEntryEditModal();
   showToast('Updated!');
   renderHistory(document.querySelector('.hist-filter.active')?.dataset.filter || 'all');
@@ -6142,8 +6395,12 @@ function deleteEntryFromModal() {
   const idx   = parseInt(document.getElementById('entry-edit-idx').value);
   const dbKey = {meal:'meals',weight:'weights',exercise:'exercise',injection:'injections',daily:'daily'}[type];
   const data  = DB.get(dbKey) || [];
+  const removed = data[idx];
+  if (!removed) return;
+  addTombstone(dbKey, removed);
   data.splice(idx, 1);
   DB.set(dbKey, data);
+  syncDay(removed.date);
   closeEntryEditModal();
   showToast('Deleted!');
   renderHistory(document.querySelector('.hist-filter.active')?.dataset.filter || 'all');
@@ -6210,6 +6467,7 @@ function addWater(oz) {
     drinkVolume: oz,
     ts: Date.now()
   });
+  syncDay(todayStr);
   updateWaterDisplay();
   renderToday();
   showToast(`+${oz}oz water!`);
@@ -6244,10 +6502,16 @@ function updateWaterDisplay() {
 // ═══════════════════════════════════════════════════════
 // SETTINGS & UNITS
 // ═══════════════════════════════════════════════════════
+// User action: persist + sync. initSettings() calls applyUnitsUI() instead so
+// rendering Settings never writes a stale unit back to the cloud.
 function setUnits(u) {
   UNITS = u;
   DB.set('units', u);
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
+  touchProfile();
+  applyUnitsUI(u);
+}
+
+function applyUnitsUI(u) {
   document.getElementById('unit-imperial').className = u === 'imperial' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
   document.getElementById('unit-metric').className   = u === 'metric'   ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
   document.getElementById('unit-display-desc').textContent = u === 'metric' ? 'kg · ml · km' : 'lbs · oz · miles';
@@ -6266,7 +6530,7 @@ function saveGoals() {
   GOALS.water    = parseInt(document.getElementById('goal-water').value) || 64;
   GOALS.steps    = parseInt(document.getElementById('goal-steps').value) || 8000;
   DB.set('goals', GOALS);
-  if (window.Cloud && window.Cloud.ready) window.Cloud.pushProfile();
+  touchProfile();
   showToast('Goals saved!');
 }
 
@@ -6275,20 +6539,35 @@ function saveGoals() {
 // ═══════════════════════════════════════════════════════
 const MEAL_WINDOW_DAYS = 35;
 
+function archiveCutoffStr() {
+  const c = new Date();
+  c.setDate(c.getDate() - MEAL_WINDOW_DAYS);
+  return c.getFullYear() + '-' + String(c.getMonth()+1).padStart(2,'0') + '-' + String(c.getDate()).padStart(2,'0');
+}
+
+function summarizeMeals(meals) {
+  const s = {cal:0,protein:0,carbs:0,fat:0,fiber:0,water:0};
+  meals.forEach(m => {
+    s.cal += m.cal||0; s.protein += m.protein||0; s.carbs += m.carbs||0;
+    s.fat += m.fat||0; s.fiber += m.fiber||0;
+    const nm = (m.drinkName||(m.items?.[0]?.name)||'').toLowerCase();
+    if (nm.includes('water')) s.water += drinkToOz(m);
+    else if (nm.includes('iced tea')) s.water += drinkToOz(m) * 0.9;
+  });
+  return s;
+}
+
 function archiveAndPruneMeals() {
   const meals   = DB.get('meals') || [];
   const archive = DB.get('daily_archive') || {};
-  const cutoff  = new Date();
-  cutoff.setDate(cutoff.getDate() - MEAL_WINDOW_DAYS);
-  const cutoffStr = cutoff.getFullYear() + '-' +
-    String(cutoff.getMonth()+1).padStart(2,'0') + '-' +
-    String(cutoff.getDate()).padStart(2,'0');
+  const cutoffStr = archiveCutoffStr();
+  const dirtyDays = getDirty().days; // keep unpushed dates live until synced
 
   const toKeep    = [];
   const toArchive = {};
 
   meals.forEach(m => {
-    if (!m.date || m.date >= cutoffStr) { toKeep.push(m); return; }
+    if (!m.date || m.date >= cutoffStr || dirtyDays[m.date]) { toKeep.push(m); return; }
     if (!toArchive[m.date]) toArchive[m.date] = {cal:0,protein:0,carbs:0,fat:0,fiber:0,water:0};
     toArchive[m.date].cal     += m.cal     || 0;
     toArchive[m.date].protein += m.protein || 0;
@@ -6344,7 +6623,7 @@ function getDayTotals(dateStr) {
 }
 
 function initSettings() {
-  setUnits(UNITS);
+  applyUnitsUI(UNITS);
   document.getElementById('goal-cal').value   = GOALS.calories;
   document.getElementById('goal-pro').value   = GOALS.protein;
   document.getElementById('goal-fib').value   = GOALS.fiber;
@@ -6367,10 +6646,10 @@ async function manualSync() {
   status.textContent = 'Syncing with Firestore…';
   try {
     await window.Cloud.pullAndMerge();
+    afterCloudPull();
     await window.Cloud.pushAllDays();
+    await flushSync();
     DB.set('lastSyncDate', today());
-    if (typeof initSettings === 'function') initSettings();
-    if (typeof renderToday  === 'function') renderToday();
     status.textContent = 'Sync complete — ' + new Date().toLocaleTimeString();
   } catch(e) {
     status.textContent = 'Sync failed — check connection';
@@ -6393,7 +6672,7 @@ function checkForUpdate() {
     .then(r => r.json())
     .then(data => {
       const remoteVersion = data.version;
-      const localVersion  = '8.0';
+      const localVersion  = APP_VERSION;
 
       if (remoteVersion === localVersion) {
         status.textContent = '✓ Already up to date (v' + localVersion + ')';
@@ -6521,6 +6800,7 @@ function importFromJSON(input) {
       // Overwrite each key present in the backup
       const keys = ['weights','meals','exercise','daily','daily_archive','injections','recipes','drinkPresets','goals','units','quickPicks','customItems'];
       keys.forEach(k => { if (data[k] !== undefined) DB.set(k, data[k]); });
+      ensureEntryIds();
       if (data.goals) { Object.assign(GOALS, data.goals); }
       if (data.units) { UNITS = data.units; }
       showToast('Data restored!');
@@ -6808,6 +7088,7 @@ function addFoodFromSearch() {
     cal: c.cal, protein: c.protein, fiber: c.fiber, carbs: c.carbs, fat: c.fat,
     ts: Date.now()
   });
+  syncDay(mealDate);
   closeFoodSearch();
   showToast('Added to log!');
   renderTodaysMealsLog();
@@ -6950,7 +7231,7 @@ function addScannedItem() {
   showToast('Added to log!');
   renderTodaysMealsLog();
   renderToday();
-  if (window.Cloud && window.Cloud.ready) { const _bd = document.getElementById('meal-date')?.value || today(); window.Cloud.pushDay(_bd); }
+  syncDay(mealDate);
 }
 
 // Pill toggles — single-select groups
@@ -7039,6 +7320,14 @@ function migrateRecipeWeights() {
   if (changed) { DB.set('recipes', recipes); console.log('Recipe weights migrated'); }
 }
 
+// v9 upgrade: an existing install owns its profile, so stamp it now (local
+// wins the first LWW compare). A fresh install stays at 0 so cloud wins.
+function initProfileClock() {
+  if (DB.get('profileUpdatedAt')) return;
+  const hasProfile = ['goals','quickPicks','customItems','drinkPresets'].some(k => DB.get(k) != null);
+  if (hasProfile) DB.set('profileUpdatedAt', Date.now());
+}
+
 // ── AUTO-BACKUP ───────────────────────────────────────────────────────────
 
 // Convert a drink entry's stored quantity to oz, unit-aware
@@ -7115,28 +7404,9 @@ function triggerAutoBackup() {
   showToast('Auto-backup saved!');
 }
 
-async function checkAutoSync() {
-  if (!window.Cloud || !window.Cloud.ready) return;
-  const meals   = DB.get('meals')   || [];
-  const weights = DB.get('weights') || [];
-  if (!meals.length && !weights.length) return;
-  const lastSync = DB.get('lastSyncDate');
-  const todayStr = today();
-  if (!lastSync) {
-    DB.set('lastSyncDate', todayStr);
-    return;
-  }
-  const daysSince = Math.floor((new Date(todayStr) - new Date(lastSync)) / 86400000);
-  if (daysSince >= 3) {
-    console.log('Auto-sync: ' + daysSince + 'd since last sync — pushing…');
-    try {
-      await window.Cloud.pushAllDays();
-      DB.set('lastSyncDate', todayStr);
-      console.log('Auto-sync complete');
-    } catch(e) { console.warn('Auto-sync failed:', e); }
-  }
-}
-
+initProfileClock();
+ensureEntryIds();
+pruneTombstones();
 initSettings();
 initReminders();
 migrateWaterEntries();
@@ -7148,7 +7418,6 @@ seedQuickPickRecipes();
 renderQuickPickGrid();
 renderToday();
 checkAutoBackup();
-checkAutoSync();
 
 // SW for PWA
 if ('serviceWorker' in navigator) {
