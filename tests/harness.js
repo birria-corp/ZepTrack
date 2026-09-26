@@ -31,7 +31,14 @@ async function launch() {
   });
   // No real network in tests: fonts, USDA and Open Food Facts are stubbed or blocked.
   await ctx.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
-  await ctx.route(/api\.nal\.usda\.gov/, r => r.fulfill({ contentType: 'application/json', body: JSON.stringify(require('./fixtures/usda.json')) }));
+  // Mirror the real API's validation: GET dataType accepts only these values
+  // (it returns 400 for "Survey (FNDDS)"). Anything else fails the request.
+  const USDA_OK_TYPES = new Set(['Branded', 'Foundation', 'SR Legacy']);
+  await ctx.route(/api\.nal\.usda\.gov/, r => {
+    const types = new URL(r.request().url()).searchParams.get('dataType');
+    if (types && !types.split(',').every(t => USDA_OK_TYPES.has(t))) return r.fulfill({ status: 400, body: 'bad dataType' });
+    r.fulfill({ contentType: 'application/json', body: JSON.stringify(require('./fixtures/usda.json')) });
+  });
   await ctx.route(/openfoodfacts\.org/, r => r.fulfill({ contentType: 'application/json', body: JSON.stringify(require('./fixtures/off.json')) }));
   return { browser, ctx };
 }

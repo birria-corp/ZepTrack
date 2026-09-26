@@ -19,7 +19,7 @@ Personal Zepbound (GLP-1) health tracker. It's an offline-first PWA that syncs t
 
 - **Intake:** quick-log water buttons (30, 24, 12, and 8 oz) and a configurable quick-pick grid.
   - Quick picks read their default portion from the matching recipe, so editing that recipe's weight changes the button's default.
-- **Search:** type to search your recipes, custom items, and USDA FoodData Central at the same time. USDA results include brand-name packaged foods. Both lists update as you refine the search.
+- **Search:** type to search your recipes, custom items, and USDA FoodData Central at the same time. USDA results include brand-name packaged foods (Branded, Foundation, and SR Legacy data types). Both lists update as you refine the search.
   - Select any result to log it by grams or ounces for any date.
   - USDA results also offer **Add to Recipes**, which saves the item with the portion you entered.
   - **Enter manually** logs an item that no search finds, or saves it to Custom Items.
@@ -77,7 +77,7 @@ Personal Zepbound (GLP-1) health tracker. It's an offline-first PWA that syncs t
 index.html            Single-file app: all CSS and JS inline, including the Firebase module
 sw.js                 Service worker: network-first for index.html and version.json, cache-first otherwise
 manifest.json         PWA manifest
-version.json          {"version": "9.1"}; the Update button in Settings compares it with APP_VERSION
+version.json          {"version": "9.2"}; the Update button in Settings compares it with APP_VERSION
 icon-192.png          PWA icon
 icon-512.png          PWA icon
 README.md             This file
@@ -95,7 +95,7 @@ tools/deploy.py       One-commit deploy through the GitHub API (for sessions wit
 1. Bump the version in all three places:
    - `APP_VERSION` in `index.html`
    - `version.json`
-   - `CACHE` in `sw.js` (for example, `zeptrack-v9.1`)
+   - `CACHE` in `sw.js` (for example, `zeptrack-v9.2`)
 1. Optional: to run the tests locally, run `npm install`, then `npx playwright install chromium`, then `npm test`.
 1. Commit with the version and a short description, for example `v9.1: search tab`.
 1. Click **Push origin**.
@@ -110,6 +110,7 @@ tools/deploy.py       One-commit deploy through the GitHub API (for sessions wit
 
 | Version | Changes |
 |---------|---------|
+| v9.2 | Fix USDA search returning "USDA search failed" for every query. The API rejects the `Survey (FNDDS)` data type in search requests, so the app now searches Branded, Foundation, and SR Legacy foods. The search error message now includes the HTTP status. The test fixture now rejects invalid data types the same way the real API does. |
 | v9.1 | **Search** tab (library and all USDA data types, live refine, log pane, **Add to Recipes**, manual entry). **Left today** line and protein gap finder. Four built-in protein shakes. **Save to Recipe Library** from barcode scans. Goal weight with a chart line. **Copy AI prompt** and an always-visible paste box in the recipe editor. Daily and recipes CSV exports. Injection dose defaults to the last dose. Personal USDA API key. Tests run in CI and gate deploys. Fixes: steppers, local dates after 7 PM, NaN preview, complete backups, rating and cook-count sync, Android reminders, scanned carbs and fat, escaped external text, and weights and injections ordered by date. Removes Daily Check-In, the Wellness tab, Drink Presets, the Other quick pick, and dead code. |
 | v9.0 | Sync rework: stable entry IDs, delete tombstones, read-merge-write day pushes, a durable retry queue, and last-writer-wins profile sync. Fixes edits duplicating and deletes reappearing after sync, archive totals doubling, weights not restoring, seed recipes overwriting cloud edits, and deleted seeds reappearing. Recipe edits keep steps, tags, tips, and ingredient lists. Ounce weights no longer compound. Imported steps show on the recipe card. A single `APP_VERSION` drives the header and update check. |
 | v8.2 | Quick picks read their default portion from the recipe library before the hardcoded table. |

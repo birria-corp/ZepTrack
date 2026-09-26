@@ -9,7 +9,7 @@ Paste this file as the first message of a new Claude session to resume work with
 | Name | ZepTrack |
 | Repo | https://github.com/birria-corp/ZepTrack |
 | Live | https://birria-corp.github.io/ZepTrack |
-| Current version | 9.1 (2026-09-25) |
+| Current version | 9.2 (2026-09-26) |
 | Stack | Single-file HTML PWA (vanilla JS, inline CSS), Firebase Auth (Google) and Cloud Firestore through the web SDK 10.12.2 from gstatic, hosted on GitHub Pages |
 | Firebase project | `zeptrack-f8720`, shared with the Truthsayer app's `segments` collection |
 | Devices | Phone only (Android PWA). Sync is built for one active device plus restore on reinstall. |
@@ -21,11 +21,11 @@ Paste this file as the first message of a new Claude session to resume work with
 index.html      ~6,900 lines. Two script blocks:
                   <script type="module">  Firebase init, window.Cloud, onAuthStateChanged
                   <script>                everything else (DB, sync helpers, UI, seeds, init)
-sw.js           Service worker. CACHE = 'zeptrack-v9.1'. Network-first for index.html,
+sw.js           Service worker. CACHE = 'zeptrack-v9.2'. Network-first for index.html,
                 version.json, and sw.js; cache-first for everything else; deletes old caches
                 on activate.
 manifest.json   PWA manifest (start_url ./index.html, standalone, portrait)
-version.json    {"version":"9.1"}
+version.json    {"version":"9.2"}
 icon-192.png, icon-512.png
 README.md       User-facing overview, update workflow, and version history
 CONTEXT.md      This file
@@ -128,7 +128,8 @@ Security rules, verified 2026-09-25: `users/{userId}/{document=**}` allows read 
 
 - `USDA_API_KEY` is a personal api.data.gov key (1,000 requests an hour). It's visible in the page source by design.
 - `usdaSearch(query, {pageSize, types, signal})` returns normalized items via `usdaItem()`: `{name, fdcId, dataType, servingG, per100}`.
-  - The Search tab uses all data types (`Branded,Foundation,Survey (FNDDS),SR Legacy`) with 25 results, debounced 400 ms, and aborts stale requests.
+  - The Search tab uses `Branded,Foundation,SR Legacy` with 25 results, debounced 400 ms, and aborts stale requests.
+  - **Don't add `Survey (FNDDS)`:** the GET `/foods/search` endpoint returns HTTP 400 for it (verified 2026-09-26). The test harness rejects any other data type with a 400, so a regression fails CI.
   - Ingredient auto-lookup (`lookupUSDANutrition`) uses reference foods only (`Foundation,SR Legacy`).
 
 ### Shared helpers (v9.1)
@@ -264,6 +265,7 @@ Security rules, verified 2026-09-25: `users/{userId}/{document=**}` allows read 
 
 | Version | Changes |
 |---------|---------|
+| v9.2 | USDA search fix: drop `Survey (FNDDS)` (the API returns 400 for it); the error message shows the status; the fixture validates data types. |
 | v9.1 | Search tab, protein gap finder, built-in shakes, barcode **Save to Recipe Library**, goal-weight line, AI prompt helper, CSV exports, dose default, USDA key, CI test gate. Bug fixes 17–22 plus escaping and date ordering. Removed Daily Check-In, Wellness, Drink Presets, the Other quick pick, and dead code. |
 | v9.0 | Sync rework (IDs, tombstones, read-merge-write, retry queue, profile LWW, archive repair, weight restore, seed fixes). Recipe edit data-loss fixes. Single `APP_VERSION`. |
 | v8.2 | Quick picks read the default portion from the recipe library first. |

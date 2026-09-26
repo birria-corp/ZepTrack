@@ -1656,7 +1656,7 @@ const DB = {
 window._DB_RAW = key => DB.get(key);
 window._DB_SET = (key, val) => DB.set(key, val);
 
-const APP_VERSION = '9.1';
+const APP_VERSION = '9.2';
 
 // Escape text before inserting it into innerHTML or an attribute. Use for any
 // value that came from outside the code: USDA, Open Food Facts, user names.
@@ -1690,7 +1690,9 @@ function legacyCopy(text, done) {
 // Personal key (1,000 requests/hour). It's visible in page source by design;
 // the worst case is someone spending the hourly quota.
 const USDA_API_KEY   = 'pmzHnweZsMW0R7ChP7A26r8OdLrXKuiYljVgRXzL';
-const USDA_ALL_TYPES = 'Branded,Foundation,Survey (FNDDS),SR Legacy';
+// The GET search endpoint rejects "Survey (FNDDS)" with HTTP 400, so it's
+// left out. SR Legacy covers the same generic prepared foods.
+const USDA_ALL_TYPES = 'Branded,Foundation,SR Legacy';
 const USDA_GENERIC   = 'Foundation,SR Legacy';
 
 async function usdaSearch(query, { pageSize = 25, types = USDA_ALL_TYPES, signal } = {}) {
@@ -6527,7 +6529,7 @@ async function runUsdaSearch() {
   } catch (e) {
     if (e.name === 'AbortError') return;
     searchUsdaResults = [];
-    if (status) status.textContent = navigator.onLine === false ? 'Offline — USDA search needs a connection.' : 'USDA search failed — try again.';
+    if (status) status.textContent = navigator.onLine === false ? 'Offline — USDA search needs a connection.' : `USDA search failed (${e.message}) — try again.`;
   }
   renderSearchUsda();
 }
