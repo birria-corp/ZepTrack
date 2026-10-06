@@ -112,28 +112,8 @@ module.exports = async ({ ctx, url, ok, pageErrors }) => {
   ok('Daily CSV: stable header and archived days', r.header === 'date,cal,protein,carbs,fat,fiber,water_oz,weight_lb,exercise_min,steps,injection_dose,injection_site' && r.hasArch, r.header);
   ok('Recipes CSV: one row per recipe', r.rcRows === r.recipes, JSON.stringify(r));
   r = await E(() => ({ m: buildAiPrompt('macros'), f: buildAiPrompt('full') }));
-  ok('AI prompt: macros mode + adversarial review + rounding + brand rule', /"isBulk": true/.test(r.m) && /Adversarial review/.test(r.m) && /0\.1/.test(r.m) && /brand/.test(r.m) && /"ingredients": \[\],/.test(r.m));
+  ok('AI prompt: macros mode + adversarial review + rounding + brand rule', /"isBulk": true/.test(r.m) && /adversarial review/.test(r.m) && /0\.1/.test(r.m) && /brand/.test(r.m) && /"ingredients": \[\],/.test(r.m));
   ok('AI prompt: full mode includes ingredient template', /"isBulk": false/.test(r.f) && /"qty": <grams>/.test(r.f));
-  ok('v9.3 AI prompt: full mode uses the parser\'s exact keys and unit', /"protein": <g>, "carbs": <g>, "fat": <g>, "fiber": <g>/.test(r.f) && /"unit": "Grams"/.test(r.f) && !/"pro":|"crb":|"fib":/.test(r.f));
-  ok('v9.3 AI prompt: full mode has sum checks, object-only rule, and bulk-only escape', /sum exactly to the totals/.test(r.f) && /array of objects, never strings/.test(r.f) && /bulk only/.test(r.f));
-  r = await E(() => { openRecipeModal(); const m = aiPromptMode; closeRecipeModal(); return m; });
-  ok('v9.3: recipe editor defaults to the Full card prompt', r === 'full', r);
-  r = await E(() => { openRecipeModal();
-    const blob = { name: 'Alias T', totalWeight: 300, ingredients: [
-      { name: 'Beef', qty: 200, unit: 'g', cal: 400, pro: 40, crb: 0, fat: 25, fib: 0 },
-      { name: 'Rice', qty: 100, unit: 'Grams', cal: 130, protein: 2.7, carbs: 28.2, fat: 0.3, fiber: 0.4 },
-      'Salt' ] };
-    document.getElementById('recipe-paste-input').value = '```json\n' + JSON.stringify(blob) + '\n```';
-    parseRecipePaste();
-    const rows = [...document.querySelectorAll('#recipe-ingredient-rows > div')].map(d => ({
-      name: d.querySelector('.rir-name').value, unit: d.querySelector('.rir-unit').value,
-      pro: d.querySelector('.rir-pro').value, crb: d.querySelector('.rir-crb').value, fib: d.querySelector('.rir-fib').value }));
-    const status = document.getElementById('recipe-paste-status').textContent;
-    closeRecipeModal(); return { rows, status }; });
-  ok('v9.3 Paste: fenced JSON still parses', r.rows.length === 3, JSON.stringify(r));
-  ok('v9.3 Paste: pro/crb/fib aliases fill macros', r.rows[0] && r.rows[0].pro === '40' && r.rows[0].crb === '0' && r.rows[1].pro === '2.7', JSON.stringify(r.rows));
-  ok('v9.3 Paste: unit "g" maps to Grams', r.rows[0] && r.rows[0].unit === 'Grams', JSON.stringify(r.rows));
-  ok('v9.3 Paste: string ingredient imports by name and is flagged', r.rows[2] && r.rows[2].name === 'Salt' && /1 without macros/.test(r.status), JSON.stringify(r));
   r = await E(() => { openRecipeModal(); document.getElementById('recipe-paste-input').value = JSON.stringify({ name: 'Paste T', totalWeight: 300, totalCal: 600, totalProtein: 30 });
     parseRecipePaste(); return { bulk: document.getElementById('recipe-bulk-mode').checked, cal: document.getElementById('bulk-cal').value }; });
   ok('Paste: macros-only JSON switches to bulk mode automatically', r.bulk && r.cal === '600', JSON.stringify(r));

@@ -31,7 +31,7 @@ Personal Zepbound (GLP-1) health tracker. It's an offline-first PWA that syncs t
   - **Log Portion** records a gram or ounce portion for any date.
 - **Recipe editor:**
   - Paste a recipe JSON blob or labeled text at the top to fill every field. The editor switches between ingredient and bulk mode to match what you paste.
-  - **Copy AI prompt** copies a ready-made prompt for Claude or another assistant. Choose **Full card** (default, per-ingredient macros) or **Macros only** (totals only).
+  - **Copy AI prompt** copies a ready-made prompt for Claude or another assistant. Choose **Macros only** or **Full card**.
   - Enter per-ingredient macros (looked up from USDA or entered by hand), or whole-recipe totals in bulk mode.
 - **Exercise:** type, duration, steps, and notes.
 - **Injection:** dose (2.5–15 mg) and site, picked on a body diagram.
@@ -77,7 +77,7 @@ Personal Zepbound (GLP-1) health tracker. It's an offline-first PWA that syncs t
 index.html            Single-file app: all CSS and JS inline, including the Firebase module
 sw.js                 Service worker: network-first for index.html and version.json, cache-first otherwise
 manifest.json         PWA manifest
-version.json          {"version": "9.3"}; the Update button in Settings compares it with APP_VERSION
+version.json          {"version": "9.2"}; the Update button in Settings compares it with APP_VERSION
 icon-192.png          PWA icon
 icon-512.png          PWA icon
 README.md             This file
@@ -95,7 +95,7 @@ tools/deploy.py       One-commit deploy through the GitHub API (for sessions wit
 1. Bump the version in all three places:
    - `APP_VERSION` in `index.html`
    - `version.json`
-   - `CACHE` in `sw.js` (for example, `zeptrack-v9.3`)
+   - `CACHE` in `sw.js` (for example, `zeptrack-v9.2`)
 1. Optional: to run the tests locally, run `npm install`, then `npx playwright install chromium`, then `npm test`.
 1. Commit with the version and a short description, for example `v9.1: search tab`.
 1. Click **Push origin**.
@@ -110,7 +110,6 @@ tools/deploy.py       One-commit deploy through the GitHub API (for sessions wit
 
 | Version | Changes |
 |---------|---------|
-| v9.3 | **Copy AI prompt** now defaults to **Full card** and asks for per-ingredient macros using the importer's exact keys, with checks that ingredient rows sum to the totals and weights sum to the total weight. Say "bulk only" in the chat to get totals without ingredients. JSON paste now accepts a surrounding code fence, `pro`/`crb`/`fib` key names, `g`/`oz`/`ml` units, and plain-string ingredients, and warns when an ingredient has no macros. |
 | v9.2 | Fix USDA search returning "USDA search failed" for every query. The API rejects the `Survey (FNDDS)` data type in search requests, so the app now searches Branded, Foundation, and SR Legacy foods. The search error message now includes the HTTP status. The test fixture now rejects invalid data types the same way the real API does. |
 | v9.1 | **Search** tab (library and all USDA data types, live refine, log pane, **Add to Recipes**, manual entry). **Left today** line and protein gap finder. Four built-in protein shakes. **Save to Recipe Library** from barcode scans. Goal weight with a chart line. **Copy AI prompt** and an always-visible paste box in the recipe editor. Daily and recipes CSV exports. Injection dose defaults to the last dose. Personal USDA API key. Tests run in CI and gate deploys. Fixes: steppers, local dates after 7 PM, NaN preview, complete backups, rating and cook-count sync, Android reminders, scanned carbs and fat, escaped external text, and weights and injections ordered by date. Removes Daily Check-In, the Wellness tab, Drink Presets, the Other quick pick, and dead code. |
 | v9.0 | Sync rework: stable entry IDs, delete tombstones, read-merge-write day pushes, a durable retry queue, and last-writer-wins profile sync. Fixes edits duplicating and deletes reappearing after sync, archive totals doubling, weights not restoring, seed recipes overwriting cloud edits, and deleted seeds reappearing. Recipe edits keep steps, tags, tips, and ingredient lists. Ounce weights no longer compound. Imported steps show on the recipe card. A single `APP_VERSION` drives the header and update check. |

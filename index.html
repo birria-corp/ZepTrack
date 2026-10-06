@@ -1656,7 +1656,7 @@ const DB = {
 window._DB_RAW = key => DB.get(key);
 window._DB_SET = (key, val) => DB.set(key, val);
 
-const APP_VERSION = '9.3';
+const APP_VERSION = '9.2';
 
 // Escape text before inserting it into innerHTML or an attribute. Use for any
 // value that came from outside the code: USDA, Open Food Facts, user names.
@@ -2473,8 +2473,7 @@ function parseRecipePaste() {
 
   // ── JSON blob fast-path ──
   try {
-    // Tolerate a pasted ```json fence around the block
-    const j = JSON.parse(raw.trim().replace(/^```[a-zA-Z]*\s*/, '').replace(/\s*```$/, ''));
+    const j = JSON.parse(raw.trim());
     if (j && (j.totalCal != null || j.totalWeight != null || j.ingredients != null)) {
       const applied = [];
       const nameEl = document.getElementById('recipe-name');
@@ -2494,29 +2493,19 @@ function parseRecipePaste() {
         // clear existing rows
         document.getElementById('recipe-ingredient-rows').innerHTML = '';
         recipeIngRows = [];
-        // Accept common key aliases and unit spellings so AI output still fills macros
-        const pick = (o, ...keys) => { for (const k of keys) if (o[k] != null && o[k] !== '') return Number(o[k]); return null; };
-        const r1 = v => (v == null || isNaN(v)) ? '' : Math.round(v * 10) / 10;
-        const UNIT_MAP = { g: 'Grams', gram: 'Grams', grams: 'Grams', oz: 'OZ', ounce: 'OZ', ounces: 'OZ', ml: 'ML', count: 'Count', each: 'Count', ea: 'Count' };
-        let noMacroRows = 0;
-        j.ingredients.forEach(item => {
-          const ing = typeof item === 'string' ? { name: item } : (item || {});
-          const cal = pick(ing, 'cal', 'calories', 'kcal');
-          const pro = pick(ing, 'protein', 'pro');
-          const fib = pick(ing, 'fiber', 'fib', 'fibre');
-          const crb = pick(ing, 'carbs', 'crb', 'carb', 'carbohydrates');
-          const fat = pick(ing, 'fat');
-          if ([cal, pro, fib, crb, fat].every(v => v == null)) noMacroRows++;
-          const u = String(ing.unit || 'Grams');
+        j.ingredients.forEach(ing => {
           addRecipeIngredientRow(
             ing.name  || '',
-            ing.qty   != null ? ing.qty : (ing.grams != null ? ing.grams : ''),
-            UNIT_MAP[u.toLowerCase()] || u,
-            r1(cal), r1(pro), r1(fib), r1(crb), r1(fat),
+            ing.qty   != null ? ing.qty   : '',
+            ing.unit  || 'Grams',
+            ing.cal   != null ? Math.round(ing.cal     * 10) / 10 : '',
+            ing.protein != null ? Math.round(ing.protein * 10) / 10 : '',
+            ing.fiber != null ? Math.round(ing.fiber   * 10) / 10 : '',
+            ing.carbs != null ? Math.round(ing.carbs   * 10) / 10 : '',
+            ing.fat   != null ? Math.round(ing.fat     * 10) / 10 : '',
             true  // useCustom — macros come from JSON, no USDA lookup needed
           );
         });
-        if (noMacroRows) applied.push(`⚠ ${noMacroRows} without macros`);
         applied.push(`${j.ingredients.length} ingredients`);
         updateRecipeNutritionPer100();
       } else {
@@ -2549,8 +2538,7 @@ function parseRecipePaste() {
       }
 
       if (applied.length) {
-        const warn = applied.some(a => a.startsWith('⚠'));
-        if (status) { status.textContent = `${warn ? '' : '✓ '}JSON: ${applied.join(' · ')}`; status.style.color = warn ? 'var(--warn)' : 'var(--success)'; }
+        if (status) { status.textContent = `✓ JSON: ${applied.join(' · ')}`; status.style.color = 'var(--success)'; }
       } else {
         if (status) { status.textContent = '⚠ JSON parsed but no recognized fields'; status.style.color = 'var(--warn)'; }
       }
@@ -2669,7 +2657,7 @@ function updateBulkTotals() {
 }
 
 // ── AI prompt helper ────────────────────────────────────
-let aiPromptMode = 'full'; // 'macros' | 'full'
+let aiPromptMode = 'macros'; // 'macros' | 'full'
 
 function setAiPromptMode(mode) {
   aiPromptMode = mode;
@@ -2683,55 +2671,31 @@ function setAiPromptMode(mode) {
 
 function buildAiPrompt(mode) {
   const full = mode === 'full';
-  const lines = [
+  return [
     'Build a ZepTrack recipe import from the recipe below.',
-    '',
-    full
-      ? '1. Macros. Calculate per-ingredient and whole-recipe macros (calories, protein, carbs, fat, fiber). Use cooked / as-eaten weights. State assumptions (brands, drained fat, can sizes). If a brand is named, use that brand\'s nutrition label. Round grams to 0.1.'
-      : '1. Macros. Calculate whole-recipe and per-100 g macros (calories, protein, carbs, fat, fiber). Use cooked / as-eaten weights. State assumptions (brands, drained fat, can sizes). If a brand is named, use that brand\'s nutrition label. Round grams to 0.1.',
-    '',
-    full
-      ? '2. Adversarial review. Re-check the biggest contributors. Confirm protein×4 + carbs×4 + fat×9 roughly reconciles with calories (within ~5%). Confirm the ingredient rows sum exactly to the totals and the ingredient weights sum to totalWeight. Correct anything that fails.'
-      : '2. Adversarial review. Re-check the biggest contributors. Confirm protein×4 + carbs×4 + fat×9 roughly reconciles with calories (within ~5%). Correct anything that fails.',
-    '',
-    '3. Output ONE JSON block and nothing after it. Brief assumptions and review notes go before the block.',
-    '',
+    '1. Calculate full-recipe and per-100 g macros (calories, protein, carbs, fat, fiber).',
+    '   Use cooked / as-eaten weights. State assumptions (brands, drained fat, can sizes).',
+    '   If a brand is named, use that brand\'s nutrition label. Round grams to 0.1.',
+    '2. Run an adversarial review of your numbers: re-check the biggest contributors and confirm',
+    '   protein×4 + carbs×4 + fat×9 roughly reconciles with calories. Correct anything that fails.',
+    '3. Output ONE JSON block and nothing after it:',
     '{',
     '  "name": "...",',
-    '  "totalWeight": <grams, whole recipe, as eaten>,',
+    '  "totalWeight": <grams, whole recipe>,',
     '  "weightUnit": "g",',
     `  "isBulk": ${full ? 'false' : 'true'},`,
     '  "totalCal": <whole recipe>, "totalProtein": <g>, "totalCarbs": <g>, "totalFat": <g>, "totalFiber": <g>,',
-    ...(full ? [
-    '  "ingredients": [',
-    '    {"name": "...", "qty": <grams>, "unit": "Grams",',
-    '     "cal": <n>, "protein": <g>, "carbs": <g>, "fat": <g>, "fiber": <g>}',
-    '  ],',
-    '  "steps": ["..."],'
-    ] : [
-    '  "ingredients": [],',
-    '  "steps": [],'
-    ]),
+    full
+      ? '  "ingredients": [ { "name": "...", "qty": <grams>, "unit": "Grams", "cal": 0, "protein": 0, "carbs": 0, "fat": 0, "fiber": 0 } ],'
+      : '  "ingredients": [],',
+    full ? '  "steps": ["..."],' : '  "steps": [],',
     '  "tags": ["..."]',
     '}',
+    'Totals are for the WHOLE recipe, not per 100 g.' + (full ? ' Ingredient macros are per ingredient line, not per 100 g.' : ''),
     '',
-    'Rules:',
-    full
-      ? '- Totals are for the WHOLE recipe, not per 100 g. Ingredient macros are for that ingredient\'s full qty, not per 100 g.'
-      : '- Totals are for the WHOLE recipe, not per 100 g.',
-  ];
-  if (full) lines.push(
-    '- "ingredients" MUST be an array of objects, never strings. Strings import as blank rows with no macros.',
-    '- Use exactly these ingredient keys: name, qty, unit, cal, protein, carbs, fat, fiber. Do not abbreviate (no "pro", "crb", "fib").',
-    '- "unit" must be exactly "Grams". Each qty is that ingredient\'s grams as eaten. Use 0 for salt or other uncounted items.',
-    '- Fill all five macro fields on every ingredient, using 0 where none apply. Never omit a field or use null.',
-    '- Top-level totals must equal the sum of the ingredient rows.',
-    '- Steps are plain strings with no leading numbers.',
-    '- If I ask for "bulk only", return "isBulk": true, "ingredients": [], and "steps": [], and keep the totals.'
-  );
-  else lines.push('- Keep "ingredients" and "steps" as empty arrays.');
-  lines.push('', 'RECIPE:', '[paste or attach]');
-  return lines.join('\n');
+    'RECIPE:',
+    ''
+  ].join('\n');
 }
 
 function copyAiPrompt() {
@@ -3085,7 +3049,7 @@ function openRecipeModal(id=null) {
   // show delete button only when editing an existing recipe
   const delBtn = document.getElementById('recipe-delete-btn');
   if (delBtn) delBtn.style.display = id ? 'block' : 'none';
-  setAiPromptMode('full');
+  setAiPromptMode('macros');
   document.getElementById('recipe-modal').classList.add('open');
 }
 

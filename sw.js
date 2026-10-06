@@ -1,4 +1,4 @@
-const CACHE = 'zeptrack-v9.3';
+const CACHE = 'zeptrack-v9.2';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {

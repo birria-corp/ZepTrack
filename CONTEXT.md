@@ -9,7 +9,7 @@ Paste this file as the first message of a new Claude session to resume work with
 | Name | ZepTrack |
 | Repo | https://github.com/birria-corp/ZepTrack |
 | Live | https://birria-corp.github.io/ZepTrack |
-| Current version | 9.3 (2026-10-05) |
+| Current version | 9.2 (2026-09-26) |
 | Stack | Single-file HTML PWA (vanilla JS, inline CSS), Firebase Auth (Google) and Cloud Firestore through the web SDK 10.12.2 from gstatic, hosted on GitHub Pages |
 | Firebase project | `zeptrack-f8720`, shared with the Truthsayer app's `segments` collection |
 | Devices | Phone only (Android PWA). Sync is built for one active device plus restore on reinstall. |
@@ -21,11 +21,11 @@ Paste this file as the first message of a new Claude session to resume work with
 index.html      ~6,900 lines. Two script blocks:
                   <script type="module">  Firebase init, window.Cloud, onAuthStateChanged
                   <script>                everything else (DB, sync helpers, UI, seeds, init)
-sw.js           Service worker. CACHE = 'zeptrack-v9.3'. Network-first for index.html,
+sw.js           Service worker. CACHE = 'zeptrack-v9.2'. Network-first for index.html,
                 version.json, and sw.js; cache-first for everything else; deletes old caches
                 on activate.
 manifest.json   PWA manifest (start_url ./index.html, standalone, portrait)
-version.json    {"version":"9.3"}
+version.json    {"version":"9.2"}
 icon-192.png, icon-512.png
 README.md       User-facing overview, update workflow, and version history
 CONTEXT.md      This file
@@ -111,9 +111,9 @@ Security rules, verified 2026-09-25: `users/{userId}/{document=**}` allows read 
 - **`saveRecipe()`** spreads the existing recipe first, so seed fields survive edits.
   - In bulk mode it keeps the existing ingredient list.
   - The **Steps / Notes** text box round-trips through `composeStepsNotes()` and `parseStepsNotes()`: numbered lines become `steps`, and other lines become `notes`.
-- **JSON paste** (`parseRecipePaste`, paste box at the top of the editor) switches to ingredient mode when `ingredients[]` has entries and to bulk mode otherwise. It recognizes `name`, `totalWeight`, `weightUnit`, `total*` macros, `ingredients[]`, `steps[]`, `notes`, `tips`, `tags`, and `servingBase`. Extra fields are held in `pendingRecipeExtras` until you save. Since v9.3 it strips a surrounding Markdown code fence, accepts ingredient key aliases (`pro`, `crb`/`carb`, `fib`, `calories`/`kcal`), maps unit spellings (`g`, `oz`, `ml`, `each`) to the dropdown values, imports string ingredients as name-only rows, and flags rows that have no macros (`⚠ N without macros`) in the status line.
+- **JSON paste** (`parseRecipePaste`, paste box at the top of the editor) switches to ingredient mode when `ingredients[]` has entries and to bulk mode otherwise. It recognizes `name`, `totalWeight`, `weightUnit`, `total*` macros, `ingredients[]`, `steps[]`, `notes`, `tips`, `tags`, and `servingBase`. Extra fields are held in `pendingRecipeExtras` until you save.
 - **Bulk macro fields** are whole-recipe totals, not per-100 g values.
-- **AI prompt** (`buildAiPrompt(mode)`): `full` (default since v9.3; `isBulk: false`, per-ingredient macros, steps) or `macros` (`isBulk: true`, empty ingredients and steps). Both ask for an adversarial review, rounding to 0.1 g, and the brand's label when a brand is named. `full` also requires ingredient objects with the parser's exact keys (`name, qty, unit, cal, protein, carbs, fat, fiber`), `unit: "Grams"`, all five macros filled, rows that sum to the totals, and weights that sum to `totalWeight`; "bulk only" in the chat returns empty ingredients.
+- **AI prompt** (`buildAiPrompt(mode)`): `macros` (default, `isBulk: true`, empty ingredients and steps) or `full`. The prompt asks for per-100 g and full-recipe macros, an adversarial review, rounding to 0.1 g, and the brand's label when a brand is named.
 
 ### Quick picks
 
@@ -265,7 +265,6 @@ Security rules, verified 2026-09-25: `users/{userId}/{document=**}` allows read 
 
 | Version | Changes |
 |---------|---------|
-| v9.3 | AI prompt rewrite: **Full card** is the default and forces per-ingredient macros with the parser's exact keys, sum checks, and a "bulk only" escape. JSON paste tolerates code fences, `pro`/`crb`/`fib` aliases, `g`/`oz`/`ml` units, and string ingredients, and flags rows without macros. |
 | v9.2 | USDA search fix: drop `Survey (FNDDS)` (the API returns 400 for it); the error message shows the status; the fixture validates data types. |
 | v9.1 | Search tab, protein gap finder, built-in shakes, barcode **Save to Recipe Library**, goal-weight line, AI prompt helper, CSV exports, dose default, USDA key, CI test gate. Bug fixes 17–22 plus escaping and date ordering. Removed Daily Check-In, Wellness, Drink Presets, the Other quick pick, and dead code. |
 | v9.0 | Sync rework (IDs, tombstones, read-merge-write, retry queue, profile LWW, archive repair, weight restore, seed fixes). Recipe edit data-loss fixes. Single `APP_VERSION`. |
