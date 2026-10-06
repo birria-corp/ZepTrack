@@ -1,0 +1,13 @@
+{
+  "totalHits": 3,
+  "foods": [
+    { "fdcId": 1001, "description": "DIGIORNO RISING CRUST PEPPERONI PIZZA", "dataType": "Branded", "brandOwner": "Nestle USA", "servingSize": 125, "servingSizeUnit": "g",
+      "foodNutrients": [ {"nutrientId":1008,"nutrientNumber":"208","value":268}, {"nutrientId":1003,"nutrientNumber":"203","value":11.2},
+                         {"nutrientId":1005,"nutrientNumber":"205","value":30.4}, {"nutrientId":1004,"nutrientNumber":"204","value":10.4},
+                         {"nutrientId":1079,"nutrientNumber":"291","value":2.4} ] },
+    { "fdcId": 1002, "description": "Pizza, pepperoni topping, regular crust, frozen, cooked", "dataType": "Survey (FNDDS)", "foodCategory": "Pizza",
+      "foodNutrients": [ {"nutrientId":1008,"value":286}, {"nutrientId":1003,"value":11.6}, {"nutrientId":1005,"value":31.8}, {"nutrientId":1004,"value":12.3}, {"nutrientId":1079,"value":2.1} ] },
+    { "fdcId": 1003, "description": "Banana, raw <b>test</b>", "dataType": "SR Legacy", "foodCategory": "Fruits",
+      "foodNutrients": [ {"nutrientId":1008,"value":89}, {"nutrientId":1003,"value":1.1}, {"nutrientId":1005,"value":22.8}, {"nutrientId":1004,"value":0.3}, {"nutrientId":1079,"value":2.6} ] }
+  ]
+}

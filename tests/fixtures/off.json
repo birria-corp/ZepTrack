@@ -1,0 +1,2 @@
+{ "status": 1, "product": { "product_name": "Test Jerky <img src=x onerror=alert(1)>", "brands": "Brand Co", "serving_quantity": 28, "serving_size": "1 oz (28 g)",
+  "nutriments": { "energy-kcal_100g": 290, "proteins_100g": 42, "carbohydrates_100g": 14, "fat_100g": 5, "fiber_100g": 1 } } }
